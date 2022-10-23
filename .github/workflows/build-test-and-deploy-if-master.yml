@@ -24,7 +24,7 @@ jobs:
       run: npm ci
 
     - name: Run ESLint
-      uses: wearerequired/lint-action@v2
+      uses: wearerequired/lint-action@v2.1.0
       with:
         eslint: true
         eslint_args: "--config ./.eslintrc.json './**/*.{ts,html}'"
