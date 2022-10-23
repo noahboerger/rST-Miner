@@ -24,7 +24,7 @@
               "index": "src/index.html",
               "main": "src/main.ts",
               "polyfills": "src/polyfills.ts",
-              "baseHref": "/ilovepetrinets/template/",
+              "baseHref": "/ilovepetrinets/randomizedProcessMiner/",
               "tsConfig": "tsconfig.app.json",
               "inlineStyleLanguage": "scss",
               "assets": [

@@ -7,8 +7,8 @@
       "build": "ng build",
       "watch": "ng build --watch --configuration development",
       "test": "ng test",
-      "github-actions-test": "ng test --karma-config github-actions.karma.conf.js",
-      "github-actions-build": "ng build --output-path docs --base-href /event_logs/",
+      "github-actions-test": "ng test --karma-config github-actions.karma.conf.js --watch=false",
+      "github-actions-build": "ng build --output-path docs --base-href /randomizedProcessMiner/",
       "lint": "eslint --config ./.eslintrc.json .",
       "format": "eslint --config ./.eslintrc.json --fix ."
   },
