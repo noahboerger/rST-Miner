@@ -1,4 +1,4 @@
-name: EventLogs-CI/CD-Pipeline
+name: RandomizedProcessMiner-CI/CD-Pipeline
 
 on: [ push ]
 
