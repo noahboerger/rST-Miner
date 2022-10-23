@@ -1,4 +1,4 @@
-name: EventLogs-CI/CD-Pipeline
+name: RandomizedProcessMiner-CI/CD-Pipeline
 
 on: [ push ]
 
@@ -24,7 +24,7 @@ jobs:
       run: npm ci
 
     - name: Run ESLint
-      uses: wearerequired/lint-action@v2
+      uses: wearerequired/lint-action@v2.1.0
       with:
         eslint: true
         eslint_args: "--config ./.eslintrc.json './**/*.{ts,html}'"
@@ -36,8 +36,8 @@ jobs:
     - name: Build Angular project
       run: npm run github-actions-build
 
-    - name: Deploy to Github Pages if branch is master
-      if: ${{ github.ref == 'refs/heads/master' }}
+    - name: Deploy to Github Pages if branch is main
+      if: ${{ github.ref == 'refs/heads/main' }}
       uses: peaceiris/actions-gh-pages@v3
       with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

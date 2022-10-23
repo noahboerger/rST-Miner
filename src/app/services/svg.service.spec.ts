@@ -1,5 +1,5 @@
-import {TestBed} from '@angular/core/testing';
-import {SvgService} from './svg.service';
+import { TestBed } from '@angular/core/testing';
+import { SvgService } from './svg.service';
 
 describe('SvgService', () => {
     let service: SvgService;

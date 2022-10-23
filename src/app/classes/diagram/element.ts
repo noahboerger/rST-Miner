@@ -26,10 +26,10 @@ export class Element {
 
     public registerSvg(svg: SVGElement) {
         this._svgElement = svg;
-        this._svgElement.onmousedown = (event) => {
+        this._svgElement.onmousedown = event => {
             this.processMouseDown(event);
         };
-        this._svgElement.onmouseup = (event) => {
+        this._svgElement.onmouseup = event => {
             this.processMouseUp(event);
         };
     }
@@ -47,5 +47,4 @@ export class Element {
         }
         this._svgElement.setAttribute('fill', 'black');
     }
-
 }
