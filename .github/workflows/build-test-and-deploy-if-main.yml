@@ -3,7 +3,7 @@ name: RandomizedProcessMiner-CI/CD-Pipeline
 on: [ push ]
 
 jobs:
-  build-test-and-deploy-if-master:
+  build-test-and-deploy-if-main:
 
     runs-on: ubuntu-latest
 
