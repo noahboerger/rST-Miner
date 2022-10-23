@@ -1,5 +1,5 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TemplateButtonComponent} from './template-button.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TemplateButtonComponent } from './template-button.component';
 
 describe('TemplateButtonComponent', () => {
     let component: TemplateButtonComponent;
@@ -7,9 +7,8 @@ describe('TemplateButtonComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [TemplateButtonComponent]
-        })
-            .compileComponents();
+            declarations: [TemplateButtonComponent],
+        }).compileComponents();
     });
 
     beforeEach(() => {
