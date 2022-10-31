@@ -1,4 +1,4 @@
-name: RandomizedProcessMiner-CI/CD-Pipeline
+name: rST-Miner-CI/CD-Pipeline
 
 on: [ push ]
 
