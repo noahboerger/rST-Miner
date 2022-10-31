@@ -2,11 +2,11 @@
   <img src="./src/favicon.ico" alt="Size Limit CLI" width="80">
 </p>
 
-# RandomizedProcessMiner
+# rST-Miner
 
-![CI](https://github.com/noahboerger/RandomizedProcessMiner/actions/workflows/build-test-and-deploy-if-main.yml/badge.svg)
+![CI](https://github.com/noahboerger/rST-Miner/actions/workflows/build-test-and-deploy-if-main.yml/badge.svg)
 
-Das vorliegende Projekt RandomizedProcessMiner ist im Rahmen meiner **Abschlussarbeit** an der [Fernuniversität Hagen](https://www.fernuni-hagen.de/) entstanden. Die Betreuung der Masterarbeit erfolgt durch Robin Bergenthum und Jakub Kovar.
+Das vorliegende Process-Discovery Projekt mit dem Namen rST-Miner (random state-space traversal) ist im Rahmen meiner **Abschlussarbeit** an der [Fernuniversität Hagen](https://www.fernuni-hagen.de/) entstanden. Die Betreuung der Masterarbeit erfolgt durch Robin Bergenthum und Jakub Kovar.
 
 Die Funktionalität der Anwendung ist das Generieren eines Prozess-Modells in Form eines Petri Netzes aus Ereignisdaten. Hierzu bietet die Anwendung einen .xes und .log Import sowie einen Export des genierten Petri-Netzes. Der Algorithmus generiert hierzu randomisiert Plätze, um das resultierende Prozess-Modell zu erstellen. Nähere Informationen zum Algorithmus finden sich in der Abschlussarbeit.
 
@@ -16,10 +16,10 @@ Die Funktionalität der Anwendung ist das Generieren eines Prozess-Modells in Fo
 
 Nutze hierzu den [SetUp-Local-Guide](https://angular.io/guide/setup-local) von Angular.
 
-### Klone das vorliegende [Repository](https://github.com/noahboerger/RandomizedProcessMiner)
+### Klone das vorliegende [Repository](https://github.com/noahboerger/rST-Miner)
 
 ```bash
-git clone https://github.com/noahboerger/RandomizedProcessMiner.git
+git clone https://github.com/noahboerger/rST-Miner.git
 ```
 
 ### Installiere alle Abhängigkeiten
@@ -63,4 +63,4 @@ Bei Bedarf kann gerne ein Fork des Projekts erstellt werden. Dieser kann frei we
 
 Auf allen Branches werden automatisiert nach einem Commit über GitHub-Actions alle Unit-Tests ausgeführt. Daraufhin findet ein Build des Angular-Projekts statt. Diese Pipeline sollte vor der Erstellung eines Merge Requests deshalb erfolgreich durchlaufen werden.
 
-Auf dem Main-Branch findet zudem eine Bereitstellung des Projekts durch ein Deployment auf GitHub-Pages statt. Der Branch `gh-pages` wird als Abbild des Pages-Deployments genutzt. Der aktuelle Master-Branch der Anwendung steht deshalb dauerhaft unter [https://noahboerger.github.io/RandomizedProcessMiner/index.html](https://noahboerger.github.io/RandomizedProcessMiner/index.html) zur Verfügung.
+Auf dem Main-Branch findet zudem eine Bereitstellung des Projekts durch ein Deployment auf GitHub-Pages statt. Der Branch `gh-pages` wird als Abbild des Pages-Deployments genutzt. Der aktuelle Master-Branch der Anwendung steht deshalb dauerhaft unter [https://noahboerger.github.io/rST-Miner/index.html](https://noahboerger.github.io/RandomizedProcessMiner/index.html) zur Verfügung.
