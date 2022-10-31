@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { SvgService } from './svg.service';
 
-describe('SvgService', () => {
-    let service: SvgService;
+import { EventlogDataService } from './eventlog-data.service';
+
+describe('EventlogDataService', () => {
+    let service: EventlogDataService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(SvgService);
+        service = TestBed.inject(EventlogDataService);
     });
 
     it('should be created', () => {

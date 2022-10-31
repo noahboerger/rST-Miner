@@ -63,4 +63,4 @@ Bei Bedarf kann gerne ein Fork des Projekts erstellt werden. Dieser kann frei we
 
 Auf allen Branches werden automatisiert nach einem Commit über GitHub-Actions alle Unit-Tests ausgeführt. Daraufhin findet ein Build des Angular-Projekts statt. Diese Pipeline sollte vor der Erstellung eines Merge Requests deshalb erfolgreich durchlaufen werden.
 
-Auf dem Main-Branch findet zudem eine Bereitstellung des Projekts durch ein Deployment auf GitHub-Pages statt. Der Branch `gh-pages` wird als Abbild des Pages-Deployments genutzt. Der aktuelle Master-Branch der Anwendung steht deshalb dauerhaft unter [https://noahboerger.github.io/rST-Miner/index.html](https://noahboerger.github.io/RandomizedProcessMiner/index.html) zur Verfügung.
+Auf dem Main-Branch findet zudem eine Bereitstellung des Projekts durch ein Deployment auf GitHub-Pages statt. Der Branch `gh-pages` wird als Abbild des Pages-Deployments genutzt. Der aktuelle Master-Branch der Anwendung steht deshalb dauerhaft unter [https://noahboerger.github.io/rST-Miner/index.html](https://noahboerger.github.io/rST-Miner/index.html) zur Verfügung.
