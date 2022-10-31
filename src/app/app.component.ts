@@ -1,39 +1,159 @@
-import { Component, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ParserService } from './services/parser.service';
-import { DisplayService } from './services/display.service';
-import { debounceTime, Subscription } from 'rxjs';
+import {Component, OnDestroy} from '@angular/core';
+import {XesParser} from "./classes/parser/xesParser";
+import {LogParser} from "./classes/parser/logParser";
+import {EventLog} from "./classes/EventLog/eventlog";
+import {TypedJSON} from "typedjson";
+import {LogParserService} from "./services/file-operations/log/log-parser.service";
+import {XesParserService} from "./services/file-operations/xes/xes-parser.service";
+import {LoadingService} from "./services/view/loading/loading.service";
+import {EventlogDataService} from "./services/data/eventlog-data.service";
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnDestroy {
-    public textareaFc: FormControl;
+export class AppComponent {
 
-    private _sub: Subscription;
+    loading$ = this.loader.loading$;
 
     constructor(
-        private _parserService: ParserService,
-        private _displayService: DisplayService
-    ) {
-        this.textareaFc = new FormControl();
-        this._sub = this.textareaFc.valueChanges
-            .pipe(debounceTime(400))
-            .subscribe(val => this.processSourceChange(val));
-        this.textareaFc.setValue(`hello
-world`);
+        private _eventlogDataService: EventlogDataService,
+        private _logParserService: LogParserService,
+        private _xesParserService: XesParserService,
+        private loadingSpinner: LoadingService,
+        public loader: LoadingService) {
     }
 
-    ngOnDestroy(): void {
-        this._sub.unsubscribe();
-    }
-
-    private processSourceChange(newSource: string) {
-        const result = this._parserService.parse(newSource);
-        if (result !== undefined) {
-            this._displayService.display(result);
+    processImport([fileExtension, fileContent]: [string, string]) {
+        if (['log', 'txt'].includes(fileExtension)) {
+            this.processLogImport(fileContent);
+        } else if ('xes' === fileExtension) {
+            this.processXesImport(fileContent);
+        } else {
+            alert(
+                'The current filetype ' +
+                fileExtension +
+                ' can not be imported!'
+            );
         }
+    }
+
+    async processLogImport(fileContent: string) {
+        this.loadingSpinner.show();
+        this.parseLogFile(fileContent)
+            .then(result => {
+                this._eventlogDataService.eventLog = result;
+                // this.updateTextarea(fileContent, false);
+                // this.updateViews(); TODO updates needed?
+            })
+            .catch(reason => {
+                let message;
+                if (reason === LogParser.PARSING_ERROR) {
+                    message =
+                        'The uploaded .log file could not be parsed.\n' +
+                        'Check the file for valid .log syntax and try again.';
+                } else {
+                    message =
+                        'Unexpected error occurred when parsing given .log file';
+                }
+                alert(message);
+            })
+            .finally(() => {
+                this.loadingSpinner.hide();
+            });
+    }
+
+    async processXesImport(fileContent: string) {
+        this.loadingSpinner.show();
+        this.parseXesFile(fileContent)
+            .then(result => {
+                this._eventlogDataService.eventLog = result;
+                // this.updateTextarea(this._logService.generate(result), false);
+                // this.updateViews(); TODO updates needed?
+            })
+            .catch(reason => {
+                let message;
+                if (reason === XesParser.PARSING_ERROR) {
+                    message =
+                        'The uploaded XES file could not be parsed.\n' +
+                        'Check the file for valid XES syntax and try again.';
+                } else {
+                    message =
+                        'Unexpected error occurred when parsing given XES file';
+                }
+                alert(message);
+            })
+            .finally(() => this.loadingSpinner.hide());
+    }
+
+    parseLogFile(fileContent: string) {
+        return new Promise<EventLog>((resolve, reject) => {
+            if (typeof Worker !== 'undefined') {
+                const worker = new Worker(
+                    new URL('./workers/log-parser.worker', import.meta.url)
+                );
+                worker.onmessage = ({data}) => {
+                    if (data == null) {
+                        reject(LogParser.PARSING_ERROR);
+                    }
+                    const serializer = new TypedJSON(EventLog);
+                    const result = serializer.parse(data);
+                    if (result != undefined) {
+                        resolve(result);
+                    } else {
+                        reject(LogParser.PARSING_ERROR);
+                    }
+                };
+                worker.onerror = event => {
+                    event.preventDefault();
+                    reject(LogParser.PARSING_ERROR);
+                };
+                worker.postMessage(fileContent);
+            } else {
+                // web worker not available, fallback option
+                try {
+                    const result = this._logParserService.parse(fileContent);
+                    resolve(result);
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        });
+    }
+
+    parseXesFile(fileContent: string) {
+        return new Promise<EventLog>((resolve, reject) => {
+            if (typeof Worker !== 'undefined') {
+                const worker = new Worker(
+                    new URL('./workers/xes-parser.worker', import.meta.url)
+                );
+                worker.onmessage = ({data}) => {
+                    if (data == null) {
+                        reject(XesParser.PARSING_ERROR);
+                    }
+                    const serializer = new TypedJSON(EventLog);
+                    const result = serializer.parse(data);
+                    if (result != undefined) {
+                        resolve(result);
+                    } else {
+                        reject(XesParser.PARSING_ERROR);
+                    }
+                };
+                worker.onerror = event => {
+                    event.preventDefault();
+                    reject(XesParser.PARSING_ERROR);
+                };
+                worker.postMessage(fileContent);
+            } else {
+                // web worker not available, fallback option
+                try {
+                    const result = this._xesParserService.parse(fileContent);
+                    resolve(result);
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        });
     }
 }

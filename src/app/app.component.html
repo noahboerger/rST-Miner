@@ -1,30 +1,36 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
     <!--  Header  -->
     <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
-        ><h1>I <span class="red">❤</span> Petri Nets</h1></a
+    ><h1>I <span class="red">❤</span> Petri Nets</h1></a
     >
-    <h2>Subtitle</h2>
+    <h2>
+        This web application provides an implementation of the <i>rST-Miner</i>.<br/>It is a further development of the
+        <a href="https://blog.rwth-aachen.de/pads/2019/04/12/finding-complex-process-structures-by-exploiting-the-token-game/"><u><i>eST-Miner
+            by Lisa L. Mannel and Wil M. P. van der Aalst</i></u></a>.<br/>The given eventlog is converted into partial orders by a concurrency oracle.<br/>Then places are generated randomly and evaluated by the algorithm published at
+        <a href="https://link.springer.com/chapter/10.1007/978-3-030-76983-3_20"><u><i>Firing Partial Orders in a Petri Net</i></u></a> by R. Bergenthum in PETRI NETS 2021.
+    </h2>
 
     <!--    Main content    -->
-    <app-display class="padding full-size"></app-display>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <app-template-button
-            buttonText="Left button"
-            buttonIcon="lightbulb"></app-template-button>
+        <div class="loading-screen" *ngIf="loading$ | async">
+            <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
+        </div>
+        <app-upload-button
+            [permittedFileExtensions]="['xes', 'log', 'txt']"
+            (newFileUploadedEventExtensionContent)="
+                        processImport($event)
+                    "></app-upload-button>
         <mat-form-field appearance="outline" class="textarea">
             <mat-label>Source file</mat-label>
-            <textarea
-                matInput
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="10"
-                cdkAutosizeMaxRows="20"
-                [formControl]="textareaFc"></textarea>
         </mat-form-field>
         <app-template-button
             buttonText="Right button"
             buttonIcon="grade"></app-template-button>
     </div>
+<!-- TODO sample files -->
+    <!-- TODO content ggf auslagern -->
+    <!-- TODO make images and upload download work -->
 
     <!--  Footer  -->
     <hr />

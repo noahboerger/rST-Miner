@@ -1,0 +1,20 @@
+<div fxLayout="column" fxLayoutAlign="start center">
+    <input
+        type="file"
+        class="file-input"
+        (change)="handleFileInput($event)"
+        onclick="this.value = null"
+        #fileUpload />
+    <div
+        class="interactive-square"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        appDragDropFileUpload
+        (fileDropped)="readAndEmitFile($event)"
+        (click)="fileUpload.click()"
+        (mouseenter)="hoverStart($event)"
+        (mouseleave)="hoverEnd($event)">
+        <mat-icon class="larger-icon"> file_upload </mat-icon>
+    </div>
+    Import Event Log
+</div>
