@@ -13,6 +13,8 @@ import {TemplateButtonComponent} from './components/template-button/template-but
 import {UploadButtonComponent} from "./components/upload-button/upload-button.component";
 import {DragDropFileUploadDirective} from "./directives/drag-drop-file-upload.directive";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DownloadSampleFileComponent } from './components/download-sample-file/download-sample-file.component';
+import {MatCardModule} from "@angular/material/card";
 
 @NgModule({
     declarations: [
@@ -21,6 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         DragDropFileUploadDirective,
         TemplateButtonComponent,
         UploadButtonComponent,
+        DownloadSampleFileComponent,
     ],
     imports: [
         BrowserModule,
@@ -31,7 +34,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatButtonModule,
         MatIconModule,
         ReactiveFormsModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatCardModule
     ],
     providers: [],
     bootstrap: [AppComponent],

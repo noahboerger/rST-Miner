@@ -27,8 +27,8 @@ h2 {
 
 hr {
     border-color: lightgray;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     width: 100%;
 }
 
@@ -43,4 +43,9 @@ mat-progress-spinner {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 5;
+}
+
+.algorithmus-symbol {
+    width: 450px;
+    height: auto;
 }
