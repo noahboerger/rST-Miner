@@ -15,6 +15,7 @@ import {DragDropFileUploadDirective} from "./directives/drag-drop-file-upload.di
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DownloadSampleFileComponent } from './components/download-sample-file/download-sample-file.component';
 import {MatCardModule} from "@angular/material/card";
+import { RstMinerComponent } from './components/rst-miner/rst-miner.component';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,7 @@ import {MatCardModule} from "@angular/material/card";
         TemplateButtonComponent,
         UploadButtonComponent,
         DownloadSampleFileComponent,
+        RstMinerComponent,
     ],
     imports: [
         BrowserModule,

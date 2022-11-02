@@ -11,25 +11,9 @@
     </h2>
 
     <hr>
-    <!--    Main content    -->
 
-    <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <div class="loading-screen" *ngIf="loading$ | async">
-            <mat-progress-spinner [mode]="'indeterminate'"></mat-progress-spinner>
-        </div>
-        <app-upload-button
-            [permittedFileExtensions]="['xes', 'log', 'txt']"
-            (newFileUploadedEventExtensionContent)="
-                        processImport($event)
-                    "></app-upload-button>
-        <img class="algorithmus-symbol" src="assets/images/algorithmus-symbol.png">
-        <app-template-button
-            buttonText="Right button"
-            buttonIcon="grade"></app-template-button>
-    </div>
-<!-- TODO sample files -->
-    <!-- TODO content ggf auslagern -->
-    <!-- TODO make images and upload download work -->
+    <app-rst-miner></app-rst-miner>
+
     <hr>
 
     <h3>Download Example Files: </h3>
