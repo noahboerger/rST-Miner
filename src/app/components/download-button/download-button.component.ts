@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'app-template-button',
-    templateUrl: './template-button.component.html',
-    styleUrls: ['./template-button.component.scss'],
+    selector: 'download-button',
+    templateUrl: './download-button.component.html',
+    styleUrls: ['./download-button.component.scss'],
 })
-export class TemplateButtonComponent {
+export class DownloadButtonComponent {
     @Input() buttonText: string | undefined;
     @Input() buttonIcon: string | undefined;
 

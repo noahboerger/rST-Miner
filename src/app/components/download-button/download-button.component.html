@@ -1,5 +1,4 @@
 <div fxLayout="column" fxLayoutAlign="start center">
-    {{ buttonText }}
     <div
         class="interactive-square"
         fxLayout="row"
@@ -7,8 +6,7 @@
         (click)="processMouseClick($event)"
         (mouseenter)="hoverStart($event)"
         (mouseleave)="hoverEnd($event)">
-        <mat-icon class="larger-icon">
-            {{ buttonIcon }}
-        </mat-icon>
+        <mat-icon class="larger-icon"> file_download </mat-icon>
     </div>
+    <h4>Execute and Download</h4>
 </div>

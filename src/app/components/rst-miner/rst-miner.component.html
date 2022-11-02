@@ -5,11 +5,19 @@
         (newFileUploadedEventExtensionContent)="
                         processImport($event)
                     "></app-upload-button>
-    <img class="algorithmus-symbol" src="assets/images/algorithmus-symbol.png">
-    <app-template-button
+
+    <span style="text-align: center">
+        <img (mouseenter)="hoverStart($event)"
+             (mouseleave)="hoverEnd($event)"
+             class="algorithmus-symbol"
+             src="assets/images/algorithmus-symbol.png">
+        <h4>Settings</h4>
+    </span>
+
+    <download-button
         class="vertical-center"
         buttonText="Right button"
-        buttonIcon="grade"></app-template-button>
+        buttonIcon="grade"></download-button>
 </div>
 <div class="loading-screen" *ngIf="loading$ | async">
     <mat-progress-spinner diameter="250" [mode]="'indeterminate'"></mat-progress-spinner>

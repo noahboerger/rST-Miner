@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TemplateButtonComponent } from './template-button.component';
+import { DownloadButtonComponent } from './download-button.component';
 
 describe('TemplateButtonComponent', () => {
-    let component: TemplateButtonComponent;
-    let fixture: ComponentFixture<TemplateButtonComponent>;
+    let component: DownloadButtonComponent;
+    let fixture: ComponentFixture<DownloadButtonComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [TemplateButtonComponent],
+            declarations: [DownloadButtonComponent],
         }).compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(TemplateButtonComponent);
+        fixture = TestBed.createComponent(DownloadButtonComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

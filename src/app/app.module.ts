@@ -9,7 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FooterComponent} from './components/footer/footer.component';
-import {TemplateButtonComponent} from './components/template-button/template-button.component';
+import {DownloadButtonComponent} from './components/download-button/download-button.component';
 import {UploadButtonComponent} from "./components/upload-button/upload-button.component";
 import {DragDropFileUploadDirective} from "./directives/drag-drop-file-upload.directive";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -22,7 +22,7 @@ import { RstMinerComponent } from './components/rst-miner/rst-miner.component';
         AppComponent,
         FooterComponent,
         DragDropFileUploadDirective,
-        TemplateButtonComponent,
+        DownloadButtonComponent,
         UploadButtonComponent,
         DownloadSampleFileComponent,
         RstMinerComponent,

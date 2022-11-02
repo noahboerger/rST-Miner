@@ -14,10 +14,21 @@ mat-progress-spinner {
 .algorithmus-symbol {
     width: 450px;
     height: auto;
+    opacity: 0.5;
+}
+
+.mouse-hover {
+    cursor: pointer;
+    opacity: 1;
 }
 
 .vertical-center {
     width: 50%;
     height: 50%;
     margin: auto;
+}
+
+h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
 }
