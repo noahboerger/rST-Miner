@@ -16,6 +16,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DownloadSampleFileComponent } from './components/download-sample-file/download-sample-file.component';
 import {MatCardModule} from "@angular/material/card";
 import { RstMinerComponent } from './components/rst-miner/rst-miner.component';
+import { RstSettingsDialogComponent } from './components/rst-settings-dialog/rst-settings-dialog.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
     declarations: [
@@ -26,6 +30,7 @@ import { RstMinerComponent } from './components/rst-miner/rst-miner.component';
         UploadButtonComponent,
         DownloadSampleFileComponent,
         RstMinerComponent,
+        RstSettingsDialogComponent,
     ],
     imports: [
         BrowserModule,
@@ -37,7 +42,10 @@ import { RstMinerComponent } from './components/rst-miner/rst-miner.component';
         MatIconModule,
         ReactiveFormsModule,
         MatProgressSpinnerModule,
-        MatCardModule
+        MatCardModule,
+        MatDialogModule,
+        MatToolbarModule,
+        MatExpansionModule
     ],
     providers: [],
     bootstrap: [AppComponent],

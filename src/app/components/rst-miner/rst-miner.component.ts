@@ -7,6 +7,8 @@ import {LogParser} from "../../classes/parser/logParser";
 import {XesParser} from "../../classes/parser/xesParser";
 import {EventLog} from "../../classes/EventLog/eventlog";
 import {TypedJSON} from "typedjson";
+import {MatDialog} from "@angular/material/dialog";
+import {RstSettingsDialogComponent} from "../rst-settings-dialog/rst-settings-dialog.component";
 
 @Component({
   selector: 'app-rst-miner',
@@ -18,6 +20,7 @@ export class RstMinerComponent {
     loading$ = this.loader.loading$;
 
     constructor(
+        private dialog: MatDialog,
         private _eventlogDataService: EventlogDataService,
         private _logParserService: LogParserService,
         private _xesParserService: XesParserService,
@@ -174,7 +177,11 @@ export class RstMinerComponent {
         e.stopPropagation();
     }
 
-    openDialog(s: string, s2: string) {
-        // TODO
+    openDialog() {
+        const dialogRef = this.dialog.open(RstSettingsDialogComponent);
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log(`Dialog result: ${result}`);
+        });
     }
 }

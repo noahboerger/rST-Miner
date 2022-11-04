@@ -1,0 +1,94 @@
+<p>
+    <mat-toolbar matDialogTitle>
+        <mat-icon class="more-space">settings</mat-icon>
+        <span>rST-Miner Settings</span>
+        <span class="spacer"></span>
+        <mat-icon>menu</mat-icon>
+    </mat-toolbar>
+</p>
+
+<mat-dialog-content class="mat-typography">
+    <div class="down-space">
+        <mat-accordion>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Process Model Characteristics
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+                <p>Workflow Net</p>
+                <p>Edge Weights</p>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Process Model Optimizations
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <p>Noise Reduction</p>
+                <p>Implicit Place Removal</p>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Initialization Phase
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <p>Concurrency Oracle</p>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Random Place Generator
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <p>Choose between different generators</p>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Termination Condition
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <p>Loop Iteration Based</p>
+                <p>Time-Based</p>
+                <p>Quality-Based</p>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button [mat-dialog-close]="true" cdkFocusInitial mat-button>Install</button>
+</mat-dialog-actions>
