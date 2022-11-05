@@ -9,30 +9,39 @@ import {LoopBasedTermination, TimeBasedTermination} from "../../classes/MinerSet
     styleUrls: ['./rst-settings-dialog.component.scss']
 })
 export class RstSettingsDialogComponent {
+
     // TODO download- und upload der settings, rest to Default
 
     // Zugriff auf statische Felder aus HTML ermöglichen
-    minerSettingsInstance = MinerSettings;
-    loopBasedTermination = LoopBasedTermination;
-    timeBasedTermination = TimeBasedTermination;
+    MinerSettings = MinerSettings;
+    LoopBasedTermination = LoopBasedTermination;
+    TimeBasedTermination = TimeBasedTermination;
 
 
 
-    constructor(public _rstMinerDataService: RstMinerDataService) {
+    constructor(public rstMinerDataService: RstMinerDataService) {
     }
 
     get actTerminationConditionSimpleName(): string {
-        return this._rstMinerDataService.minerSettings.terminationCondition.getSimpleName();
+        return this.rstMinerDataService.minerSettings.terminationCondition.getSimpleName();
     }
 
     set actTerminationConditionSimpleName(value: string) {
         switch (value) {
             case LoopBasedTermination.SIMPLE_NAME:
-                this._rstMinerDataService.minerSettings.terminationCondition = new LoopBasedTermination();
+                this.rstMinerDataService.minerSettings.terminationCondition = new LoopBasedTermination();
                 break;
             case TimeBasedTermination.SIMPLE_NAME:
-                this._rstMinerDataService.minerSettings.terminationCondition = new TimeBasedTermination();
+                this.rstMinerDataService.minerSettings.terminationCondition = new TimeBasedTermination();
                 break;
         }
+    }
+
+    get loopTerminationIterations(): number {
+        return (this.rstMinerDataService.minerSettings.terminationCondition as LoopBasedTermination).loopAmount;
+    }
+
+    set loopTerminationIterations(value: number) {
+        (this.rstMinerDataService.minerSettings.terminationCondition as LoopBasedTermination).loopAmount = value;
     }
 }

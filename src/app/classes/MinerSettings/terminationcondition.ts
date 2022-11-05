@@ -27,17 +27,29 @@ export class LoopBasedTermination extends TerminationCondition {
     getSimpleName(): string {
         return LoopBasedTermination.SIMPLE_NAME;
     }
+
+    get loopAmount(): number {
+        return this._loopAmount;
+    }
+
+    set loopAmount(value: number) {
+        if (value == null) {
+            this.loopAmount = LoopBasedTermination.DEFAULT_ITERATIONS;
+        } else {
+            this._loopAmount = value;
+        }
+    }
 }
 
 @jsonObject
 export class TimeBasedTermination extends TerminationCondition {
 
+
     public static SIMPLE_NAME = "Time Duration";
     public static DEFAULT_DURATION = Duration.second(30); // TODO Test and adapt;
 
 
-
-    @jsonMember(Duration) // TODO ggf in ms umwandeln bei Serialisierungsproblemen
+    @jsonMember(Duration)
     private _duration: Duration;
 
     constructor(duration: Duration = TimeBasedTermination.DEFAULT_DURATION) {
@@ -47,6 +59,18 @@ export class TimeBasedTermination extends TerminationCondition {
 
     getSimpleName(): string {
         return TimeBasedTermination.SIMPLE_NAME;
+    }
+
+    get duration(): Duration {
+        return this._duration;
+    }
+
+    set duration(value: Duration) {
+        if (value == null) {
+            this._duration = TimeBasedTermination.DEFAULT_DURATION;
+        } else {
+            this._duration = value;
+        }
     }
 }
 

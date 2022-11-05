@@ -60,13 +60,23 @@
                 </mat-expansion-panel-header>
                 <mat-radio-group [(ngModel)]="actTerminationConditionSimpleName">
                     <div style="float: left;">
-                        <span *ngFor="let terminationTypeSimpleName of minerSettingsInstance.terminationTypesSimpleNames">
+                        <span
+                            *ngFor="let terminationTypeSimpleName of MinerSettings.terminationTypesSimpleNames">
                             <mat-radio-button
                                 value="{{ terminationTypeSimpleName }}">{{ terminationTypeSimpleName }}</mat-radio-button>
 
-                            <div *ngIf="_rstMinerDataService.minerSettings.terminationCondition.getSimpleName() === terminationTypeSimpleName" [ngSwitch]="terminationTypeSimpleName">
-                                <input *ngSwitchCase="loopBasedTermination.SIMPLE_NAME">
-                                <input *ngSwitchCase="timeBasedTermination.SIMPLE_NAME">
+                            <div
+                                *ngIf="rstMinerDataService.minerSettings.terminationCondition.getSimpleName() === terminationTypeSimpleName"
+                                [ngSwitch]="terminationTypeSimpleName">
+                                <span *ngSwitchCase="LoopBasedTermination.SIMPLE_NAME">
+                                    <mat-form-field appearance="fill" class="full-width">
+                                        <mat-label>Amount of iterations</mat-label>
+                                        <input matInput placeholder="Default {{ LoopBasedTermination.DEFAULT_ITERATIONS }}"
+                                               type="number"
+                                               [(ngModel)]="loopTerminationIterations">
+                                    </mat-form-field>
+                                </span>
+                                <input *ngSwitchCase="TimeBasedTermination.SIMPLE_NAME">
                             </div>
                             <br>
                         </span>
@@ -78,6 +88,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button [mat-dialog-close]="true" class="dialog-button" mat-button (click)="_rstMinerDataService.resetMinerSettingsToDefault()">Reset to Default</button> <!-- TODO onclick -->
+    <button [mat-dialog-close]="true" class="dialog-button" mat-button (click)="rstMinerDataService.resetMinerSettingsToDefault()">Reset to Default</button> <!-- TODO onclick -->
     <button [mat-dialog-close]="true" class="dialog-button" mat-button>Apply & Close</button>
 </mat-dialog-actions>
