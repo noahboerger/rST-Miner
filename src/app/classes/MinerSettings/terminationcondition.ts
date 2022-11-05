@@ -48,6 +48,13 @@ export class TimeBasedTermination extends TerminationCondition {
     public static SIMPLE_NAME = "Time Duration";
     public static DEFAULT_DURATION = Duration.second(30); // TODO Test and adapt;
 
+    public static MILLISECONDS = "ms"
+    public static SECONDS = "s"
+    public static MINUTES = "m"
+    public static HOURS = "h"
+
+    public static SUPPORTED_TIME_UNITS = [TimeBasedTermination.MILLISECONDS, TimeBasedTermination.SECONDS, TimeBasedTermination.MINUTES, TimeBasedTermination.HOURS]
+
 
     @jsonMember(Duration)
     private _duration: Duration;
@@ -70,6 +77,41 @@ export class TimeBasedTermination extends TerminationCondition {
             this._duration = TimeBasedTermination.DEFAULT_DURATION;
         } else {
             this._duration = value;
+        }
+    }
+
+    public getDurationIn(timeUnit: string): number {
+        switch (timeUnit) {
+            case TimeBasedTermination.MILLISECONDS:
+                return this.duration.milliseconds;
+            case TimeBasedTermination.SECONDS:
+                return this.duration.seconds;
+            case TimeBasedTermination.MINUTES:
+                return this.duration.minutes;
+            case TimeBasedTermination.HOURS:
+                return this.duration.hours;
+        }
+        return -1;
+    }
+
+    public setDurationIn(timeUnit: string, value: number) {
+        if (value == null) {
+            this._duration = TimeBasedTermination.DEFAULT_DURATION;
+        } else {
+            switch (timeUnit) {
+                case TimeBasedTermination.MILLISECONDS:
+                    this.duration = Duration.millisecond(value);
+                    break;
+                case TimeBasedTermination.SECONDS:
+                    this.duration = Duration.second(value);
+                    break;
+                case TimeBasedTermination.MINUTES:
+                    this.duration = Duration.minute(value);
+                    break;
+                case TimeBasedTermination.HOURS:
+                    this.duration = Duration.hour(value);
+                    break;
+            }
         }
     }
 }

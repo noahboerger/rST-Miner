@@ -10,16 +10,16 @@ import {LoopBasedTermination, TimeBasedTermination} from "../../classes/MinerSet
 })
 export class RstSettingsDialogComponent {
 
-    // TODO download- und upload der settings, rest to Default
+    // TODO download- und upload der settings
 
     // Zugriff auf statische Felder aus HTML ermöglichen
     MinerSettings = MinerSettings;
     LoopBasedTermination = LoopBasedTermination;
     TimeBasedTermination = TimeBasedTermination;
-
-
+    durationTimeUnit: string;
 
     constructor(public rstMinerDataService: RstMinerDataService) {
+        this.durationTimeUnit = TimeBasedTermination.SECONDS;
     }
 
     get actTerminationConditionSimpleName(): string {
@@ -43,5 +43,13 @@ export class RstSettingsDialogComponent {
 
     set loopTerminationIterations(value: number) {
         (this.rstMinerDataService.minerSettings.terminationCondition as LoopBasedTermination).loopAmount = value;
+    }
+
+    get durationAmount(): number {
+        return (this.rstMinerDataService.minerSettings.terminationCondition as TimeBasedTermination).getDurationIn(this.durationTimeUnit);
+    }
+
+    set durationAmount(value: number) {
+        (this.rstMinerDataService.minerSettings.terminationCondition as TimeBasedTermination).setDurationIn(this.durationTimeUnit, value);
     }
 }

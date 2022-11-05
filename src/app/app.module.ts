@@ -21,7 +21,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatRadioModule} from "@angular/material/radio";
-import { CastPipe } from './pipes/cast-pipe/cast.pipe';
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
     declarations: [
@@ -33,7 +33,6 @@ import { CastPipe } from './pipes/cast-pipe/cast.pipe';
         DownloadSampleFileComponent,
         RstMinerComponent,
         RstSettingsDialogComponent,
-        CastPipe,
     ],
     imports: [
         BrowserModule,
@@ -50,7 +49,8 @@ import { CastPipe } from './pipes/cast-pipe/cast.pipe';
         MatToolbarModule,
         MatExpansionModule,
         MatRadioModule,
-        FormsModule
+        FormsModule,
+        MatSelectModule
     ],
     providers: [],
     bootstrap: [AppComponent],

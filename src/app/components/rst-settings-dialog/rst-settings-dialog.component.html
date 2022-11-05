@@ -68,15 +68,33 @@
                             <div
                                 *ngIf="rstMinerDataService.minerSettings.terminationCondition.getSimpleName() === terminationTypeSimpleName"
                                 [ngSwitch]="terminationTypeSimpleName">
+
                                 <span *ngSwitchCase="LoopBasedTermination.SIMPLE_NAME">
-                                    <mat-form-field appearance="fill" class="full-width">
+                                    <mat-form-field appearance="fill">
                                         <mat-label>Amount of iterations</mat-label>
                                         <input matInput placeholder="Default {{ LoopBasedTermination.DEFAULT_ITERATIONS }}"
                                                type="number"
                                                [(ngModel)]="loopTerminationIterations">
                                     </mat-form-field>
                                 </span>
-                                <input *ngSwitchCase="TimeBasedTermination.SIMPLE_NAME">
+
+                                <span *ngSwitchCase="TimeBasedTermination.SIMPLE_NAME">
+                                    <mat-form-field appearance="fill" >
+                                        <mat-label>Duration</mat-label>
+                                        <input matInput placeholder="Default {{ TimeBasedTermination.DEFAULT_DURATION }}"
+                                               type="number"
+                                               [(ngModel)]="durationAmount">
+                                    </mat-form-field>
+                                    <br>
+                                    <mat-form-field appearance="fill">
+                                      <mat-label>Time Unit</mat-label>
+                                      <mat-select [(value)]="durationTimeUnit">
+                                        <mat-option *ngFor="let timeUnit of TimeBasedTermination.SUPPORTED_TIME_UNITS" [value]="timeUnit">
+                                          {{ timeUnit }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                </span>
                             </div>
                             <br>
                         </span>
