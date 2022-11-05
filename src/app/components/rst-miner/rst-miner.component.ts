@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {EventlogDataService} from "../../services/data/eventlog-data.service";
+import {RstMinerDataService} from "../../services/data/rst-miner-data.service";
 import {LogParserService} from "../../services/file-operations/log/log-parser.service";
 import {XesParserService} from "../../services/file-operations/xes/xes-parser.service";
 import {LoadingService} from "../../services/view/loading/loading.service";
@@ -21,7 +21,7 @@ export class RstMinerComponent {
 
     constructor(
         private dialog: MatDialog,
-        private _eventlogDataService: EventlogDataService,
+        private _rstMinerDataService: RstMinerDataService,
         private _logParserService: LogParserService,
         private _xesParserService: XesParserService,
         private loadingSpinner: LoadingService,
@@ -46,7 +46,7 @@ export class RstMinerComponent {
         this.loadingSpinner.show();
         this.parseLogFile(fileContent)
             .then(result => {
-                this._eventlogDataService.eventLog = result;
+                this._rstMinerDataService.eventLog = result;
                 // this.updateTextarea(fileContent, false);
                 // this.updateViews(); TODO updates needed?
             })
@@ -71,7 +71,7 @@ export class RstMinerComponent {
         this.loadingSpinner.show();
         this.parseXesFile(fileContent)
             .then(result => {
-                this._eventlogDataService.eventLog = result;
+                this._rstMinerDataService.eventLog = result;
                 // this.updateTextarea(this._logService.generate(result), false);
                 // this.updateViews(); TODO updates needed?
             })

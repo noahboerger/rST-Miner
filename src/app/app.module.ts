@@ -7,7 +7,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FooterComponent} from './components/footer/footer.component';
 import {DownloadButtonComponent} from './components/download-button/download-button.component';
 import {UploadButtonComponent} from "./components/upload-button/upload-button.component";
@@ -20,6 +20,7 @@ import { RstSettingsDialogComponent } from './components/rst-settings-dialog/rst
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {MatRadioModule} from "@angular/material/radio";
 
 @NgModule({
     declarations: [
@@ -45,7 +46,9 @@ import {MatExpansionModule} from "@angular/material/expansion";
         MatCardModule,
         MatDialogModule,
         MatToolbarModule,
-        MatExpansionModule
+        MatExpansionModule,
+        MatRadioModule,
+        FormsModule
     ],
     providers: [],
     bootstrap: [AppComponent],

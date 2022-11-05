@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EventlogDataService } from './eventlog-data.service';
+import { RstMinerDataService } from './rst-miner-data.service';
 
 describe('EventlogDataService', () => {
-    let service: EventlogDataService;
+    let service: RstMinerDataService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(EventlogDataService);
+        service = TestBed.inject(RstMinerDataService);
     });
 
     it('should be created', () => {

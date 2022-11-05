@@ -3,7 +3,7 @@
         <mat-icon class="more-space">settings</mat-icon>
         <span>rST-Miner Settings</span>
         <span class="spacer"></span>
-        <mat-icon>menu</mat-icon>
+        <mat-icon>menu</mat-icon> <!-- TODO download settings button -->
     </mat-toolbar>
 </p>
 
@@ -18,33 +18,8 @@
                 </mat-expansion-panel-header>
                 <p>Workflow Net</p>
                 <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
             </mat-expansion-panel>
+
 
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
@@ -56,6 +31,7 @@
                 <p>Implicit Place Removal</p>
             </mat-expansion-panel>
 
+
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -64,6 +40,7 @@
                 </mat-expansion-panel-header>
                 <p>Concurrency Oracle</p>
             </mat-expansion-panel>
+
 
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
@@ -74,21 +51,33 @@
                 <p>Choose between different generators</p>
             </mat-expansion-panel>
 
+
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         Termination Condition
                     </mat-panel-title>
                 </mat-expansion-panel-header>
-                <p>Loop Iteration Based</p>
-                <p>Time-Based</p>
-                <p>Quality-Based</p>
+                <mat-radio-group [(ngModel)]="actTerminationConditionSimpleName">
+                    <div style="float: left;">
+                        <span *ngFor="let terminationTypeSimpleName of minerSettingsInstance.terminationTypesSimpleNames">
+                            <mat-radio-button
+                                value="{{ terminationTypeSimpleName }}">{{ terminationTypeSimpleName }}</mat-radio-button>
+
+                            <div *ngIf="_rstMinerDataService.minerSettings.terminationCondition.getSimpleName() === terminationTypeSimpleName" [ngSwitch]="terminationTypeSimpleName">
+                                <input *ngSwitchCase="loopBasedTermination.SIMPLE_NAME">
+                                <input *ngSwitchCase="timeBasedTermination.SIMPLE_NAME">
+                            </div>
+                            <br>
+                        </span>
+                    </div>
+                </mat-radio-group>
             </mat-expansion-panel>
         </mat-accordion>
     </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button [mat-dialog-close]="true" cdkFocusInitial mat-button>Install</button>
+    <button [mat-dialog-close]="true" class="dialog-button" mat-button (click)="_rstMinerDataService.resetMinerSettingsToDefault()">Reset to Default</button> <!-- TODO onclick -->
+    <button [mat-dialog-close]="true" class="dialog-button" mat-button>Apply & Close</button>
 </mat-dialog-actions>
