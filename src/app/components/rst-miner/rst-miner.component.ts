@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 import {RstMinerDataService} from "../../services/data/rst-miner-data.service";
 import {LogParserService} from "../../services/file-operations/log/log-parser.service";
 import {XesParserService} from "../../services/file-operations/xes/xes-parser.service";
@@ -9,6 +9,7 @@ import {EventLog} from "../../classes/EventLog/eventlog";
 import {TypedJSON} from "typedjson";
 import {MatDialog} from "@angular/material/dialog";
 import {RstSettingsDialogComponent} from "../rst-settings-dialog/rst-settings-dialog.component";
+import {minerSettingsFromJson} from "../../classes/MinerSettings/miner-settings-serde-helper";
 
 @Component({
   selector: 'app-rst-miner',
@@ -177,11 +178,29 @@ export class RstMinerComponent {
         e.stopPropagation();
     }
 
-    openDialog() {
+    openMinerSettingsDialog() {
         const dialogRef = this.dialog.open(RstSettingsDialogComponent);
 
         dialogRef.afterClosed().subscribe(result => {
             console.log(`Dialog result: ${result}`);
         });
+    }
+
+    readMinerSettingsFile(file: File) {
+        let actualFileExtension = (
+            file.name.split('.').pop() as string
+        ).toLowerCase();
+        if ("json" !== actualFileExtension) {
+            alert(
+                'Only rST-Miner-Settings Files of type .json are currently supported'
+            );
+            return;
+        }
+        const fileReader = new FileReader();
+        fileReader.onload = () => {
+            const fileContent = fileReader.result as string;
+            this._rstMinerDataService.minerSettings = minerSettingsFromJson(fileContent);
+        };
+        fileReader.readAsText(file);
     }
 }

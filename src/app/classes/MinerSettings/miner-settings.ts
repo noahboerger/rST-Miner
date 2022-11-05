@@ -1,10 +1,11 @@
 import 'reflect-metadata';
-import {jsonMember, jsonObject} from 'typedjson';
-import {LoopBasedTermination, TerminationCondition, TimeBasedTermination} from "./terminationcondition";
+import {jsonMember, jsonObject, TypedJSON} from 'typedjson';
+import {LoopBasedTermination, TerminationCondition, TimeBasedTermination} from "./termination-condition";
 
 @jsonObject({
     knownTypes: [
-        TerminationCondition
+        LoopBasedTermination,
+        TimeBasedTermination
     ],
 })
 export class MinerSettings {

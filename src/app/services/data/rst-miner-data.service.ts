@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { EventLog } from '../../classes/EventLog/eventlog';
 import { Event } from '../../classes/EventLog/event';
-import {MinerSettings} from "../../classes/MinerSettings/minersettings";
-import {TimeBasedTermination} from "../../classes/MinerSettings/terminationcondition";
+import {MinerSettings} from "../../classes/MinerSettings/miner-settings";
+import {TimeBasedTermination} from "../../classes/MinerSettings/termination-condition";
 import {Duration} from "ts-duration";
 
 @Injectable({

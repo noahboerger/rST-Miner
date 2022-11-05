@@ -2,14 +2,14 @@
     <app-upload-button
         class="vertical-center"
         [permittedFileExtensions]="['xes', 'log', 'txt']"
-        (newFileUploadedEventExtensionContent)="
-                        processImport($event)
-                    "></app-upload-button>
+        (newFileUploadedEventExtensionContent)="processImport($event)"></app-upload-button>
 
     <span style="text-align: center">
         <img (mouseenter)="hoverStart($event)"
              (mouseleave)="hoverEnd($event)"
-             (click)="openDialog()"
+             (click)="openMinerSettingsDialog()"
+             appDragDropFileUpload
+             (fileDropped)="readMinerSettingsFile($event)"
              class="algorithmus-symbol"
              src="assets/images/algorithmus-symbol.png">
         <h4>Settings</h4>

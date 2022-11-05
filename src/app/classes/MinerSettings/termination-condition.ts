@@ -16,7 +16,7 @@ export class LoopBasedTermination extends TerminationCondition {
     public static SIMPLE_NAME = "Loop Iterations";
     public static DEFAULT_ITERATIONS = 1_000_000; // TODO Test and adapt;
 
-    @jsonMember(BigInt)
+    @jsonMember(Number)
     private _loopAmount: number;
 
     constructor(loopAmount: number = LoopBasedTermination.DEFAULT_ITERATIONS) {
@@ -56,12 +56,12 @@ export class TimeBasedTermination extends TerminationCondition {
     public static SUPPORTED_TIME_UNITS = [TimeBasedTermination.MILLISECONDS, TimeBasedTermination.SECONDS, TimeBasedTermination.MINUTES, TimeBasedTermination.HOURS]
 
 
-    @jsonMember(Duration)
-    private _duration: Duration;
+    @jsonMember(Number)
+    private _durationInMs: number;
 
     constructor(duration: Duration = TimeBasedTermination.DEFAULT_DURATION) {
         super();
-        this._duration = duration;
+        this._durationInMs = duration.milliseconds;
     }
 
     getSimpleName(): string {
@@ -69,14 +69,14 @@ export class TimeBasedTermination extends TerminationCondition {
     }
 
     get duration(): Duration {
-        return this._duration;
+        return Duration.millisecond(this._durationInMs);
     }
 
     set duration(value: Duration) {
         if (value == null) {
-            this._duration = TimeBasedTermination.DEFAULT_DURATION;
+            this._durationInMs = TimeBasedTermination.DEFAULT_DURATION.milliseconds;
         } else {
-            this._duration = value;
+            this._durationInMs = value.milliseconds;
         }
     }
 
@@ -96,7 +96,7 @@ export class TimeBasedTermination extends TerminationCondition {
 
     public setDurationIn(timeUnit: string, value: number) {
         if (value == null) {
-            this._duration = TimeBasedTermination.DEFAULT_DURATION;
+            this.duration = TimeBasedTermination.DEFAULT_DURATION;
         } else {
             switch (timeUnit) {
                 case TimeBasedTermination.MILLISECONDS:
