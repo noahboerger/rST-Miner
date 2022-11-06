@@ -1,9 +1,13 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false,
+    "defaultCollection": "@angular-eslint/schematics"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "fapra-template": {
+    "rST-Miner": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,22 +24,24 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-              "outputPath": "dist/fapra-template",
-              "index": "src/index.html",
-              "main": "src/main.ts",
-              "polyfills": "src/polyfills.ts",
-              "baseHref": "/ilovepetrinets/rST-Miner/",
-              "tsConfig": "tsconfig.app.json",
-              "inlineStyleLanguage": "scss",
-              "assets": [
-                  "src/favicon.ico",
-                  "src/assets"
-              ],
-              "styles": [
-                  "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-                  "src/styles.scss"
-              ],
-            "scripts": []
+            "optimization": false,
+            "outputPath": "dist/rST-Miner",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "baseHref": "/ilovepetrinets/rST-Miner/",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.scss"
+            ],
+            "scripts": [],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -43,7 +49,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -74,10 +80,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "fapra-template:build:production"
+              "browserTarget": "rST-Miner:build:production"
             },
             "development": {
-              "browserTarget": "fapra-template:build:development"
+              "browserTarget": "rST-Miner:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -85,7 +91,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "fapra-template:build"
+            "browserTarget": "rST-Miner:build"
           }
         },
         "test": {
@@ -100,18 +106,26 @@
               "src/favicon.ico",
               "src/assets"
             ],
-              "styles": [
-                  "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-                  "src/styles.scss"
-              ],
-              "scripts": []
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.scss"
+            ],
+            "scripts": [],
+            "codeCoverage": true,
+            "webWorkerTsConfig": "tsconfig.worker.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
           }
         }
       }
     }
   },
-    "defaultProject": "fapra-template",
-    "cli": {
-        "analytics": false
-    }
+  "defaultProject": "rST-Miner"
 }

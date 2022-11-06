@@ -1,0 +1,35 @@
+.interactive-square {
+    width: 100px;
+    height: 100px;
+    border-color: dimgrey;
+    border-width: 5px;
+    border-style: solid;
+}
+
+.mouse-hover {
+    border-color: black;
+    cursor: pointer;
+}
+
+.larger-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: dimgrey;
+}
+
+.mouse-hover .larger-icon {
+    color: black;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-over {
+    border-color: black;
+}
+
+.file-over .larger-icon {
+    color: black;
+}

@@ -1,0 +1,12 @@
+<div fxLayout="column" fxLayoutAlign="start center">
+    <div
+        class="interactive-square"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        (click)="processMouseClick($event)"
+        (mouseenter)="hoverStart($event)"
+        (mouseleave)="hoverEnd($event)">
+        <mat-icon class="larger-icon"> file_download </mat-icon>
+    </div>
+    <h4>Execute and Download</h4>
+</div>

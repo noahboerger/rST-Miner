@@ -3,28 +3,67 @@
     <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
         ><h1>I <span class="red">❤</span> Petri Nets</h1></a
     >
-    <h2>Subtitle</h2>
+    <h2>
+        This web application provides an implementation of the
+        <i>rST-Miner</i>.<br />It is a further development of the
+        <a
+            href="https://blog.rwth-aachen.de/pads/2019/04/12/finding-complex-process-structures-by-exploiting-the-token-game/"
+            ><u
+                ><i
+                    >eST-Miner by Lisa L. Mannel and Wil M. P. van der Aalst</i
+                ></u
+            ></a
+        >.<br />The given eventlog is converted into partial orders by a
+        concurrency oracle.<br />Then places are generated randomly and
+        evaluated by the algorithm published at
+        <a href="https://link.springer.com/chapter/10.1007/978-3-030-76983-3_20"
+            ><u><i>Firing Partial Orders in a Petri Net</i></u></a
+        >
+        by R. Bergenthum in PETRI NETS 2021.
+    </h2>
 
-    <!--    Main content    -->
-    <app-display class="padding full-size"></app-display>
+    <hr />
 
-    <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <app-template-button
-            buttonText="Left button"
-            buttonIcon="lightbulb"></app-template-button>
-        <mat-form-field appearance="outline" class="textarea">
-            <mat-label>Source file</mat-label>
-            <textarea
-                matInput
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="10"
-                cdkAutosizeMaxRows="20"
-                [formControl]="textareaFc"></textarea>
-        </mat-form-field>
-        <app-template-button
-            buttonText="Right button"
-            buttonIcon="grade"></app-template-button>
+    <app-rst-miner></app-rst-miner>
+
+    <hr />
+
+    <h3>Download Example Files:</h3>
+
+    <div
+        fxLayout="row wrap"
+        fxLayoutAlign="start start"
+        fxLayout.sm="column"
+        fxLayoutAlign.sm="space-between center">
+        <app-download-sample-file
+            title="Repair example"
+            subtitle="XES"
+            description="from the ProM framework tutorial [1]"
+            link="assets/log-files/xes/repairExample.xes"></app-download-sample-file>
+        <app-download-sample-file
+            title="Reviewing example"
+            subtitle="XES"
+            description="introduced in Chapter 8 of the Process Mining: Data Science in Action book [1]"
+            link="assets/log-files/xes/reviewing.xes"></app-download-sample-file>
+        <app-download-sample-file
+            title="Teleclaims example"
+            subtitle="XES"
+            description="introduced in Chapter 8 of the Process Mining: Data Science in Action book [1]"
+            link="assets/log-files/xes/teleclaims.xes"></app-download-sample-file>
     </div>
+
+    <br />
+    <span
+        >[1] example XES files were adapted from the originals introduced in
+        Chapter 8 of the
+        <a href="https://link.springer.com/book/10.1007/978-3-662-49851-4"
+            >Process Mining: Data Science in Action</a
+        >
+        book by Wil van der Aalst. The original files can be downloaded
+        <a href="http://processmining.org/old-version/event-book.html"
+            >here</a
+        ></span
+    >
 
     <!--  Footer  -->
     <hr />
