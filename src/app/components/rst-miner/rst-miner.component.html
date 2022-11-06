@@ -15,13 +15,13 @@
         <h4>Settings</h4>
     </span>
 
-    <download-button
+    <app-download-button
         class="vertical-center"
         buttonText="Right button"
-        buttonIcon="grade"></download-button>
+        [downloadButtonAction]="executeRstMiningAndDownloadResult"
+        [disabled]="rstMinerDataService.eventLog.traces.length === 0"
+        buttonIcon="grade"></app-download-button>
 </div>
 <div class="loading-screen" *ngIf="loading$ | async">
     <mat-progress-spinner diameter="250" [mode]="'indeterminate'"></mat-progress-spinner>
 </div>
-
-<!-- TODO make images and upload download work -->

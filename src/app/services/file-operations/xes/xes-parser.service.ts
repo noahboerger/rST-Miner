@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Eventlog } from '../../../classes/eventlog/eventlog';
 import { XesParser } from '../../../classes/parser/xesParser';
 
 @Injectable({
@@ -11,12 +11,12 @@ export class XesParserService {
     constructor() {}
 
     /**
-     * Liest einen String im Xes-Format ein und wandelt es in dieintern verwendete Repräsentation als {@link EventLog} um
+     * Liest einen String im Xes-Format ein und wandelt es in dieintern verwendete Repräsentation als {@link Eventlog} um
      *
      * @param xmlString String im Xes-Format, der geparst werden soll
-     * @return interne Darstellung als {@link EventLog}
+     * @return interne Darstellung als {@link Eventlog}
      */
-    public parse(xmlString: string): EventLog {
+    public parse(xmlString: string): Eventlog {
         return this.parser.parse(xmlString);
     }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { EventLog } from '../../classes/EventLog/eventlog';
-import { Event } from '../../classes/EventLog/event';
-import {MinerSettings} from "../../classes/MinerSettings/miner-settings";
-import {TimeBasedTermination} from "../../classes/MinerSettings/termination-condition";
+import { Eventlog } from '../../classes/eventlog/eventlog';
+import { Event } from '../../classes/eventlog/event';
+import {MinerSettings} from "../../classes/miner-settings/miner-settings";
+import {TimeBasedTermination} from "../../classes/miner-settings/termination-condition";
 import {Duration} from "ts-duration";
 
 @Injectable({
@@ -10,20 +10,20 @@ import {Duration} from "ts-duration";
 })
 export class RstMinerDataService {
 
-    private _eventLog: EventLog;
+    private _eventLog: Eventlog;
     private _minerSettings: MinerSettings;
 
 
     constructor() {
-        this._eventLog = new EventLog([], [], [], [], []);
+        this._eventLog = new Eventlog([], [], [], [], []);
         this._minerSettings = new MinerSettings();
     }
 
-    public get eventLog(): EventLog {
+    public get eventLog(): Eventlog {
         return this._eventLog;
     }
 
-    public set eventLog(value: EventLog) {
+    public set eventLog(value: Eventlog) {
         this._eventLog = value;
     }
 

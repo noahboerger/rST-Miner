@@ -5,11 +5,11 @@ import {XesParserService} from "../../services/file-operations/xes/xes-parser.se
 import {LoadingService} from "../../services/view/loading/loading.service";
 import {LogParser} from "../../classes/parser/logParser";
 import {XesParser} from "../../classes/parser/xesParser";
-import {EventLog} from "../../classes/EventLog/eventlog";
+import {Eventlog} from "../../classes/eventlog/eventlog";
 import {TypedJSON} from "typedjson";
 import {MatDialog} from "@angular/material/dialog";
 import {RstSettingsDialogComponent} from "../rst-settings-dialog/rst-settings-dialog.component";
-import {readAndUseMinerSettingsFile} from "../../classes/MinerSettings/miner-settings-serde-helper";
+import {readAndUseMinerSettingsFile} from "../../classes/miner-settings/miner-settings-serde-helper";
 
 @Component({
   selector: 'app-rst-miner',
@@ -22,7 +22,7 @@ export class RstMinerComponent {
 
     constructor(
         private dialog: MatDialog,
-        private _rstMinerDataService: RstMinerDataService,
+        public rstMinerDataService: RstMinerDataService,
         private _logParserService: LogParserService,
         private _xesParserService: XesParserService,
         private loadingSpinner: LoadingService,
@@ -47,7 +47,7 @@ export class RstMinerComponent {
         this.loadingSpinner.show();
         this.parseLogFile(fileContent)
             .then(result => {
-                this._rstMinerDataService.eventLog = result;
+                this.rstMinerDataService.eventLog = result;
                 // this.updateTextarea(fileContent, false);
                 // this.updateViews(); TODO updates needed?
             })
@@ -72,7 +72,7 @@ export class RstMinerComponent {
         this.loadingSpinner.show();
         this.parseXesFile(fileContent)
             .then(result => {
-                this._rstMinerDataService.eventLog = result;
+                this.rstMinerDataService.eventLog = result;
                 // this.updateTextarea(this._logService.generate(result), false);
                 // this.updateViews(); TODO updates needed?
             })
@@ -92,7 +92,7 @@ export class RstMinerComponent {
     }
 
     parseLogFile(fileContent: string) {
-        return new Promise<EventLog>((resolve, reject) => {
+        return new Promise<Eventlog>((resolve, reject) => {
             if (typeof Worker !== 'undefined') {
                 const worker = new Worker(
                     new URL('../../workers/log-parser.worker', import.meta.url)
@@ -101,7 +101,7 @@ export class RstMinerComponent {
                     if (data == null) {
                         reject(LogParser.PARSING_ERROR);
                     }
-                    const serializer = new TypedJSON(EventLog);
+                    const serializer = new TypedJSON(Eventlog);
                     const result = serializer.parse(data);
                     if (result != undefined) {
                         resolve(result);
@@ -127,7 +127,7 @@ export class RstMinerComponent {
     }
 
     parseXesFile(fileContent: string) {
-        return new Promise<EventLog>((resolve, reject) => {
+        return new Promise<Eventlog>((resolve, reject) => {
             if (typeof Worker !== 'undefined') {
                 const worker = new Worker(
                     new URL('../../workers/xes-parser.worker', import.meta.url)
@@ -136,7 +136,7 @@ export class RstMinerComponent {
                     if (data == null) {
                         reject(XesParser.PARSING_ERROR);
                     }
-                    const serializer = new TypedJSON(EventLog);
+                    const serializer = new TypedJSON(Eventlog);
                     const result = serializer.parse(data);
                     if (result != undefined) {
                         resolve(result);
@@ -187,6 +187,10 @@ export class RstMinerComponent {
     }
 
     readMinerSettingsFile(file: File) {
-        readAndUseMinerSettingsFile(file, this._rstMinerDataService)
+        readAndUseMinerSettingsFile(file, this.rstMinerDataService)
+    }
+
+    executeRstMiningAndDownloadResult(e: MouseEvent) {
+        alert("Mining not yet implemented")
     }
 }

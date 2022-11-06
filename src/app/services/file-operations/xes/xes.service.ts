@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Classifier } from '../../../classes/EventLog/classifier';
-import { Event } from '../../../classes/EventLog/event';
-import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Classifier } from '../../../classes/eventlog/classifier';
+import { Event } from '../../../classes/eventlog/event';
+import { Eventlog } from '../../../classes/eventlog/eventlog';
 import {
     BooleanAttribute,
     DateAttribute,
-    EventLogAttribute,
+    EventlogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../../../classes/EventLog/eventlogattribute';
-import { Trace } from '../../../classes/EventLog/trace';
+} from '../../../classes/eventlog/eventlog-attribute';
+import { Trace } from '../../../classes/eventlog/trace';
 var format = require('xml-formatter');
 
 @Injectable({
@@ -20,10 +20,10 @@ export class XesService {
     /**
      * Wandelt die intern verwendete Repräsentation in ein XES formattierten String um
      *
-     * @param eventLog interne Repräsentation als {@link EventLog}
+     * @param eventLog interne Repräsentation als {@link Eventlog}
      * @return XES formattierter String
      */
-    public generate(eventLog: EventLog): string {
+    public generate(eventLog: Eventlog): string {
         let xesString = '<?xml version="1.0" encoding="UTF-8" ?>';
         xesString += '<log xes.version="1.0" xes.features="">';
         xesString +=
@@ -102,7 +102,7 @@ export class XesService {
     }
 
     private static getAttributeRepresentation(
-        attribute: EventLogAttribute
+        attribute: EventlogAttribute
     ): string {
         if (attribute instanceof StringAttribute) {
             return (

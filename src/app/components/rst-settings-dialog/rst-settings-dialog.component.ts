@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {RstMinerDataService} from "../../services/data/rst-miner-data.service";
-import {MinerSettings} from "../../classes/MinerSettings/miner-settings";
-import {LoopBasedTermination, TimeBasedTermination} from "../../classes/MinerSettings/termination-condition";
-import {minerSettingsToJson, readAndUseMinerSettingsFile} from "../../classes/MinerSettings/miner-settings-serde-helper";
+import {MinerSettings} from "../../classes/miner-settings/miner-settings";
+import {LoopBasedTermination, TimeBasedTermination} from "../../classes/miner-settings/termination-condition";
+import {minerSettingsToJson, readAndUseMinerSettingsFile} from "../../classes/miner-settings/miner-settings-serde-helper";
 import {saveAs} from 'file-saver';
 
 @Component({

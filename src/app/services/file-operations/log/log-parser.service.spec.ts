@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { LogParserService } from './log-parser.service';
 import { expect } from '@angular/flex-layout/_private-utils/testing';
-import { Event } from '../../../classes/EventLog/event';
+import { Event } from '../../../classes/eventlog/event';
 import {
     BooleanAttribute,
     DateAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../../../classes/EventLog/eventlogattribute';
-import { Trace } from '../../../classes/EventLog/trace';
-import { EventLog } from '../../../classes/EventLog/eventlog';
+} from '../../../classes/eventlog/eventlog-attribute';
+import { Trace } from '../../../classes/eventlog/trace';
+import { Eventlog } from '../../../classes/eventlog/eventlog';
 import { DrawingAreaComponent } from '../../../components/drawingArea/drawingArea.component';
 import { LogParser } from '../../../classes/parser/logParser';
 
@@ -99,7 +99,7 @@ describe('LogParserService', () => {
         ];
 
         expect(service.parse(testLogText)).toEqual(
-            new EventLog([], [], [], expectedTraces, [])
+            new Eventlog([], [], [], expectedTraces, [])
         );
     });
 
@@ -138,7 +138,7 @@ describe('LogParserService', () => {
         ];
 
         expect(service.parse(testLogText)).toEqual(
-            new EventLog([], [], [], expectedTraces, [])
+            new Eventlog([], [], [], expectedTraces, [])
         );
     });
 

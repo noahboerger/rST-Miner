@@ -1,14 +1,14 @@
-import { EventLog } from '../EventLog/eventlog';
-import { Event } from '../EventLog/event';
-import { Trace } from '../EventLog/trace';
+import { Eventlog } from '../eventlog/eventlog';
+import { Event } from '../eventlog/event';
+import { Trace } from '../eventlog/trace';
 import {
     BooleanAttribute,
     DateAttribute,
-    EventLogAttribute,
+    EventlogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../EventLog/eventlogattribute';
+} from '../eventlog/eventlog-attribute';
 
 export class LogParser {
     public static PARSING_ERROR = new Error(
@@ -29,14 +29,14 @@ export class LogParser {
 
     /**
      * Liest einen String im .type log Format ein, das von Robin Bergenthum und Jakub Kovar definiert wurde und wandelt es in die
-     * intern verwendete Repräsentation als {@link EventLog} um
+     * intern verwendete Repräsentation als {@link Eventlog} um
      *
      * @param text String im .type log Format, der geparst werden soll
-     * @return interne Darstellung als {@link EventLog}
+     * @return interne Darstellung als {@link Eventlog}
      */
-    public parse(text: string): EventLog {
+    public parse(text: string): Eventlog {
         if (text.trim() === '') {
-            return new EventLog([], [], [], [], []);
+            return new Eventlog([], [], [], [], []);
         }
 
         const lines: string[] = text.split(/\r?\n/);
@@ -80,7 +80,7 @@ export class LogParser {
         );
 
         const traces: Trace[] = this.parseTraces(headers, eventLines);
-        return new EventLog([], [], [], traces, []);
+        return new Eventlog([], [], [], traces, []);
     }
 
     private parseTraces(headers: string[], eventLines: string[]): Trace[] {
@@ -105,7 +105,7 @@ export class LogParser {
             const activity: string =
                 eventLineSplit[headers.indexOf(this._activityElement)];
 
-            const eventLogAttributes: EventLogAttribute[] = headers
+            const eventLogAttributes: EventlogAttribute[] = headers
                 .filter(
                     header =>
                         ![this._caseIdElement, this._activityElement].includes(
@@ -192,7 +192,7 @@ export class LogParser {
     private static eventLogAttributeOf(
         key: string,
         value: string
-    ): EventLogAttribute {
+    ): EventlogAttribute {
         switch (value) {
             case 'true':
                 return new BooleanAttribute(true, key);

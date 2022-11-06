@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { LogService } from './log.service';
-import { EventLog } from '../../../classes/EventLog/eventlog';
-import { Trace } from '../../../classes/EventLog/trace';
-import { Event } from '../../../classes/EventLog/event';
-import { StringAttribute } from '../../../classes/EventLog/eventlogattribute';
+import { Eventlog } from '../../../classes/eventlog/eventlog';
+import { Trace } from '../../../classes/eventlog/trace';
+import { Event } from '../../../classes/eventlog/event';
+import { StringAttribute } from '../../../classes/eventlog/eventlog-attribute';
 
 describe('Log.ServiceService', () => {
     let service: LogService;
@@ -18,7 +18,7 @@ describe('Log.ServiceService', () => {
     });
 
     it('should format internal representation as formatted log string', () => {
-        const sampleExportLog = new EventLog(
+        const sampleExportLog = new Eventlog(
             [],
             [],
             [],

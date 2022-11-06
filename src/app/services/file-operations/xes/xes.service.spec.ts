@@ -4,18 +4,18 @@ import { expect } from '@angular/flex-layout/_private-utils/testing';
 import {
     BooleanAttribute,
     DateAttribute,
-    EventLogAttribute,
+    EventlogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../../../classes/EventLog/eventlogattribute';
-import { Event } from '../../../classes/EventLog/event';
-import { EventLog } from '../../../classes/EventLog/eventlog';
-import { Trace } from '../../../classes/EventLog/trace';
+} from '../../../classes/eventlog/eventlog-attribute';
+import { Event } from '../../../classes/eventlog/event';
+import { Eventlog } from '../../../classes/eventlog/eventlog';
+import { Trace } from '../../../classes/eventlog/trace';
 import { MatFormField } from '@angular/material/form-field';
 var format = require('xml-formatter');
 
-class RandomAttribute extends EventLogAttribute {
+class RandomAttribute extends EventlogAttribute {
     constructor(key: string) {
         super();
         this.key = key;
@@ -37,7 +37,7 @@ describe('XesService', () => {
     });
 
     it('should export internal representation as formatted xes string', () => {
-        let event_log = new EventLog(
+        let event_log = new Eventlog(
             [],
             [],
             [],
@@ -90,8 +90,8 @@ describe('XesService', () => {
         expect(service.generate(event_log)).toEqual(expected_string);
     });
 
-    it('should print error to console with unknown EventLogAttribute', () => {
-        let event_log = new EventLog(
+    it('should print error to console with unknown EventlogAttribute', () => {
+        let event_log = new Eventlog(
             [],
             [],
             [],

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { EventLog } from '../../../classes/EventLog/eventlog';
-import { Trace } from '../../../classes/EventLog/trace';
-import { Event } from '../../../classes/EventLog/event';
+import { Eventlog } from '../../../classes/eventlog/eventlog';
+import { Trace } from '../../../classes/eventlog/trace';
+import { Event } from '../../../classes/eventlog/event';
 import {
     BooleanAttribute,
     DateAttribute,
-    EventLogAttribute,
+    EventlogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../../../classes/EventLog/eventlogattribute';
+} from '../../../classes/eventlog/eventlog-attribute';
 
 @Injectable({
     providedIn: 'root',
@@ -22,7 +22,7 @@ export class LogService {
     constructor() {}
 
     private static getAttributeValueAsString(
-        attribute: EventLogAttribute | number | string
+        attribute: EventlogAttribute | number | string
     ): string {
         if (typeof attribute === 'string') {
             return attribute;
@@ -52,10 +52,10 @@ export class LogService {
     /**
      * Wandelt die intern verwendete Repräsentation in ein .type log formattierten String um
      *
-     * @param eventLog interne Repräsentation als {@link EventLog}
+     * @param eventLog interne Repräsentation als {@link Eventlog}
      * @return .type log formattierter String
      */
-    public generate(eventLog: EventLog): string {
+    public generate(eventLog: Eventlog): string {
         if (eventLog.traces.length == 0) {
             return '';
         }

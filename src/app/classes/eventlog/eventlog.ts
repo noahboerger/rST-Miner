@@ -1,11 +1,11 @@
 import {
     BooleanAttribute,
     DateAttribute,
-    EventLogAttribute,
+    EventlogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from './eventlogattribute';
+} from './eventlog-attribute';
 import { Classifier } from './classifier';
 import { Trace } from './trace';
 import 'reflect-metadata';
@@ -20,15 +20,15 @@ import { jsonObject, jsonArrayMember } from 'typedjson';
         BooleanAttribute,
     ],
 })
-export class EventLog {
+export class Eventlog {
     @jsonArrayMember(Classifier)
     private _classifiers: Array<Classifier>;
-    @jsonArrayMember(EventLogAttribute)
-    private _globalEventAttributes: Array<EventLogAttribute>;
-    @jsonArrayMember(EventLogAttribute)
-    private _globalTraceAttributes: Array<EventLogAttribute>;
-    @jsonArrayMember(EventLogAttribute)
-    private _attributes: Array<EventLogAttribute>;
+    @jsonArrayMember(EventlogAttribute)
+    private _globalEventAttributes: Array<EventlogAttribute>;
+    @jsonArrayMember(EventlogAttribute)
+    private _globalTraceAttributes: Array<EventlogAttribute>;
+    @jsonArrayMember(EventlogAttribute)
+    private _attributes: Array<EventlogAttribute>;
     @jsonArrayMember(Trace)
     private _traces: Array<Trace>;
 
@@ -39,24 +39,24 @@ export class EventLog {
         this._classifiers = value;
     }
 
-    public get globalEventAttributes(): Array<EventLogAttribute> {
+    public get globalEventAttributes(): Array<EventlogAttribute> {
         return this._globalEventAttributes;
     }
-    public set globalEventAttributes(value: Array<EventLogAttribute>) {
+    public set globalEventAttributes(value: Array<EventlogAttribute>) {
         this._globalEventAttributes = value;
     }
 
-    public get globalTraceAttributes(): Array<EventLogAttribute> {
+    public get globalTraceAttributes(): Array<EventlogAttribute> {
         return this._globalTraceAttributes;
     }
-    public set globalTraceAttributes(value: Array<EventLogAttribute>) {
+    public set globalTraceAttributes(value: Array<EventlogAttribute>) {
         this._globalTraceAttributes = value;
     }
 
-    public get attributes(): Array<EventLogAttribute> {
+    public get attributes(): Array<EventlogAttribute> {
         return this._attributes;
     }
-    public set attributes(value: Array<EventLogAttribute>) {
+    public set attributes(value: Array<EventlogAttribute>) {
         this._attributes = value;
     }
 
@@ -101,10 +101,10 @@ export class EventLog {
 
     constructor(
         classifiers: Array<Classifier>,
-        globalEventAttributes: Array<EventLogAttribute>,
-        globalTraceAttributes: Array<EventLogAttribute>,
+        globalEventAttributes: Array<EventlogAttribute>,
+        globalTraceAttributes: Array<EventlogAttribute>,
         traces: Array<Trace>,
-        attributes: Array<EventLogAttribute>
+        attributes: Array<EventlogAttribute>
     ) {
         this._classifiers = classifiers;
         this._globalEventAttributes = globalEventAttributes;

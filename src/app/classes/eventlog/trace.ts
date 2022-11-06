@@ -1,11 +1,11 @@
 import {
     BooleanAttribute,
     DateAttribute,
-    EventLogAttribute,
+    EventlogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from './eventlogattribute';
+} from './eventlog-attribute';
 import { Event } from './event';
 import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
@@ -20,17 +20,17 @@ import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
     ],
 })
 export class Trace {
-    @jsonArrayMember(EventLogAttribute)
-    private _attributes: Array<EventLogAttribute>;
+    @jsonArrayMember(EventlogAttribute)
+    private _attributes: Array<EventlogAttribute>;
     @jsonArrayMember(Event)
     private _events: Array<Event>;
     @jsonMember(Number)
     private _caseId: number;
 
-    public get attributes(): Array<EventLogAttribute> {
+    public get attributes(): Array<EventlogAttribute> {
         return this._attributes;
     }
-    public set attributes(value: Array<EventLogAttribute>) {
+    public set attributes(value: Array<EventlogAttribute>) {
         this._attributes = value;
     }
 
@@ -49,7 +49,7 @@ export class Trace {
     }
 
     constructor(
-        attributes: Array<EventLogAttribute>,
+        attributes: Array<EventlogAttribute>,
         events: Array<Event>,
         caseId: number
     ) {

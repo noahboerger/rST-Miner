@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EventLog } from '../../../classes/EventLog/eventlog';
+import { Eventlog } from '../../../classes/eventlog/eventlog';
 import { LogParser } from '../../../classes/parser/logParser';
 
 @Injectable({
@@ -12,12 +12,12 @@ export class LogParserService {
 
     /**
      * Liest einen String im .type log Format ein, das von Robin Bergenthum und Jakub Kovar definiert wurde und wandelt es in die
-     * intern verwendete Repräsentation als {@link EventLog} um
+     * intern verwendete Repräsentation als {@link Eventlog} um
      *
      * @param text String im .type log Format, der geparst werden soll
-     * @return interne Darstellung als {@link EventLog}
+     * @return interne Darstellung als {@link Eventlog}
      */
-    public parse(text: string): EventLog {
+    public parse(text: string): Eventlog {
         return this.parser.parse(text);
     }
 }

@@ -1,11 +1,11 @@
 import {
     BooleanAttribute,
     DateAttribute,
-    EventLogAttribute,
+    EventlogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from './eventlogattribute';
+} from './eventlog-attribute';
 import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 
@@ -19,15 +19,15 @@ import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
     ],
 })
 export class Event {
-    @jsonArrayMember(EventLogAttribute)
-    private _attributes: Array<EventLogAttribute>;
+    @jsonArrayMember(EventlogAttribute)
+    private _attributes: Array<EventlogAttribute>;
     @jsonMember(String)
     private _activity: string;
 
-    public get attributes(): Array<EventLogAttribute> {
+    public get attributes(): Array<EventlogAttribute> {
         return this._attributes;
     }
-    public set attributes(value: Array<EventLogAttribute>) {
+    public set attributes(value: Array<EventlogAttribute>) {
         this._attributes = value;
     }
 
@@ -39,13 +39,13 @@ export class Event {
         this._activity = value;
     }
 
-    public getAttribute(key: string): EventLogAttribute {
+    public getAttribute(key: string): EventlogAttribute {
         return this._attributes.filter(
             attribute => key === attribute.key.toString()
         )[0];
     }
 
-    constructor(attributes: Array<EventLogAttribute>, activity: string) {
+    constructor(attributes: Array<EventlogAttribute>, activity: string) {
         this._activity = activity;
         this._attributes = attributes;
     }

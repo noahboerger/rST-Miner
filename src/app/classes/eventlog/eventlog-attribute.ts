@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import { jsonObject, jsonMember } from 'typedjson';
 
-export abstract class EventLogAttribute {
+export abstract class EventlogAttribute {
     @jsonMember(String)
     key: string = '';
     abstract value: any;
 }
 
 @jsonObject
-export class StringAttribute extends EventLogAttribute {
+export class StringAttribute extends EventlogAttribute {
     @jsonMember(String)
     value: string;
 
@@ -20,7 +20,7 @@ export class StringAttribute extends EventLogAttribute {
 }
 
 @jsonObject
-export class DateAttribute extends EventLogAttribute {
+export class DateAttribute extends EventlogAttribute {
     @jsonMember(Date)
     value: Date;
 
@@ -32,7 +32,7 @@ export class DateAttribute extends EventLogAttribute {
 }
 
 @jsonObject
-export class IntAttribute extends EventLogAttribute {
+export class IntAttribute extends EventlogAttribute {
     @jsonMember(Number)
     value: number;
 
@@ -44,7 +44,7 @@ export class IntAttribute extends EventLogAttribute {
 }
 
 @jsonObject
-export class FloatAttribute extends EventLogAttribute {
+export class FloatAttribute extends EventlogAttribute {
     @jsonMember(Number)
     value: number;
 
@@ -56,7 +56,7 @@ export class FloatAttribute extends EventLogAttribute {
 }
 
 @jsonObject
-export class BooleanAttribute extends EventLogAttribute {
+export class BooleanAttribute extends EventlogAttribute {
     @jsonMember(Boolean)
     value: boolean;
 

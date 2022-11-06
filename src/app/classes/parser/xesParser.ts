@@ -1,16 +1,16 @@
-import { EventLog } from '../EventLog/eventlog';
+import { Eventlog } from '../eventlog/eventlog';
 import * as xml2js from 'xml2js';
-import { Classifier } from '../EventLog/classifier';
+import { Classifier } from '../eventlog/classifier';
 import {
     BooleanAttribute,
     DateAttribute,
-    EventLogAttribute,
+    EventlogAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../EventLog/eventlogattribute';
-import { Trace } from '../EventLog/trace';
-import { Event } from '../EventLog/event';
+} from '../eventlog/eventlog-attribute';
+import { Trace } from '../eventlog/trace';
+import { Event } from '../eventlog/event';
 
 export class XesParser {
     public static PARSING_ERROR = new Error(
@@ -49,12 +49,12 @@ export class XesParser {
     ];
 
     /**
-     * Liest einen String im Xes-Format ein und wandelt es in dieintern verwendete Repräsentation als {@link EventLog} um
+     * Liest einen String im Xes-Format ein und wandelt es in dieintern verwendete Repräsentation als {@link Eventlog} um
      *
      * @param xmlString String im Xes-Format, der geparst werden soll
-     * @return interne Darstellung als {@link EventLog}
+     * @return interne Darstellung als {@link Eventlog}
      */
-    public parse(xmlString: string): EventLog {
+    public parse(xmlString: string): Eventlog {
         const parser = new xml2js.Parser({ strict: false, trim: true });
         let parsedXmlObj = undefined;
 
@@ -76,9 +76,9 @@ export class XesParser {
         }
     }
 
-    private convertToEventLog(result: any): EventLog {
+    private convertToEventLog(result: any): Eventlog {
         if (result == null || result[this._logToken] == null) {
-            return new EventLog([], [], [], [], []);
+            return new Eventlog([], [], [], [], []);
         }
         const logObj = result[this._logToken];
         const logElements = this.readElementsOfAttribute(logObj);
@@ -105,7 +105,7 @@ export class XesParser {
 
         const logAttributes = this.extractEventLogAttributes(logObj);
 
-        return new EventLog(
+        return new Eventlog(
             classifiers,
             globalEventAttributes,
             globalTraceAttributes,
@@ -156,7 +156,7 @@ export class XesParser {
     private convertToGlobalAttributes(
         scope: string,
         globalAttributes: any
-    ): EventLogAttribute[] {
+    ): EventlogAttribute[] {
         if (globalAttributes == null) {
             return [];
         }
@@ -232,7 +232,7 @@ export class XesParser {
         return new Event(eventLogAttributesWithoutActivity, activityArr[0]);
     }
 
-    private extractEventLogAttributes(eventObj: any): EventLogAttribute[] {
+    private extractEventLogAttributes(eventObj: any): EventlogAttribute[] {
         if (eventObj == null) {
             return [];
         }
@@ -248,7 +248,7 @@ export class XesParser {
     private extractEventLogAttributesOfType(
         type: string,
         attributes: any
-    ): EventLogAttribute[] {
+    ): EventlogAttribute[] {
         if (attributes == null) {
             return [];
         }
@@ -270,7 +270,7 @@ export class XesParser {
                 )
             )
             .filter(
-                (attribute: EventLogAttribute | undefined) => attribute != null
+                (attribute: EventlogAttribute | undefined) => attribute != null
             );
         const subAttributes = attributes
             .map((attribute: { [x: string]: any }) => attribute[type])
@@ -284,7 +284,7 @@ export class XesParser {
         type: string,
         value: any,
         key: string
-    ): EventLogAttribute | undefined {
+    ): EventlogAttribute | undefined {
         switch (type) {
             case this._stringAttributeToken:
                 return new StringAttribute(value, key);
@@ -309,7 +309,7 @@ export class XesParser {
     }
 
     private static extractCaseId(
-        attributes: EventLogAttribute[]
+        attributes: EventlogAttribute[]
     ): number | undefined {
         const filterAttributes = attributes.filter(
             attr => attr.key === 'concept:name' || attr.key === 'case-id'

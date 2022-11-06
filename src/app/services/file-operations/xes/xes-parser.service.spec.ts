@@ -2,14 +2,14 @@ import { TestBed } from '@angular/core/testing';
 
 import { XesParserService } from './xes-parser.service';
 import { expect } from '@angular/flex-layout/_private-utils/testing';
-import { EventLog } from '../../../classes/EventLog/eventlog';
-import { Trace } from '../../../classes/EventLog/trace';
-import { Event } from '../../../classes/EventLog/event';
+import { Eventlog } from '../../../classes/eventlog/eventlog';
+import { Trace } from '../../../classes/eventlog/trace';
+import { Event } from '../../../classes/eventlog/event';
 import {
     FloatAttribute,
     StringAttribute,
-} from '../../../classes/EventLog/eventlogattribute';
-import { Classifier } from '../../../classes/EventLog/classifier';
+} from '../../../classes/eventlog/eventlog-attribute';
+import { Classifier } from '../../../classes/eventlog/classifier';
 import { MatFormField } from '@angular/material/form-field';
 import { XesParser } from '../../../classes/parser/xesParser';
 
@@ -31,7 +31,7 @@ describe('XesParserService', () => {
 
     it('should parse empty xes-file', () => {
         expect(service.parse('<log ></log>')).toEqual(
-            new EventLog([], [], [], [], [])
+            new Eventlog([], [], [], [], [])
         );
     });
 
@@ -67,7 +67,7 @@ describe('XesParserService', () => {
             '   </trace>\n' +
             '</log>\n';
 
-        const expected = new EventLog(
+        const expected = new Eventlog(
             [
                 new Classifier('Activity classifier', [
                     'concept:name',

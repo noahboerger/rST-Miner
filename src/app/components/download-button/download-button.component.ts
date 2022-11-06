@@ -1,15 +1,19 @@
-import { Component, Input } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
-    selector: 'download-button',
+    selector: 'app-download-button',
     templateUrl: './download-button.component.html',
     styleUrls: ['./download-button.component.scss'],
 })
 export class DownloadButtonComponent {
     @Input() buttonText: string | undefined;
     @Input() buttonIcon: string | undefined;
+    @Input() downloadButtonAction: ((e: MouseEvent) => void) = e => {
+    };
+    @Input() disabled: boolean = true;
 
-    constructor() {}
+    constructor() {
+    }
 
     prevent(e: Event) {
         e.preventDefault();
@@ -18,8 +22,10 @@ export class DownloadButtonComponent {
 
     hoverStart(e: MouseEvent) {
         this.prevent(e);
-        const target = e.target as HTMLElement;
-        target.classList.add('mouse-hover');
+        if (!this.disabled) {
+            const target = e.target as HTMLElement;
+            target.classList.add('mouse-hover');
+        }
     }
 
     hoverEnd(e: MouseEvent) {
@@ -29,6 +35,8 @@ export class DownloadButtonComponent {
     }
 
     processMouseClick(e: MouseEvent) {
-        console.log(`Template button "${this.buttonText}" clicked`, e);
+        if (!this.disabled) {
+            this.downloadButtonAction(e);
+        }
     }
 }
