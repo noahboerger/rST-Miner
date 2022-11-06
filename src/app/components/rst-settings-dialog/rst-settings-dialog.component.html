@@ -1,67 +1,68 @@
-<p>
-    <mat-toolbar matDialogTitle>
-        <mat-icon class="more-space">settings</mat-icon>
-        <span>rST-Miner Settings</span>
-        <span class="spacer"></span>
-        <button class="download-settings-button" mat-icon-button (click)="downloadMinerSettingsJsonFile()">
-            <mat-icon>download</mat-icon>
-        </button>
-    </mat-toolbar>
-</p>
+<div (fileDropped)="readMinerSettingsFile($event)" appDragDropFileUpload class="drag-and-drop-div">
+    <p>
+        <mat-toolbar matDialogTitle>
+            <mat-icon class="more-space">settings</mat-icon>
+            <span>rST-Miner Settings</span>
+            <span class="spacer"></span>
+            <button (click)="downloadMinerSettingsJsonFile()" class="download-settings-button" mat-icon-button>
+                <mat-icon>download</mat-icon>
+            </button>
+        </mat-toolbar>
+    </p>
 
-<mat-dialog-content class="mat-typography">
-    <div class="down-space">
-        <mat-accordion>
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Process Model Characteristics
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <p>Workflow Net</p>
-                <p>Edge Weights</p>
-            </mat-expansion-panel>
-
-
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Process Model Optimizations
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <p>Noise Reduction</p>
-                <p>Implicit Place Removal</p>
-            </mat-expansion-panel>
+    <mat-dialog-content class="mat-typography">
+        <div class="down-space">
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Process Model Characteristics
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p>Workflow Net</p>
+                    <p>Edge Weights</p>
+                </mat-expansion-panel>
 
 
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Initialization Phase
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <p>Concurrency Oracle</p>
-            </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Process Model Optimizations
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p>Noise Reduction</p>
+                    <p>Implicit Place Removal</p>
+                </mat-expansion-panel>
 
 
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Random Place Generator
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <p>Choose between different generators</p>
-            </mat-expansion-panel>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Initialization Phase
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p>Concurrency Oracle</p>
+                </mat-expansion-panel>
 
 
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Termination Condition
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-radio-group [(ngModel)]="actTerminationConditionSimpleName">
-                    <div style="float: left;" class="full-width">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Random Place Generator
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p>Choose between different generators</p>
+                </mat-expansion-panel>
+
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Termination Condition
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-radio-group [(ngModel)]="actTerminationConditionSimpleName">
+                        <div class="full-width" style="float: left;">
                         <span
                             *ngFor="let terminationTypeSimpleName of MinerSettings.terminationTypesSimpleNames">
                             <mat-radio-button
@@ -91,7 +92,8 @@
                                     <mat-form-field appearance="fill" class="full-width">
                                       <mat-label>Time Unit</mat-label>
                                       <mat-select [(value)]="durationTimeUnit">
-                                        <mat-option *ngFor="let timeUnit of TimeBasedTermination.SUPPORTED_TIME_UNITS" [value]="timeUnit">
+                                        <mat-option *ngFor="let timeUnit of TimeBasedTermination.SUPPORTED_TIME_UNITS"
+                                                    [value]="timeUnit">
                                           {{ timeUnit }}
                                         </mat-option>
                                       </mat-select>
@@ -100,14 +102,18 @@
                             </div>
                             <br>
                         </span>
-                    </div>
-                </mat-radio-group>
-            </mat-expansion-panel>
-        </mat-accordion>
-    </div>
-</mat-dialog-content>
+                        </div>
+                    </mat-radio-group>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </mat-dialog-content>
+</div>
 
 <mat-dialog-actions align="end">
-    <button [mat-dialog-close]="true" class="dialog-button" mat-button (click)="rstMinerDataService.resetMinerSettingsToDefault()">Reset to Default</button> <!-- TODO onclick -->
+    <button (click)="rstMinerDataService.resetMinerSettingsToDefault()" [mat-dialog-close]="true"
+            class="dialog-button"
+            mat-button>Reset to Default
+    </button>
     <button [mat-dialog-close]="true" class="dialog-button" mat-button>Apply & Close</button>
 </mat-dialog-actions>

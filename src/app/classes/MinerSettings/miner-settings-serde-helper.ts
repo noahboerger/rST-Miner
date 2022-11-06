@@ -1,5 +1,6 @@
 import {MinerSettings} from "./miner-settings";
 import {TypedJSON} from "typedjson";
+import {RstMinerDataService} from "../../services/data/rst-miner-data.service";
 
 
 export function minerSettingsToJson(settings: MinerSettings): string {
@@ -14,5 +15,23 @@ export function minerSettingsFromJson(json: string): MinerSettings {
         return new MinerSettings();
     }
     return deserialized;
+}
+
+export function readAndUseMinerSettingsFile(file: File, rstMinerDataService : RstMinerDataService) {
+    let actualFileExtension = (
+        file.name.split('.').pop() as string
+    ).toLowerCase();
+    if ("json" !== actualFileExtension) {
+        alert(
+            'Only rST-Miner-Settings Files of type .json are currently supported'
+        );
+        return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+        const fileContent = fileReader.result as string;
+        rstMinerDataService.minerSettings = minerSettingsFromJson(fileContent);
+    };
+    fileReader.readAsText(file);
 }
 

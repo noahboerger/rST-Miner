@@ -9,7 +9,7 @@ import {EventLog} from "../../classes/EventLog/eventlog";
 import {TypedJSON} from "typedjson";
 import {MatDialog} from "@angular/material/dialog";
 import {RstSettingsDialogComponent} from "../rst-settings-dialog/rst-settings-dialog.component";
-import {minerSettingsFromJson} from "../../classes/MinerSettings/miner-settings-serde-helper";
+import {readAndUseMinerSettingsFile} from "../../classes/MinerSettings/miner-settings-serde-helper";
 
 @Component({
   selector: 'app-rst-miner',
@@ -187,20 +187,6 @@ export class RstMinerComponent {
     }
 
     readMinerSettingsFile(file: File) {
-        let actualFileExtension = (
-            file.name.split('.').pop() as string
-        ).toLowerCase();
-        if ("json" !== actualFileExtension) {
-            alert(
-                'Only rST-Miner-Settings Files of type .json are currently supported'
-            );
-            return;
-        }
-        const fileReader = new FileReader();
-        fileReader.onload = () => {
-            const fileContent = fileReader.result as string;
-            this._rstMinerDataService.minerSettings = minerSettingsFromJson(fileContent);
-        };
-        fileReader.readAsText(file);
+        readAndUseMinerSettingsFile(file, this._rstMinerDataService)
     }
 }

@@ -2,8 +2,8 @@ import {Component} from '@angular/core';
 import {RstMinerDataService} from "../../services/data/rst-miner-data.service";
 import {MinerSettings} from "../../classes/MinerSettings/miner-settings";
 import {LoopBasedTermination, TimeBasedTermination} from "../../classes/MinerSettings/termination-condition";
-import {minerSettingsToJson} from "../../classes/MinerSettings/miner-settings-serde-helper";
-import { saveAs } from 'file-saver';
+import {minerSettingsToJson, readAndUseMinerSettingsFile} from "../../classes/MinerSettings/miner-settings-serde-helper";
+import {saveAs} from 'file-saver';
 
 @Component({
     selector: 'app-rst-settings-dialog',
@@ -56,24 +56,13 @@ export class RstSettingsDialogComponent {
     }
 
     downloadMinerSettingsJsonFile() {
-        this.saveFile(
-            minerSettingsToJson(this.rstMinerDataService.minerSettings),
-            "application/json;charset=utf-8",
-            "json",
-            true,
-            "rST-Miner-Settings")
+        saveAs(
+            new Blob([minerSettingsToJson(this.rstMinerDataService.minerSettings)], {type: "application/json;charset=utf-8"}),
+            "rST-Miner-Settings" + '_' + new Date().toLocaleString() + "." + "json"
+        );
     }
 
-    private saveFile(
-        fileContent: string,
-        fileType: string,
-        fileExtension : string,
-        dateSuffix: boolean,
-        fileName: string
-    ) {
-        saveAs(
-            new Blob([fileContent], { type: fileType }),
-            fileName + (dateSuffix ? '_' + new Date().toLocaleString()  : '') + "." + fileExtension
-        );
+    readMinerSettingsFile(file: File) {
+        readAndUseMinerSettingsFile(file, this.rstMinerDataService)
     }
 }
