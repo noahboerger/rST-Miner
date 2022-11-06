@@ -11,7 +11,6 @@ import {
 } from '../../../classes/eventlog/eventlog-attribute';
 import { Trace } from '../../../classes/eventlog/trace';
 import { Eventlog } from '../../../classes/eventlog/eventlog';
-import { DrawingAreaComponent } from '../../../components/drawingArea/drawingArea.component';
 import { LogParser } from '../../../classes/parser/logParser';
 
 describe('LogParserService', () => {
@@ -19,7 +18,7 @@ describe('LogParserService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [DrawingAreaComponent],
+            declarations: [],
         });
         service = TestBed.inject(LogParserService);
     });
