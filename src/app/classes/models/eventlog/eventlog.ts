@@ -6,8 +6,8 @@ import {
     IntAttribute,
     StringAttribute,
 } from './eventlog-attribute';
-import { Classifier } from './classifier';
-import { Trace } from './trace';
+import { EventlogClassifier } from './eventlog-classifier';
+import { EventlogTrace } from './eventlog-trace';
 import 'reflect-metadata';
 import { jsonObject, jsonArrayMember } from 'typedjson';
 
@@ -21,21 +21,21 @@ import { jsonObject, jsonArrayMember } from 'typedjson';
     ],
 })
 export class Eventlog {
-    @jsonArrayMember(Classifier)
-    private _classifiers: Array<Classifier>;
+    @jsonArrayMember(EventlogClassifier)
+    private _classifiers: Array<EventlogClassifier>;
     @jsonArrayMember(EventlogAttribute)
     private _globalEventAttributes: Array<EventlogAttribute>;
     @jsonArrayMember(EventlogAttribute)
     private _globalTraceAttributes: Array<EventlogAttribute>;
     @jsonArrayMember(EventlogAttribute)
     private _attributes: Array<EventlogAttribute>;
-    @jsonArrayMember(Trace)
-    private _traces: Array<Trace>;
+    @jsonArrayMember(EventlogTrace)
+    private _traces: Array<EventlogTrace>;
 
-    public get classifiers(): Array<Classifier> {
+    public get classifiers(): Array<EventlogClassifier> {
         return this._classifiers;
     }
-    public set classifiers(value: Array<Classifier>) {
+    public set classifiers(value: Array<EventlogClassifier>) {
         this._classifiers = value;
     }
 
@@ -60,16 +60,16 @@ export class Eventlog {
         this._attributes = value;
     }
 
-    public get traces(): Array<Trace> {
+    public get traces(): Array<EventlogTrace> {
         return this._traces;
     }
 
-    public set traces(value: Array<Trace>) {
+    public set traces(value: Array<EventlogTrace>) {
         this._traces = value;
     }
 
-    public get sortedTraces(): Array<Array<Trace>> {
-        let result = new Array<Array<Trace>>();
+    public get sortedTraces(): Array<Array<EventlogTrace>> {
+        let result = new Array<Array<EventlogTrace>>();
 
         this._traces.forEach(trace => {
             const index = result.findIndex(val => {
@@ -86,7 +86,7 @@ export class Eventlog {
                 return true;
             });
             if (index == -1) {
-                let arr = new Array<Trace>();
+                let arr = new Array<EventlogTrace>();
                 arr.push(trace);
                 result.push(arr);
             } else {
@@ -100,10 +100,10 @@ export class Eventlog {
     }
 
     constructor(
-        classifiers: Array<Classifier>,
+        classifiers: Array<EventlogClassifier>,
         globalEventAttributes: Array<EventlogAttribute>,
         globalTraceAttributes: Array<EventlogAttribute>,
-        traces: Array<Trace>,
+        traces: Array<EventlogTrace>,
         attributes: Array<EventlogAttribute>
     ) {
         this._classifiers = classifiers;

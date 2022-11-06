@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
-import { XesParser } from '../classes/parser/xesParser';
+import { XesParser } from '../classes/parser/eventlog/xesParser';
 import { TypedJSON } from 'typedjson';
-import { Eventlog } from '../classes/eventlog/eventlog';
+import { Eventlog } from '../classes/models/eventlog/eventlog';
 
 onmessage = function (data) {
     const parser = new XesParser();

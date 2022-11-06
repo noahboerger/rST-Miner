@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
-import { MinerSettings } from '../../classes/miner-settings/miner-settings';
+import { MinerSettings } from '../../classes/models/miner-settings/miner-settings';
 import {
     LoopBasedTermination,
     TimeBasedTermination,
-} from '../../classes/miner-settings/termination-condition';
+} from '../../classes/models/miner-settings/termination-condition';
 import {
     minerSettingsToJson,
     readAndUseMinerSettingsFile,
-} from '../../classes/miner-settings/miner-settings-serde-helper';
+} from '../../classes/serde/miner-settings-serde-helper';
 import { saveAs } from 'file-saver';
 
 @Component({
@@ -78,11 +78,7 @@ export class RstSettingsDialogComponent {
                 [minerSettingsToJson(this.rstMinerDataService.minerSettings)],
                 { type: 'application/json;charset=utf-8' }
             ),
-            'rST-Miner-Settings' +
-                '_' +
-                new Date().toLocaleString() +
-                '.' +
-                'json'
+            'rST-Miner-Settings_' + new Date().toLocaleString() + '.json'
         );
     }
 

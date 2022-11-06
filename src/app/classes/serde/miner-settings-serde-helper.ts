@@ -1,4 +1,4 @@
-import { MinerSettings } from './miner-settings';
+import { MinerSettings } from '../models/miner-settings/miner-settings';
 import { TypedJSON } from 'typedjson';
 import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
 

@@ -22,7 +22,7 @@
     <app-download-button
         class="vertical-center"
         buttonText="Right button"
-        [downloadButtonAction]="executeRstMiningAndDownloadResult"
+        (downloadButtonClick)="executeRstMiningAndDownloadResult($event)"
         [disabled]="rstMinerDataService.eventLog.traces.length === 0"
         buttonIcon="grade"></app-download-button>
 </div>

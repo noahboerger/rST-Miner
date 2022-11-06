@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Eventlog } from '../../classes/eventlog/eventlog';
-import { MinerSettings } from '../../classes/miner-settings/miner-settings';
+import { Eventlog } from '../../classes/models/eventlog/eventlog';
+import { MinerSettings } from '../../classes/models/miner-settings/miner-settings';
 
 @Injectable({
     providedIn: 'root',

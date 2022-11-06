@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
     selector: 'app-download-button',
@@ -8,8 +8,9 @@ import { Component, Input } from '@angular/core';
 export class DownloadButtonComponent {
     @Input() buttonText: string | undefined;
     @Input() buttonIcon: string | undefined;
-    @Input() downloadButtonAction: (e: MouseEvent) => void = e => {};
     @Input() disabled: boolean = true;
+    @Output() downloadButtonClick: EventEmitter<MouseEvent> = new EventEmitter();
+
 
     constructor() {}
 
@@ -34,7 +35,7 @@ export class DownloadButtonComponent {
 
     processMouseClick(e: MouseEvent) {
         if (!this.disabled) {
-            this.downloadButtonAction(e);
+            this.downloadButtonClick.emit(e);
         }
     }
 }

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 
 @jsonObject
-export class Classifier {
+export class EventlogClassifier {
     @jsonMember(String)
     private _name: string;
     @jsonArrayMember(String)

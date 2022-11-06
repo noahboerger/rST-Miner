@@ -1,6 +1,6 @@
-import { Eventlog } from '../eventlog/eventlog';
+import { Eventlog } from '../../models/eventlog/eventlog';
 import * as xml2js from 'xml2js';
-import { Classifier } from '../eventlog/classifier';
+import { EventlogClassifier } from '../../models/eventlog/eventlog-classifier';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -8,9 +8,9 @@ import {
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../eventlog/eventlog-attribute';
-import { Trace } from '../eventlog/trace';
-import { Event } from '../eventlog/event';
+} from '../../models/eventlog/eventlog-attribute';
+import { EventlogTrace } from '../../models/eventlog/eventlog-trace';
+import { EventlogEvent } from '../../models/eventlog/eventlog-event';
 
 export class XesParser {
     public static PARSING_ERROR = new Error(
@@ -136,7 +136,7 @@ export class XesParser {
         );
     }
 
-    private convertToClassifiers(classifiersObj: any): Classifier[] {
+    private convertToClassifiers(classifiersObj: any): EventlogClassifier[] {
         if (classifiersObj == null) {
             return [];
         }
@@ -146,7 +146,7 @@ export class XesParser {
             )
             .map(
                 (elementsMap: any) =>
-                    new Classifier(
+                    new EventlogClassifier(
                         elementsMap.get(this._nameToken),
                         elementsMap.get(this._keysToken).split(' ')
                     )
@@ -173,7 +173,7 @@ export class XesParser {
         return result != null ? result : [];
     }
 
-    private convertToTraces(tracesObj: any): Trace[] {
+    private convertToTraces(tracesObj: any): EventlogTrace[] {
         if (tracesObj == null) {
             return [];
         }
@@ -181,35 +181,35 @@ export class XesParser {
             .map((traceObj: any, caseId: number) =>
                 this.convertToTrace(traceObj, caseId)
             )
-            .filter((trace: Trace | undefined) => trace != null);
+            .filter((trace: EventlogTrace | undefined) => trace != null);
     }
 
-    convertToTrace(traceObj: any, caseId: number): Trace | undefined {
+    convertToTrace(traceObj: any, caseId: number): EventlogTrace | undefined {
         if (traceObj == null) {
             return undefined;
         }
         const attributes = this.extractEventLogAttributes(traceObj);
         const extractedCaseId = XesParser.extractCaseId(attributes);
-        const events: Event[] = this.convertToEvents(
+        const events: EventlogEvent[] = this.convertToEvents(
             traceObj[this._eventToken]
         );
-        return new Trace(
+        return new EventlogTrace(
             attributes,
             events,
             extractedCaseId ? extractedCaseId : caseId
         );
     }
 
-    private convertToEvents(eventsObj: any): Event[] {
+    private convertToEvents(eventsObj: any): EventlogEvent[] {
         if (eventsObj == null) {
             return [];
         }
         return eventsObj
             .map((eventObj: any) => this.convertToEvent(eventObj))
-            .filter((event: Event | undefined) => event != null);
+            .filter((event: EventlogEvent | undefined) => event != null);
     }
 
-    private convertToEvent(eventObj: any): Event | undefined {
+    private convertToEvent(eventObj: any): EventlogEvent | undefined {
         if (eventObj == null) {
             return undefined;
         }
@@ -229,7 +229,7 @@ export class XesParser {
                 eventLogAttribute.key.toLowerCase() !==
                 this._activityEventLogAttributeKey
         );
-        return new Event(eventLogAttributesWithoutActivity, activityArr[0]);
+        return new EventlogEvent(eventLogAttributesWithoutActivity, activityArr[0]);
     }
 
     private extractEventLogAttributes(eventObj: any): EventlogAttribute[] {

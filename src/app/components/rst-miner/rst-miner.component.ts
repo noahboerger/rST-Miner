@@ -1,15 +1,21 @@
-import { Component } from '@angular/core';
-import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
-import { LogParserService } from '../../services/file-operations/log/log-parser.service';
-import { XesParserService } from '../../services/file-operations/xes/xes-parser.service';
-import { LoadingService } from '../../services/view/loading/loading.service';
-import { LogParser } from '../../classes/parser/logParser';
-import { XesParser } from '../../classes/parser/xesParser';
-import { Eventlog } from '../../classes/eventlog/eventlog';
-import { TypedJSON } from 'typedjson';
-import { MatDialog } from '@angular/material/dialog';
-import { RstSettingsDialogComponent } from '../rst-settings-dialog/rst-settings-dialog.component';
-import { readAndUseMinerSettingsFile } from '../../classes/miner-settings/miner-settings-serde-helper';
+import {Component} from '@angular/core';
+import {RstMinerDataService} from '../../services/data/rst-miner-data.service';
+import {LogParserService} from '../../services/file-operations/log/log-parser.service';
+import {XesParserService} from '../../services/file-operations/xes/xes-parser.service';
+import {LoadingService} from '../../services/view/loading/loading.service';
+import {LogParser} from '../../classes/parser/eventlog/logParser';
+import {XesParser} from '../../classes/parser/eventlog/xesParser';
+import {Eventlog} from '../../classes/models/eventlog/eventlog';
+import {TypedJSON} from 'typedjson';
+import {MatDialog} from '@angular/material/dialog';
+import {RstSettingsDialogComponent} from '../rst-settings-dialog/rst-settings-dialog.component';
+import {
+    minerSettingsToJson,
+    readAndUseMinerSettingsFile
+} from '../../classes/serde/miner-settings-serde-helper';
+import {RstMiner} from "../../classes/algorithms/rst-miner/rstMiner";
+import {saveAs} from "file-saver";
+import {serialisePetriNet} from "../../classes/serde/petri-net-serialisation";
 
 @Component({
     selector: 'app-rst-miner',
@@ -189,7 +195,66 @@ export class RstMinerComponent {
         readAndUseMinerSettingsFile(file, this.rstMinerDataService);
     }
 
-    executeRstMiningAndDownloadResult(e: MouseEvent) {
-        alert('Mining not yet implemented');
+    executeRstMiningAndDownloadResult(e: MouseEvent) {// TODO wieder umstellen auf Webworker, sobald es funktioniert (Verwendung hier nur zum debuggen)
+        const resultingPetriNet = new RstMiner(this.rstMinerDataService.minerSettings, this.rstMinerDataService.eventLog).mine();
+        const serialised = serialisePetriNet(resultingPetriNet);
+        saveAs(new Blob([serialised], {type: 'text/plain;charset=utf-8'}),
+                        'model_' + new Date().toLocaleString() + '.pn'
+                    );
     }
+
+    // executeRstMiningAndDownloadResult(e: MouseEvent) {
+    //     this.loadingSpinner.show();
+    //     this.executeRstMiningAndGetResult()
+    //         .then(result => {
+    //             saveAs(new Blob([result], {type: 'text/plain;charset=utf-8'}),
+    //                 'model_' + new Date().toLocaleString() + '.pn'
+    //             );
+    //         })
+    //         .catch(reason => {
+    //             let message;
+    //             if (reason === RstMiner.MINING_ERROR) {
+    //                 message =
+    //                     'An error occurred when executing the rST-Mining algorithm.\n' +
+    //                     'Check the uploaded log- and settings-file for valid syntax and try again.';
+    //             } else {
+    //                 message =
+    //                     'Unexpected error occurred when executing the rST-Mining algorithm.';
+    //             }
+    //             alert(message);
+    //         })
+    //         .finally(() => this.loadingSpinner.hide());
+    // }
+    //
+    // private executeRstMiningAndGetResult() {
+    //     return new Promise<string>((resolve, reject) => {
+    //         if (typeof Worker !== 'undefined') {
+    //             const worker = new Worker(
+    //                 new URL('../../workers/rst-miner.worker', import.meta.url)
+    //             );
+    //             worker.onmessage = ({data}) => {
+    //                 if (data == null) {
+    //                     reject(RstMiner.MINING_ERROR);
+    //                 }
+    //                 // TODO Idee aktuell: worker serialisiert bereits, dass wird dann in eine Datei geschrieben
+    //                 resolve(data);
+    //             };
+    //             worker.onerror = event => {
+    //                 event.preventDefault();
+    //                 reject(RstMiner.MINING_ERROR);
+    //             };
+    //             const minerSettingsSerialised = minerSettingsToJson(this.rstMinerDataService.minerSettings)
+    //             const eventlogSerialised = new TypedJSON(Eventlog).stringify(this.rstMinerDataService.eventLog);
+    //             worker.postMessage([minerSettingsSerialised, eventlogSerialised]); // TODO postSetting and log
+    //         } else {
+    //             // web worker not available, fallback option
+    //             try {
+    //                 // const result = this._xesParserService.parse(fileContent); TODO
+    //                 resolve("web worker not available todo"); // TODO
+    //             } catch (e) {
+    //                 reject(e);
+    //             }
+    //         }
+    //     });
+    // }
 }

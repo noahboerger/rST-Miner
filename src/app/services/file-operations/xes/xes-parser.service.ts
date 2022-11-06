@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Eventlog } from '../../../classes/eventlog/eventlog';
-import { XesParser } from '../../../classes/parser/xesParser';
+import { Eventlog } from '../../../classes/models/eventlog/eventlog';
+import { XesParser } from '../../../classes/parser/eventlog/xesParser';
 
 @Injectable({
     providedIn: 'root',

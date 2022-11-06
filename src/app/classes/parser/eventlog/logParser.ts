@@ -1,6 +1,6 @@
-import { Eventlog } from '../eventlog/eventlog';
-import { Event } from '../eventlog/event';
-import { Trace } from '../eventlog/trace';
+import { Eventlog } from '../../models/eventlog/eventlog';
+import { EventlogEvent } from '../../models/eventlog/eventlog-event';
+import { EventlogTrace } from '../../models/eventlog/eventlog-trace';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -8,7 +8,7 @@ import {
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../eventlog/eventlog-attribute';
+} from '../../models/eventlog/eventlog-attribute';
 
 export class LogParser {
     public static PARSING_ERROR = new Error(
@@ -79,16 +79,16 @@ export class LogParser {
             LogParser.nextKeyword(keywordIndices, indexEvents)
         );
 
-        const traces: Trace[] = this.parseTraces(headers, eventLines);
+        const traces: EventlogTrace[] = this.parseTraces(headers, eventLines);
         return new Eventlog([], [], [], traces, []);
     }
 
-    private parseTraces(headers: string[], eventLines: string[]): Trace[] {
+    private parseTraces(headers: string[], eventLines: string[]): EventlogTrace[] {
         const asTable = eventLines.map(eventLine =>
             this.splitEventLineString(eventLine)
         );
 
-        const dictCaseIdentifierToTrace: Map<number, Trace> = new Map();
+        const dictCaseIdentifierToTrace: Map<number, EventlogTrace> = new Map();
         asTable.forEach(eventLineSplit => {
             if (
                 eventLineSplit[headers.indexOf(this._caseIdElement)] ===
@@ -130,12 +130,12 @@ export class LogParser {
             if (!dictCaseIdentifierToTrace.has(caseId)) {
                 dictCaseIdentifierToTrace.set(
                     caseId,
-                    new Trace([], [], caseId)
+                    new EventlogTrace([], [], caseId)
                 );
             }
             dictCaseIdentifierToTrace
                 .get(caseId)
-                ?.events.push(new Event(eventLogAttributes, activity));
+                ?.events.push(new EventlogEvent(eventLogAttributes, activity));
         });
 
         return Array.from(dictCaseIdentifierToTrace.values());

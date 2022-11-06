@@ -2,16 +2,16 @@ import { TestBed } from '@angular/core/testing';
 
 import { XesParserService } from './xes-parser.service';
 import { expect } from '@angular/flex-layout/_private-utils/testing';
-import { Eventlog } from '../../../classes/eventlog/eventlog';
-import { Trace } from '../../../classes/eventlog/trace';
-import { Event } from '../../../classes/eventlog/event';
+import { Eventlog } from '../../../classes/models/eventlog/eventlog';
+import { EventlogTrace } from '../../../classes/models/eventlog/eventlog-trace';
+import { EventlogEvent } from '../../../classes/models/eventlog/eventlog-event';
 import {
     FloatAttribute,
     StringAttribute,
-} from '../../../classes/eventlog/eventlog-attribute';
-import { Classifier } from '../../../classes/eventlog/classifier';
+} from '../../../classes/models/eventlog/eventlog-attribute';
+import { EventlogClassifier } from '../../../classes/models/eventlog/eventlog-classifier';
 import { MatFormField } from '@angular/material/form-field';
-import { XesParser } from '../../../classes/parser/xesParser';
+import { XesParser } from '../../../classes/parser/eventlog/xesParser';
 
 describe('XesParserService', () => {
     let service: XesParserService;
@@ -69,7 +69,7 @@ describe('XesParserService', () => {
 
         const expected = new Eventlog(
             [
-                new Classifier('Activity classifier', [
+                new EventlogClassifier('Activity classifier', [
                     'concept:name',
                     'lifecycle:transition',
                 ]),
@@ -77,24 +77,24 @@ describe('XesParserService', () => {
             [],
             [new StringAttribute('UNKNOWN', 'concept:name')],
             [
-                new Trace(
+                new EventlogTrace(
                     [new StringAttribute('147898401', 'concept:name')],
                     [
-                        new Event(
+                        new EventlogEvent(
                             [new StringAttribute('A2_2', 'org:role')],
                             'Baden gehen'
                         ),
-                        new Event(
+                        new EventlogEvent(
                             [new StringAttribute('Org line A2', 'org:group')],
                             'Schwimmen gehen'
                         ),
                     ],
                     147898401
                 ),
-                new Trace(
+                new EventlogTrace(
                     [],
                     [
-                        new Event(
+                        new EventlogEvent(
                             [new StringAttribute('Org line A2', 'org:group')],
                             'Laufen gehen'
                         ),

@@ -1,17 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { LogParserService } from './log-parser.service';
 import { expect } from '@angular/flex-layout/_private-utils/testing';
-import { Event } from '../../../classes/eventlog/event';
+import { EventlogEvent } from '../../../classes/models/eventlog/eventlog-event';
 import {
     BooleanAttribute,
     DateAttribute,
     FloatAttribute,
     IntAttribute,
     StringAttribute,
-} from '../../../classes/eventlog/eventlog-attribute';
-import { Trace } from '../../../classes/eventlog/trace';
-import { Eventlog } from '../../../classes/eventlog/eventlog';
-import { LogParser } from '../../../classes/parser/logParser';
+} from '../../../classes/models/eventlog/eventlog-attribute';
+import { EventlogTrace } from '../../../classes/models/eventlog/eventlog-trace';
+import { Eventlog } from '../../../classes/models/eventlog/eventlog';
+import { LogParser } from '../../../classes/parser/eventlog/logParser';
 
 describe('LogParserService', () => {
     let service: LogParserService;
@@ -44,10 +44,10 @@ describe('LogParserService', () => {
             '2 Bus false 4 6.7 2020-01-25 adfd';
 
         const expectedTraces = [
-            new Trace(
+            new EventlogTrace(
                 [],
                 [
-                    new Event(
+                    new EventlogEvent(
                         [
                             new BooleanAttribute(true, 'booleanValue'),
                             new IntAttribute(1, 'intValue'),
@@ -60,7 +60,7 @@ describe('LogParserService', () => {
                         ],
                         'Auto'
                     ),
-                    new Event(
+                    new EventlogEvent(
                         [
                             new BooleanAttribute(true, 'booleanValue'),
                             new IntAttribute(2, 'intValue'),
@@ -76,10 +76,10 @@ describe('LogParserService', () => {
                 ],
                 1
             ),
-            new Trace(
+            new EventlogTrace(
                 [],
                 [
-                    new Event(
+                    new EventlogEvent(
                         [
                             new BooleanAttribute(false, 'booleanValue'),
                             new IntAttribute(4, 'intValue'),
@@ -115,14 +115,14 @@ describe('LogParserService', () => {
             "1 'Kart fahren' '' otherstring\\'value";
 
         const expectedTraces = [
-            new Trace(
+            new EventlogTrace(
                 [],
                 [
-                    new Event(
+                    new EventlogEvent(
                         [new StringAttribute('string value', 'string key')],
                         "Bus ' fahren"
                     ),
-                    new Event(
+                    new EventlogEvent(
                         [
                             new StringAttribute(
                                 "otherstring'value",

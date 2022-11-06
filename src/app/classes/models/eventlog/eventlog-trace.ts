@@ -6,6 +6,7 @@ import {
     IntAttribute,
     StringAttribute,
 } from './eventlog-attribute';
+import { EventlogEvent } from './eventlog-event';
 import 'reflect-metadata';
 import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 
@@ -18,11 +19,13 @@ import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
         BooleanAttribute,
     ],
 })
-export class Event {
+export class EventlogTrace {
     @jsonArrayMember(EventlogAttribute)
     private _attributes: Array<EventlogAttribute>;
-    @jsonMember(String)
-    private _activity: string;
+    @jsonArrayMember(EventlogEvent)
+    private _events: Array<EventlogEvent>;
+    @jsonMember(Number)
+    private _caseId: number;
 
     public get attributes(): Array<EventlogAttribute> {
         return this._attributes;
@@ -31,22 +34,27 @@ export class Event {
         this._attributes = value;
     }
 
-    public get activity(): string {
-        return this._activity;
+    public get events(): Array<EventlogEvent> {
+        return this._events;
+    }
+    public set events(value: Array<EventlogEvent>) {
+        this._events = value;
     }
 
-    public set activity(value: string) {
-        this._activity = value;
+    public get caseId(): number {
+        return this._caseId;
+    }
+    public set caseId(value: number) {
+        this._caseId = value;
     }
 
-    public getAttribute(key: string): EventlogAttribute {
-        return this._attributes.filter(
-            attribute => key === attribute.key.toString()
-        )[0];
-    }
-
-    constructor(attributes: Array<EventlogAttribute>, activity: string) {
-        this._activity = activity;
+    constructor(
+        attributes: Array<EventlogAttribute>,
+        events: Array<EventlogEvent>,
+        caseId: number
+    ) {
         this._attributes = attributes;
+        this._events = events;
+        this._caseId = caseId;
     }
 }
