@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import {jsonMember, jsonObject} from 'typedjson';
-import {Duration} from "ts-duration";
+import { jsonMember, jsonObject } from 'typedjson';
+import { Duration } from 'ts-duration';
 
-export abstract class TerminationCondition { // TODO -> Interface?
+// Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
+export abstract class TerminationCondition {
     //abstract toPredicate: (value: any) => boolean; TODO
 
     // TODO Method to Function<PetriNet, Boolean> [Predicate] o.ä.
@@ -12,16 +13,15 @@ export abstract class TerminationCondition { // TODO -> Interface?
 
 @jsonObject
 export class LoopBasedTermination extends TerminationCondition {
-
-    public static SIMPLE_NAME = "Loop Iterations";
-    public static DEFAULT_ITERATIONS = 1_000_000; // TODO Test and adapt;
+    public static SIMPLE_NAME = 'Loop Iterations';
+    public static DEFAULT_ITERATIONS = 1_000_000;
 
     @jsonMember(Number)
     private _loopAmount: number;
 
     constructor(loopAmount: number = LoopBasedTermination.DEFAULT_ITERATIONS) {
         super();
-        this._loopAmount = loopAmount
+        this._loopAmount = loopAmount;
     }
 
     getSimpleName(): string {
@@ -43,18 +43,20 @@ export class LoopBasedTermination extends TerminationCondition {
 
 @jsonObject
 export class TimeBasedTermination extends TerminationCondition {
+    public static SIMPLE_NAME = 'Time Duration';
+    public static DEFAULT_DURATION = Duration.second(30);
 
+    public static MILLISECONDS = 'ms';
+    public static SECONDS = 's';
+    public static MINUTES = 'm';
+    public static HOURS = 'h';
 
-    public static SIMPLE_NAME = "Time Duration";
-    public static DEFAULT_DURATION = Duration.second(30); // TODO Test and adapt;
-
-    public static MILLISECONDS = "ms"
-    public static SECONDS = "s"
-    public static MINUTES = "m"
-    public static HOURS = "h"
-
-    public static SUPPORTED_TIME_UNITS = [TimeBasedTermination.MILLISECONDS, TimeBasedTermination.SECONDS, TimeBasedTermination.MINUTES, TimeBasedTermination.HOURS]
-
+    public static SUPPORTED_TIME_UNITS = [
+        TimeBasedTermination.MILLISECONDS,
+        TimeBasedTermination.SECONDS,
+        TimeBasedTermination.MINUTES,
+        TimeBasedTermination.HOURS,
+    ];
 
     @jsonMember(Number)
     private _durationInMs: number;
@@ -74,7 +76,8 @@ export class TimeBasedTermination extends TerminationCondition {
 
     set duration(value: Duration) {
         if (value == null) {
-            this._durationInMs = TimeBasedTermination.DEFAULT_DURATION.milliseconds;
+            this._durationInMs =
+                TimeBasedTermination.DEFAULT_DURATION.milliseconds;
         } else {
             this._durationInMs = value.milliseconds;
         }

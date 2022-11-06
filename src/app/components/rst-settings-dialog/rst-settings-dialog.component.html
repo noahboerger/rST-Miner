@@ -1,10 +1,16 @@
-<div (fileDropped)="readMinerSettingsFile($event)" appDragDropFileUpload class="drag-and-drop-div">
+<div
+    (fileDropped)="readMinerSettingsFile($event)"
+    appDragDropFileUpload
+    class="drag-and-drop-div">
     <p>
         <mat-toolbar matDialogTitle>
             <mat-icon class="more-space">settings</mat-icon>
             <span>rST-Miner Settings</span>
             <span class="spacer"></span>
-            <button (click)="downloadMinerSettingsJsonFile()" class="download-settings-button" mat-icon-button>
+            <button
+                (click)="downloadMinerSettingsJsonFile()"
+                class="download-settings-button"
+                mat-icon-button>
                 <mat-icon>download</mat-icon>
             </button>
         </mat-toolbar>
@@ -23,7 +29,6 @@
                     <p>Edge Weights</p>
                 </mat-expansion-panel>
 
-
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>
@@ -34,7 +39,6 @@
                     <p>Implicit Place Removal</p>
                 </mat-expansion-panel>
 
-
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>
@@ -43,7 +47,6 @@
                     </mat-expansion-panel-header>
                     <p>Concurrency Oracle</p>
                 </mat-expansion-panel>
-
 
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
@@ -54,54 +57,90 @@
                     <p>Choose between different generators</p>
                 </mat-expansion-panel>
 
-
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             Termination Condition
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <mat-radio-group [(ngModel)]="actTerminationConditionSimpleName">
-                        <div class="full-width" style="float: left;">
-                        <span
-                            *ngFor="let terminationTypeSimpleName of MinerSettings.terminationTypesSimpleNames">
-                            <mat-radio-button
-                                value="{{ terminationTypeSimpleName }}">{{ terminationTypeSimpleName }}</mat-radio-button>
+                    <mat-radio-group
+                        [(ngModel)]="actTerminationConditionSimpleName">
+                        <div class="full-width" style="float: left">
+                            <span
+                                *ngFor="
+                                    let terminationTypeSimpleName of MinerSettings.terminationTypesSimpleNames
+                                ">
+                                <mat-radio-button
+                                    value="{{ terminationTypeSimpleName }}"
+                                    >{{
+                                        terminationTypeSimpleName
+                                    }}</mat-radio-button
+                                >
 
-                            <div
-                                *ngIf="rstMinerDataService.minerSettings.terminationCondition.getSimpleName() === terminationTypeSimpleName"
-                                [ngSwitch]="terminationTypeSimpleName">
+                                <div
+                                    *ngIf="
+                                        rstMinerDataService.minerSettings.terminationCondition.getSimpleName() ===
+                                        terminationTypeSimpleName
+                                    "
+                                    [ngSwitch]="terminationTypeSimpleName">
+                                    <span
+                                        *ngSwitchCase="
+                                            LoopBasedTermination.SIMPLE_NAME
+                                        ">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                                >Amount of iterations</mat-label
+                                            >
+                                            <input
+                                                matInput
+                                                placeholder="Default {{
+                                                    LoopBasedTermination.DEFAULT_ITERATIONS
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    loopTerminationIterations
+                                                " />
+                                        </mat-form-field>
+                                    </span>
 
-                                <span *ngSwitchCase="LoopBasedTermination.SIMPLE_NAME">
-                                    <mat-form-field appearance="fill" class="full-width">
-                                        <mat-label>Amount of iterations</mat-label>
-                                        <input matInput placeholder="Default {{ LoopBasedTermination.DEFAULT_ITERATIONS }}"
-                                               type="number"
-                                               [(ngModel)]="loopTerminationIterations">
-                                    </mat-form-field>
-                                </span>
-
-                                <span *ngSwitchCase="TimeBasedTermination.SIMPLE_NAME">
-                                    <mat-form-field appearance="fill" class="full-width">
-                                        <mat-label>Duration</mat-label>
-                                        <input matInput placeholder="Default {{ TimeBasedTermination.DEFAULT_DURATION }}"
-                                               type="number"
-                                               [(ngModel)]="durationAmount">
-                                    </mat-form-field>
-                                    <br>
-                                    <mat-form-field appearance="fill" class="full-width">
-                                      <mat-label>Time Unit</mat-label>
-                                      <mat-select [(value)]="durationTimeUnit">
-                                        <mat-option *ngFor="let timeUnit of TimeBasedTermination.SUPPORTED_TIME_UNITS"
+                                    <span
+                                        *ngSwitchCase="
+                                            TimeBasedTermination.SIMPLE_NAME
+                                        ">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Duration</mat-label>
+                                            <input
+                                                matInput
+                                                placeholder="Default {{
+                                                    TimeBasedTermination.DEFAULT_DURATION
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="durationAmount" />
+                                        </mat-form-field>
+                                        <br />
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Time Unit</mat-label>
+                                            <mat-select
+                                                [(value)]="durationTimeUnit">
+                                                <mat-option
+                                                    *ngFor="
+                                                        let timeUnit of TimeBasedTermination.SUPPORTED_TIME_UNITS
+                                                    "
                                                     [value]="timeUnit">
-                                          {{ timeUnit }}
-                                        </mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-                                </span>
-                            </div>
-                            <br>
-                        </span>
+                                                    {{ timeUnit }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </span>
+                                </div>
+                                <br />
+                            </span>
                         </div>
                     </mat-radio-group>
                 </mat-expansion-panel>
@@ -111,9 +150,14 @@
 </div>
 
 <mat-dialog-actions align="end">
-    <button (click)="rstMinerDataService.resetMinerSettingsToDefault()" [mat-dialog-close]="true"
-            class="dialog-button"
-            mat-button>Reset to Default
+    <button
+        (click)="rstMinerDataService.resetMinerSettingsToDefault()"
+        [mat-dialog-close]="true"
+        class="dialog-button"
+        mat-button>
+        Reset to Default
     </button>
-    <button [mat-dialog-close]="true" class="dialog-button" mat-button>Apply & Close</button>
+    <button [mat-dialog-close]="true" class="dialog-button" mat-button>
+        Apply & Close
+    </button>
 </mat-dialog-actions>

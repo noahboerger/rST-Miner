@@ -1,23 +1,22 @@
-import {Component} from '@angular/core';
-import {RstMinerDataService} from "../../services/data/rst-miner-data.service";
-import {LogParserService} from "../../services/file-operations/log/log-parser.service";
-import {XesParserService} from "../../services/file-operations/xes/xes-parser.service";
-import {LoadingService} from "../../services/view/loading/loading.service";
-import {LogParser} from "../../classes/parser/logParser";
-import {XesParser} from "../../classes/parser/xesParser";
-import {Eventlog} from "../../classes/eventlog/eventlog";
-import {TypedJSON} from "typedjson";
-import {MatDialog} from "@angular/material/dialog";
-import {RstSettingsDialogComponent} from "../rst-settings-dialog/rst-settings-dialog.component";
-import {readAndUseMinerSettingsFile} from "../../classes/miner-settings/miner-settings-serde-helper";
+import { Component } from '@angular/core';
+import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
+import { LogParserService } from '../../services/file-operations/log/log-parser.service';
+import { XesParserService } from '../../services/file-operations/xes/xes-parser.service';
+import { LoadingService } from '../../services/view/loading/loading.service';
+import { LogParser } from '../../classes/parser/logParser';
+import { XesParser } from '../../classes/parser/xesParser';
+import { Eventlog } from '../../classes/eventlog/eventlog';
+import { TypedJSON } from 'typedjson';
+import { MatDialog } from '@angular/material/dialog';
+import { RstSettingsDialogComponent } from '../rst-settings-dialog/rst-settings-dialog.component';
+import { readAndUseMinerSettingsFile } from '../../classes/miner-settings/miner-settings-serde-helper';
 
 @Component({
-  selector: 'app-rst-miner',
-  templateUrl: './rst-miner.component.html',
-  styleUrls: ['./rst-miner.component.scss']
+    selector: 'app-rst-miner',
+    templateUrl: './rst-miner.component.html',
+    styleUrls: ['./rst-miner.component.scss'],
 })
 export class RstMinerComponent {
-
     loading$ = this.loader.loading$;
 
     constructor(
@@ -26,8 +25,8 @@ export class RstMinerComponent {
         private _logParserService: LogParserService,
         private _xesParserService: XesParserService,
         private loadingSpinner: LoadingService,
-        public loader: LoadingService) {
-    }
+        public loader: LoadingService
+    ) {}
 
     processImport([fileExtension, fileContent]: [string, string]) {
         if (['log', 'txt'].includes(fileExtension)) {
@@ -37,8 +36,8 @@ export class RstMinerComponent {
         } else {
             alert(
                 'The current filetype ' +
-                fileExtension +
-                ' can not be imported!'
+                    fileExtension +
+                    ' can not be imported!'
             );
         }
     }
@@ -97,7 +96,7 @@ export class RstMinerComponent {
                 const worker = new Worker(
                     new URL('../../workers/log-parser.worker', import.meta.url)
                 );
-                worker.onmessage = ({data}) => {
+                worker.onmessage = ({ data }) => {
                     if (data == null) {
                         reject(LogParser.PARSING_ERROR);
                     }
@@ -132,7 +131,7 @@ export class RstMinerComponent {
                 const worker = new Worker(
                     new URL('../../workers/xes-parser.worker', import.meta.url)
                 );
-                worker.onmessage = ({data}) => {
+                worker.onmessage = ({ data }) => {
                     if (data == null) {
                         reject(XesParser.PARSING_ERROR);
                     }
@@ -187,10 +186,10 @@ export class RstMinerComponent {
     }
 
     readMinerSettingsFile(file: File) {
-        readAndUseMinerSettingsFile(file, this.rstMinerDataService)
+        readAndUseMinerSettingsFile(file, this.rstMinerDataService);
     }
 
     executeRstMiningAndDownloadResult(e: MouseEvent) {
-        alert("Mining not yet implemented")
+        alert('Mining not yet implemented');
     }
 }

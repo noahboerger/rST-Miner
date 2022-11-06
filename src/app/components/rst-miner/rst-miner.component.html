@@ -2,16 +2,20 @@
     <app-upload-button
         class="vertical-center"
         [permittedFileExtensions]="['xes', 'log', 'txt']"
-        (newFileUploadedEventExtensionContent)="processImport($event)"></app-upload-button>
+        (newFileUploadedEventExtensionContent)="
+            processImport($event)
+        "></app-upload-button>
 
     <span style="text-align: center">
-        <img (mouseenter)="hoverStart($event)"
-             (mouseleave)="hoverEnd($event)"
-             (click)="openMinerSettingsDialog()"
-             appDragDropFileUpload
-             (fileDropped)="readMinerSettingsFile($event)"
-             class="algorithmus-symbol"
-             src="assets/images/algorithmus-symbol.png">
+        <img
+            (mouseenter)="hoverStart($event)"
+            (mouseleave)="hoverEnd($event)"
+            (click)="openMinerSettingsDialog()"
+            appDragDropFileUpload
+            (fileDropped)="readMinerSettingsFile($event)"
+            class="algorithmus-symbol"
+            src="assets/images/algorithmus-symbol.png"
+            alt="Settings-Button Abbildung" />
         <h4>Settings</h4>
     </span>
 
@@ -23,5 +27,7 @@
         buttonIcon="grade"></app-download-button>
 </div>
 <div class="loading-screen" *ngIf="loading$ | async">
-    <mat-progress-spinner diameter="250" [mode]="'indeterminate'"></mat-progress-spinner>
+    <mat-progress-spinner
+        diameter="250"
+        [mode]="'indeterminate'"></mat-progress-spinner>
 </div>
