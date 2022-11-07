@@ -144,6 +144,19 @@
                         </div>
                     </mat-radio-group>
                 </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Debug Mode
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-checkbox
+                        class="example-margin"
+                        [(ngModel)]="rstMinerDataService.minerSettings.isDebugModusEnabled">
+                        Enabled
+                    </mat-checkbox>
+                </mat-expansion-panel>
             </mat-accordion>
         </div>
     </mat-dialog-content>
