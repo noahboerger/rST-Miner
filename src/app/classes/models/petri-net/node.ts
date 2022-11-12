@@ -1,6 +1,6 @@
 import {Arc} from './arc';
 import {IdPoint} from './id-point';
-import {getById} from '../utility/get-by-id';
+import {getById} from '../../utility/get-by-id';
 
 export class Node extends IdPoint {
 

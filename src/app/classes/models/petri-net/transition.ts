@@ -1,5 +1,5 @@
 import {Node} from './node';
-import {EditableString} from '../utility/string-sequence';
+import {EditableString} from '../../utility/string-sequence';
 
 export class Transition extends Node implements EditableString {
 

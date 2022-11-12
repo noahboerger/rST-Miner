@@ -6,9 +6,10 @@ import {
     IntAttribute,
     StringAttribute,
 } from './eventlog-attribute';
-import { EventlogEvent } from './eventlog-event';
+import {EventlogEvent} from './eventlog-event';
 import 'reflect-metadata';
-import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
+import {jsonArrayMember, jsonMember, jsonObject} from 'typedjson';
+import {EditableStringSequence} from "../../utility/string-sequence";
 
 @jsonObject({
     knownTypes: [
@@ -19,7 +20,7 @@ import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
         BooleanAttribute,
     ],
 })
-export class EventlogTrace {
+export class EventlogTrace implements EditableStringSequence {
     @jsonArrayMember(EventlogAttribute)
     private _attributes: Array<EventlogAttribute>;
     @jsonArrayMember(EventlogEvent)
@@ -56,5 +57,25 @@ export class EventlogTrace {
         this._attributes = attributes;
         this._events = events;
         this._caseId = caseId;
+    }
+
+    get(i: number): string {
+        return this.events[i].activity;
+    }
+
+    set(i: number, value: string): void {
+        this.events[i].activity = value;
+    }
+
+    length(): number {
+        return this.events.length;
+    }
+
+    get eventActivities(): Array<string> {
+        return this.events.map(e => e.activity);
+    }
+
+    clone() {
+        return new EventlogTrace([...this.attributes], [...this.events], this.caseId);
     }
 }

@@ -15,6 +15,6 @@ onmessage = function (data) {
         return;
     }
 
-    const resultingPetriNet = new RstMiner(minerSettings, eventlog).mine();
+    const resultingPetriNet = new RstMiner(minerSettings).mine(eventlog);
     postMessage(serialisePetriNet(resultingPetriNet));
 };

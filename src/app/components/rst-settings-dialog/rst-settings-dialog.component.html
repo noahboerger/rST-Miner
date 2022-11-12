@@ -45,7 +45,72 @@
                             Initialization Phase
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <p>Concurrency Oracle</p>
+                    <p><b>Concurrency Oracle</b></p>
+                    <mat-radio-group
+                        [(ngModel)]="actConcurrencyOracleSimpleName">
+                        <div class="full-width" style="float: left">
+                            <span
+                                *ngFor="
+                                    let concurrencyOracleTypeSimpleName of MinerSettings.concurrencyOracleTypesSimpleNames
+                                ">
+                                <mat-radio-button
+                                    value="{{ concurrencyOracleTypeSimpleName }}"
+                                >{{
+                                    concurrencyOracleTypeSimpleName
+                                    }}</mat-radio-button
+                                >
+
+                                <div
+                                    *ngIf="
+                                        rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() ===
+                                        concurrencyOracleTypeSimpleName &&
+                                        rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() !== NoneOracle.SIMPLE_NAME
+                                    "
+                                    [ngSwitch]="concurrencyOracleTypeSimpleName">
+
+                                    <span
+                                        *ngSwitchCase="
+                                            AlphaOracle.SIMPLE_NAME
+                                        ">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                            >Look Ahead Distance</mat-label
+                                            >
+                                            <input
+                                                [(ngModel)]="
+                                                    alphaOracleLookAheadDistance
+                                                "
+                                                matInput
+                                                placeholder="Default {{
+                                                    AlphaOracle.DEFAULT_LOOK_AHEAD_DISTANCE
+                                                }}"
+                                                type="number"/>
+                                        </mat-form-field>
+                                        <br />
+                                         <mat-checkbox
+                                             [(ngModel)]="concurrencyOracleDistinguishSameEvents"
+                                             class="example-margin">
+                                            Distinguish same Events
+                                        </mat-checkbox>
+                                    </span>
+
+                                    <span
+                                        *ngSwitchCase="
+                                            TimestampOracle.SIMPLE_NAME
+                                        ">
+                                         <mat-checkbox
+                                             [(ngModel)]="concurrencyOracleDistinguishSameEvents"
+                                             class="example-margin">
+                                            Distinguish same Events
+                                        </mat-checkbox>
+                                    </span>
+                                </div>
+                                <br/>
+                            </span>
+                        </div>
+                    </mat-radio-group>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>

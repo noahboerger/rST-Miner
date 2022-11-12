@@ -1,5 +1,5 @@
 import {PetriNet} from "../models/petri-net/petri-net";
-import {AbstractParser} from "../models/utility/abstract-parser";
+import {AbstractParser} from "../utility/abstract-parser";
 import {BlockType} from "./block-type";
 import {Transition} from "../models/petri-net/transition";
 import {Place} from "../models/petri-net/place";

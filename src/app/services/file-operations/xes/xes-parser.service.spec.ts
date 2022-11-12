@@ -1,17 +1,15 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { XesParserService } from './xes-parser.service';
-import { expect } from '@angular/flex-layout/_private-utils/testing';
-import { Eventlog } from '../../../classes/models/eventlog/eventlog';
-import { EventlogTrace } from '../../../classes/models/eventlog/eventlog-trace';
-import { EventlogEvent } from '../../../classes/models/eventlog/eventlog-event';
-import {
-    FloatAttribute,
-    StringAttribute,
-} from '../../../classes/models/eventlog/eventlog-attribute';
-import { EventlogClassifier } from '../../../classes/models/eventlog/eventlog-classifier';
-import { MatFormField } from '@angular/material/form-field';
-import { XesParser } from '../../../classes/parser/eventlog/xesParser';
+import {XesParserService} from './xes-parser.service';
+import {expect} from '@angular/flex-layout/_private-utils/testing';
+import {Eventlog} from '../../../classes/models/eventlog/eventlog';
+import {EventlogTrace} from '../../../classes/models/eventlog/eventlog-trace';
+import {EventlogEvent} from '../../../classes/models/eventlog/eventlog-event';
+import {FloatAttribute, StringAttribute,} from '../../../classes/models/eventlog/eventlog-attribute';
+import {EventlogClassifier} from '../../../classes/models/eventlog/eventlog-classifier';
+import {MatFormField} from '@angular/material/form-field';
+import {XesParser} from '../../../classes/parser/eventlog/xesParser';
+import {Lifecycle} from "../../../classes/models/eventlog/utils/lifecycle";
 
 describe('XesParserService', () => {
     let service: XesParserService;
@@ -50,12 +48,14 @@ describe('XesParserService', () => {
             '      <string key="concept:name" value="147898401" />\n' +
             '      <event>\n' +
             '         <string key="concept:name" value="Baden gehen" />\n' +
+            '         <string key="lifecycle:transition" value="start" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="ignoreEmptyValue" value="" />\n' +
             '         <string key="" value="ignoreEmptyKey" />\n' +
             '      </event>\n' +
             '      <event>\n' +
             '         <string key="concept:name" value="Schwimmen gehen" />\n' +
+            '         <string key="lifecycle:transition" value="complete" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
@@ -82,11 +82,13 @@ describe('XesParserService', () => {
                     [
                         new EventlogEvent(
                             [new StringAttribute('A2_2', 'org:role')],
-                            'Baden gehen'
+                            'Baden gehen',
+                            Lifecycle.START
                         ),
                         new EventlogEvent(
                             [new StringAttribute('Org line A2', 'org:group')],
-                            'Schwimmen gehen'
+                            'Schwimmen gehen',
+                            Lifecycle.COMPLETE
                         ),
                     ],
                     147898401
@@ -153,21 +155,21 @@ describe('XesParserService', () => {
             '      <string key="concept:name" value="147898401" />\n' +
             '      <event>\n' +
             '         <string key="concept:name" value="Aktivitätswert" />\n' +
+            '         <string key="lifecycle:transition" value="start" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2006-11-07T10:00:36+01:00" />\n' +
-            '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
             '         <string key="concept:name" value="Aktivitätswert" />\n' +
+            '         <string key="lifecycle:transition" value="complete" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <string key="org:role" value="A2_2" />\n' +
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2006-11-07T13:05:44+01:00" />\n' +
-            '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
             '         <string key="concept:name" value="Aktivitätswert" />\n' +
@@ -176,7 +178,6 @@ describe('XesParserService', () => {
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2009-12-02T14:24:32+01:00" />\n' +
-            '         <string key="lifecycle:transition" value="Wait" />\n' +
             '      </event>\n' +
             '      <event>\n' +
             '         <string key="concept:name" value="Aktivitätswert" />\n' +
@@ -185,7 +186,6 @@ describe('XesParserService', () => {
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2011-09-03T07:09:09+02:00" />\n' +
-            '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
             '   <trace>\n' +
@@ -197,7 +197,6 @@ describe('XesParserService', () => {
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2007-03-20T09:06:25+01:00" />\n' +
-            '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '      <event>\n' +
             '         <string key="concept:name" value="Aktivitätswert" />\n' +
@@ -205,13 +204,11 @@ describe('XesParserService', () => {
             '         <string key="impact" value="Medium" />\n' +
             '         <string key="product" value="PROD753" />\n' +
             '         <date key="time:timestamp" value="2009-12-02T14:24:31+01:00" />\n' +
-            '         <string key="lifecycle:transition" value="Wait" />\n' +
             '      </event>\n' +
             '      <event>\n' +
             '         <string key="concept:name" value="Aktivitätswert" />\n' +
             '         <string key="org:group" value="Org line A2" />\n' +
             '         <date key="time:timestamp" value="2011-09-03T07:10:53+02:00" />\n' +
-            '         <string key="lifecycle:transition" value="In Progress" />\n' +
             '      </event>\n' +
             '   </trace>\n' +
             '</log>\n';

@@ -1,7 +1,7 @@
 import {Observable, Subject, takeUntil} from 'rxjs';
 import {MouseListener} from './mouse-listener';
 import {Point} from './point';
-import {Identifiable} from '../utility/get-by-id';
+import {Identifiable} from '../../utility/get-by-id';
 
 export class IdPoint extends Identifiable implements Point, MouseListener {
     private _x: number;

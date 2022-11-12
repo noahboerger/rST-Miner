@@ -1,6 +1,6 @@
-import { Eventlog } from '../../models/eventlog/eventlog';
-import { EventlogEvent } from '../../models/eventlog/eventlog-event';
-import { EventlogTrace } from '../../models/eventlog/eventlog-trace';
+import {Eventlog} from '../../models/eventlog/eventlog';
+import {EventlogEvent} from '../../models/eventlog/eventlog-event';
+import {EventlogTrace} from '../../models/eventlog/eventlog-trace';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -9,6 +9,7 @@ import {
     IntAttribute,
     StringAttribute,
 } from '../../models/eventlog/eventlog-attribute';
+import {Lifecycle} from "../../models/eventlog/utils/lifecycle";
 
 export class LogParser {
     public static PARSING_ERROR = new Error(
@@ -23,9 +24,8 @@ export class LogParser {
 
     private readonly _caseIdElement = 'case-id';
     private readonly _activityElement = 'concept:name';
+    private readonly _lifecycleElement = 'lifecycle:transition';
     private readonly _escapeString = "'";
-
-    constructor() {}
 
     /**
      * Liest einen String im .type log Format ein, das von Robin Bergenthum und Jakub Kovar definiert wurde und wandelt es in die
@@ -94,7 +94,7 @@ export class LogParser {
                 eventLineSplit[headers.indexOf(this._caseIdElement)] ===
                     undefined ||
                 eventLineSplit[headers.indexOf(this._activityElement)] ===
-                    undefined
+                undefined
             ) {
                 throw LogParser.PARSING_ERROR;
             }
@@ -104,11 +104,16 @@ export class LogParser {
             );
             const activity: string =
                 eventLineSplit[headers.indexOf(this._activityElement)];
+            let lifecycle: Lifecycle | undefined = undefined;
+            const lifecycleHeaderIndex = headers.indexOf(this._lifecycleElement);
+            if (lifecycleHeaderIndex > -1 && lifecycleHeaderIndex < eventLineSplit.length) {
+                    lifecycle = eventLineSplit[lifecycleHeaderIndex] as Lifecycle;
+            }
 
             const eventLogAttributes: EventlogAttribute[] = headers
                 .filter(
                     header =>
-                        ![this._caseIdElement, this._activityElement].includes(
+                        ![this._caseIdElement, this._activityElement, this._lifecycleElement].includes(
                             header
                         )
                 )
@@ -135,7 +140,7 @@ export class LogParser {
             }
             dictCaseIdentifierToTrace
                 .get(caseId)
-                ?.events.push(new EventlogEvent(eventLogAttributes, activity));
+                ?.events.push(new EventlogEvent(eventLogAttributes, activity, lifecycle));
         });
 
         return Array.from(dictCaseIdentifierToTrace.values());

@@ -2,7 +2,7 @@ import {Node} from './node';
 import {DragPoint} from './drag-point';
 import {MouseListener} from './mouse-listener';
 import {Observable, Subject} from 'rxjs';
-import {Identifiable} from '../utility/get-by-id';
+import {Identifiable} from '../../utility/get-by-id';
 
 export class Arc extends Identifiable implements MouseListener {
     private readonly _source: Node;

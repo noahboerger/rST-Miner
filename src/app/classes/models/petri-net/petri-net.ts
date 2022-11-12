@@ -2,9 +2,9 @@ import {Place} from './place';
 import {Transition} from './transition';
 import {Arc} from './arc';
 import {Observable, Subject} from 'rxjs';
-import {createUniqueString, IncrementingCounter} from '../utility/incrementing-counter';
+import {createUniqueString, IncrementingCounter} from '../../utility/incrementing-counter';
 import {NetUnionResult} from './net-union-result';
-import {getById} from '../utility/get-by-id';
+import {getById} from '../../utility/get-by-id';
 import {Marking} from './marking';
 
 export class PetriNet {

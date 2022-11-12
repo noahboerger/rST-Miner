@@ -12,6 +12,7 @@ import {
 import { EventlogTrace } from '../../../classes/models/eventlog/eventlog-trace';
 import { Eventlog } from '../../../classes/models/eventlog/eventlog';
 import { LogParser } from '../../../classes/parser/eventlog/logParser';
+import {Lifecycle} from "../../../classes/models/eventlog/utils/lifecycle";
 
 describe('LogParserService', () => {
     let service: LogParserService;
@@ -38,9 +39,10 @@ describe('LogParserService', () => {
             'floatValue\n' +
             'dateValue\n' +
             'stringValue\n' +
+            'lifecycle:transition\n' +
             '.events\n' +
-            '1 Auto true 1 1.3 2020-01-31 basadf\n' +
-            '1 Schiff true 2 2.3 2020-01-31 dasf\n' +
+            '1 Auto true 1 1.3 2020-01-31 basadf start\n' +
+            '1 Schiff true 2 2.3 2020-01-31 dasf complete\n' +
             '2 Bus false 4 6.7 2020-01-25 adfd';
 
         const expectedTraces = [
@@ -58,7 +60,8 @@ describe('LogParserService', () => {
                             ),
                             new StringAttribute('basadf', 'stringValue'),
                         ],
-                        'Auto'
+                        'Auto',
+                        Lifecycle.START
                     ),
                     new EventlogEvent(
                         [
@@ -71,7 +74,8 @@ describe('LogParserService', () => {
                             ),
                             new StringAttribute('dasf', 'stringValue'),
                         ],
-                        'Schiff'
+                        'Schiff',
+                        Lifecycle.COMPLETE
                     ),
                 ],
                 1

@@ -1,15 +1,17 @@
-import { Component } from '@angular/core';
-import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
-import { MinerSettings } from '../../classes/models/miner-settings/miner-settings';
+import {Component} from '@angular/core';
+import {RstMinerDataService} from '../../services/data/rst-miner-data.service';
+import {MinerSettings} from '../../classes/models/miner-settings/miner-settings';
 import {
-    LoopBasedTermination,
-    TimeBasedTermination,
-} from '../../classes/models/miner-settings/termination-condition';
+    LoopBasedTerminationConfig,
+    TimeBasedTerminationConfig,
+} from '../../classes/models/miner-settings/termination-condition-config';
+import {minerSettingsToJson, readAndUseMinerSettingsFile,} from '../../classes/serde/miner-settings-serde-helper';
+import {saveAs} from 'file-saver';
 import {
-    minerSettingsToJson,
-    readAndUseMinerSettingsFile,
-} from '../../classes/serde/miner-settings-serde-helper';
-import { saveAs } from 'file-saver';
+    AlphaOracleConfig,
+    NoneOracleConfig,
+    TimestampOracleConfig
+} from "../../classes/models/miner-settings/concurrency-oracle-config";
 
 @Component({
     selector: 'app-rst-settings-dialog',
@@ -19,12 +21,17 @@ import { saveAs } from 'file-saver';
 export class RstSettingsDialogComponent {
     // Zugriff auf statische Felder aus HTML ermöglichen
     MinerSettings = MinerSettings;
-    LoopBasedTermination = LoopBasedTermination;
-    TimeBasedTermination = TimeBasedTermination;
+
+    NoneOracle = NoneOracleConfig;
+    AlphaOracle = AlphaOracleConfig;
+    TimestampOracle = TimestampOracleConfig;
+
+    LoopBasedTermination = LoopBasedTerminationConfig;
+    TimeBasedTermination = TimeBasedTerminationConfig;
     durationTimeUnit: string;
 
     constructor(public rstMinerDataService: RstMinerDataService) {
-        this.durationTimeUnit = TimeBasedTermination.SECONDS;
+        this.durationTimeUnit = TimeBasedTerminationConfig.SECONDS;
     }
 
     get actTerminationConditionSimpleName(): string {
@@ -33,13 +40,13 @@ export class RstSettingsDialogComponent {
 
     set actTerminationConditionSimpleName(value: string) {
         switch (value) {
-            case LoopBasedTermination.SIMPLE_NAME:
+            case LoopBasedTerminationConfig.SIMPLE_NAME:
                 this.rstMinerDataService.minerSettings.terminationCondition =
-                    new LoopBasedTermination();
+                    new LoopBasedTerminationConfig();
                 break;
-            case TimeBasedTermination.SIMPLE_NAME:
+            case TimeBasedTerminationConfig.SIMPLE_NAME:
                 this.rstMinerDataService.minerSettings.terminationCondition =
-                    new TimeBasedTermination();
+                    new TimeBasedTerminationConfig();
                 break;
         }
     }
@@ -47,36 +54,87 @@ export class RstSettingsDialogComponent {
     get loopTerminationIterations(): number {
         return (
             this.rstMinerDataService.minerSettings
-                .terminationCondition as LoopBasedTermination
+                .terminationCondition as LoopBasedTerminationConfig
         ).loopAmount;
     }
 
     set loopTerminationIterations(value: number) {
         (
             this.rstMinerDataService.minerSettings
-                .terminationCondition as LoopBasedTermination
+                .terminationCondition as LoopBasedTerminationConfig
         ).loopAmount = value;
     }
 
     get durationAmount(): number {
         return (
             this.rstMinerDataService.minerSettings
-                .terminationCondition as TimeBasedTermination
+                .terminationCondition as TimeBasedTerminationConfig
         ).getDurationIn(this.durationTimeUnit);
     }
 
     set durationAmount(value: number) {
         (
             this.rstMinerDataService.minerSettings
-                .terminationCondition as TimeBasedTermination
+                .terminationCondition as TimeBasedTerminationConfig
         ).setDurationIn(this.durationTimeUnit, value);
+    }
+
+
+    get actConcurrencyOracleSimpleName(): string {
+        return this.rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName();
+    }
+
+    set actConcurrencyOracleSimpleName(value: string) {
+        switch (value) {
+            case NoneOracleConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.concurrencyOracle =
+                    new NoneOracleConfig();
+                break;
+            case AlphaOracleConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.concurrencyOracle =
+                    new AlphaOracleConfig();
+                break;
+            case TimestampOracleConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.concurrencyOracle =
+                    new TimestampOracleConfig();
+                break;
+        }
+    }
+
+    get alphaOracleLookAheadDistance(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .concurrencyOracle as AlphaOracleConfig
+        ).lookAheadDistance;
+    }
+
+    set alphaOracleLookAheadDistance(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .concurrencyOracle as AlphaOracleConfig
+        ).lookAheadDistance = value;
+    }
+
+    get concurrencyOracleDistinguishSameEvents(): boolean {
+        const oracle = this.rstMinerDataService.minerSettings.concurrencyOracle;
+        if (oracle instanceof AlphaOracleConfig || oracle instanceof TimestampOracleConfig) {
+            return oracle.distinguishSameEvents;
+        }
+        throw new Error("Unexpected State!");
+    }
+
+    set concurrencyOracleDistinguishSameEvents(value: boolean) {
+        const oracle = this.rstMinerDataService.minerSettings.concurrencyOracle;
+        if (oracle instanceof AlphaOracleConfig || oracle instanceof TimestampOracleConfig) {
+            oracle.distinguishSameEvents = value;
+        }
     }
 
     downloadMinerSettingsJsonFile() {
         saveAs(
             new Blob(
                 [minerSettingsToJson(this.rstMinerDataService.minerSettings)],
-                { type: 'application/json;charset=utf-8' }
+                {type: 'application/json;charset=utf-8'}
             ),
             'rST-Miner-Settings_' + new Date().toLocaleString() + '.json'
         );

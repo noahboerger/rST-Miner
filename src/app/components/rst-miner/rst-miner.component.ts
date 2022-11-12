@@ -131,7 +131,7 @@ export class RstMinerComponent {
         // web worker not available, fallback option
         if (typeof Worker === 'undefined' || this.rstMinerDataService.minerSettings.isDebugModusEnabled) {
             try {
-                const resultingPetriNet = new RstMiner(this.rstMinerDataService.minerSettings, this.rstMinerDataService.eventLog).mine();
+                const resultingPetriNet = new RstMiner(this.rstMinerDataService.minerSettings).mine(this.rstMinerDataService.eventLog);
                 const result = serialisePetriNet(resultingPetriNet);
                 saveAs(new Blob([result], {type: 'text/plain;charset=utf-8'}),
                     'model_' + new Date().toLocaleString() + '.pn'

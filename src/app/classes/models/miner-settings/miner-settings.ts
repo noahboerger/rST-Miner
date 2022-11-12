@@ -1,49 +1,51 @@
 import 'reflect-metadata';
 import { jsonMember, jsonObject } from 'typedjson';
 import {
-    LoopBasedTermination,
-    TerminationCondition,
-    TimeBasedTermination,
-} from './termination-condition';
+    LoopBasedTerminationConfig,
+    TerminationConditionConfig,
+    TimeBasedTerminationConfig,
+} from './termination-condition-config';
+import {ConcurrencyOracle} from "../../algorithms/concurrency-oracle/concurrency-oracle";
+import {
+    AlphaOracleConfig,
+    ConcurrencyOracleConfig,
+    NoneOracleConfig,
+    TimestampOracleConfig
+} from "./concurrency-oracle-config";
 
 @jsonObject({
-    knownTypes: [LoopBasedTermination, TimeBasedTermination],
+    knownTypes: [NoneOracleConfig, AlphaOracleConfig, TimestampOracleConfig, LoopBasedTerminationConfig, TimeBasedTerminationConfig],
 })
 export class MinerSettings {
 
-    public static terminationTypesSimpleNames = [
-        LoopBasedTermination.SIMPLE_NAME,
-        TimeBasedTermination.SIMPLE_NAME,
+    public static readonly concurrencyOracleTypesSimpleNames = [
+        NoneOracleConfig.SIMPLE_NAME,
+        AlphaOracleConfig.SIMPLE_NAME,
+        TimestampOracleConfig.SIMPLE_NAME,
     ];
+
+    public static readonly terminationTypesSimpleNames = [
+        LoopBasedTerminationConfig.SIMPLE_NAME,
+        TimeBasedTerminationConfig.SIMPLE_NAME,
+    ];
+
+    @jsonMember(ConcurrencyOracleConfig)
+    public concurrencyOracle : ConcurrencyOracleConfig;
+
+    @jsonMember(TerminationConditionConfig)
+    public terminationCondition: TerminationConditionConfig;
 
     // u.a. keine Nutzung von WebWorkers, um Exceptions einsehen zu können
     @jsonMember(Boolean)
-    private _isDebugModusEnabled : boolean;
-
-    @jsonMember(TerminationCondition)
-    private _terminationCondition: TerminationCondition;
+    public isDebugModusEnabled : boolean;
 
     constructor(
         isDebugModusEnabled: boolean = false,
-        terminationCondition: TerminationCondition = new TimeBasedTermination()
+        terminationCondition: TerminationConditionConfig = new TimeBasedTerminationConfig(),
+        concurrencyOracle : ConcurrencyOracleConfig = new NoneOracleConfig()
     ) {
-        this._isDebugModusEnabled = isDebugModusEnabled;
-        this._terminationCondition = terminationCondition;
-    }
-
-    public get terminationCondition(): TerminationCondition {
-        return this._terminationCondition;
-    }
-
-    public set terminationCondition(value: TerminationCondition) {
-        this._terminationCondition = value;
-    }
-
-    get isDebugModusEnabled(): boolean {
-        return this._isDebugModusEnabled;
-    }
-
-    set isDebugModusEnabled(value: boolean) {
-        this._isDebugModusEnabled = value;
+        this.isDebugModusEnabled = isDebugModusEnabled;
+        this.terminationCondition = terminationCondition;
+        this.concurrencyOracle = concurrencyOracle;
     }
 }

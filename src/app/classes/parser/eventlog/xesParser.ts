@@ -1,6 +1,6 @@
-import { Eventlog } from '../../models/eventlog/eventlog';
+import {Eventlog} from '../../models/eventlog/eventlog';
 import * as xml2js from 'xml2js';
-import { EventlogClassifier } from '../../models/eventlog/eventlog-classifier';
+import {EventlogClassifier} from '../../models/eventlog/eventlog-classifier';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -9,15 +9,14 @@ import {
     IntAttribute,
     StringAttribute,
 } from '../../models/eventlog/eventlog-attribute';
-import { EventlogTrace } from '../../models/eventlog/eventlog-trace';
-import { EventlogEvent } from '../../models/eventlog/eventlog-event';
+import {EventlogTrace} from '../../models/eventlog/eventlog-trace';
+import {EventlogEvent} from '../../models/eventlog/eventlog-event';
+import {Lifecycle} from "../../models/eventlog/utils/lifecycle";
 
 export class XesParser {
     public static PARSING_ERROR = new Error(
         'given xes string can not be parsed'
     );
-
-    constructor() {}
 
     private readonly _logToken = 'LOG';
     private readonly _attributesToken = '$';
@@ -36,7 +35,8 @@ export class XesParser {
     private readonly _keysToken = 'KEYS';
     private readonly _keyToken = 'KEY';
     private readonly _valueToken = 'VALUE';
-    private readonly _activityEventLogAttributeKey = 'concept:name';
+    private readonly _activityEventLogAttributeKey = 'concept:name'; // TODO .log parser ()
+    private readonly _lifecycleEventLogAttributeKey = 'lifecycle:transition'; // TODO .log parser () --> + .log parser Attriubute dürfen nur einmal vorkommen
     private readonly _eventScopeValue = 'event';
     private readonly _traceScopeValue = 'trace';
 
@@ -214,22 +214,28 @@ export class XesParser {
             return undefined;
         }
         const eventLogAttributes = this.extractEventLogAttributes(eventObj);
-        const activityArr = eventLogAttributes
-            .filter(
-                eventLogAttribute =>
-                    eventLogAttribute.key.toLowerCase() ===
-                    this._activityEventLogAttributeKey
-            )
-            .map(eventLogAttribute => eventLogAttribute.value);
-        if (activityArr.length !== 1) {
+        const activity = this.getAttributeWithKey(eventLogAttributes, this._activityEventLogAttributeKey);
+        if (activity == null || !(activity instanceof StringAttribute)) {
             throw XesParser.PARSING_ERROR;
         }
+        const lifecycleAttribute = this.getAttributeWithKey(eventLogAttributes, this._lifecycleEventLogAttributeKey);
+        let lifecycle = undefined;
+        if (lifecycleAttribute != null && lifecycleAttribute instanceof StringAttribute) {
+            lifecycle = lifecycleAttribute.value as Lifecycle;
+        }
+
         const eventLogAttributesWithoutActivity = eventLogAttributes.filter(
-            eventLogAttribute =>
-                eventLogAttribute.key.toLowerCase() !==
-                this._activityEventLogAttributeKey
-        );
-        return new EventlogEvent(eventLogAttributesWithoutActivity, activityArr[0]);
+            eventLogAttribute => ![this._activityEventLogAttributeKey, this._lifecycleEventLogAttributeKey].includes(eventLogAttribute.key.toLowerCase()));
+        return new EventlogEvent(eventLogAttributesWithoutActivity, activity.value, lifecycle);
+    }
+
+    private getAttributeWithKey(eventLogAttributes: EventlogAttribute[], key: string): EventlogAttribute | undefined {
+        const actsWithKey = eventLogAttributes
+            .filter(eventLogAttribute => eventLogAttribute.key.toLowerCase() === key.toLowerCase());
+        if (actsWithKey.length > 1) {
+            throw XesParser.PARSING_ERROR;
+        }
+        return actsWithKey.length === 1 ? actsWithKey[0] : undefined;
     }
 
     private extractEventLogAttributes(eventObj: any): EventlogAttribute[] {
