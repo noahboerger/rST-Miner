@@ -1,19 +1,19 @@
-import { MinerSettings } from '../models/miner-settings/miner-settings';
+import { RstMinerSettings } from '../models/miner-settings/rst-miner-settings';
 import { TypedJSON } from 'typedjson';
 import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
 
-export function minerSettingsToJson(settings: MinerSettings): string {
-    return new TypedJSON(MinerSettings).stringify(settings);
+export function minerSettingsToJson(settings: RstMinerSettings): string {
+    return new TypedJSON(RstMinerSettings).stringify(settings);
 }
 
-export function minerSettingsFromJson(json: string): MinerSettings {
-    const deserialized = new TypedJSON(MinerSettings).parse(json);
+export function minerSettingsFromJson(json: string): RstMinerSettings {
+    const deserialized = new TypedJSON(RstMinerSettings).parse(json);
     if (deserialized == null) {
         alert(
             'Fehler beim Parsen der Miner-Settings,\n' +
                 'setze auf Default-Settings zurück.'
         );
-        return new MinerSettings();
+        return new RstMinerSettings();
     }
     return deserialized;
 }

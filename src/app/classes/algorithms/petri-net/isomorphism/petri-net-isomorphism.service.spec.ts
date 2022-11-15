@@ -2,20 +2,20 @@ import {TestBed} from '@angular/core/testing';
 import {PetriNetIsomorphismTester} from './petri-net-isomorphism-tester';
 import {expect} from '@angular/flex-layout/_private-utils/testing';
 import {PetriNet} from "../../../models/petri-net/petri-net";
-import {PetriNetParserService} from "../../../parser/petri-net/petri-net-parser.service";
+import {PetriNetParser} from "../../../parser/petri-net/petri-net-parser";
 import {
     PetriNetToPartialOrderTransformer
-} from "../../transformation/petri-net-to-partial-order-transformer.service";
+} from "../../transformation/petri-net-to-partial-order-transformer";
 import {PartialOrderIsomorphismTester} from "../../partial-order/isomorphism/partial-order-isomorphism-tester"; // TODO
 
 describe('PetriNetIsomorphismService', () => {
     let isomorphismService: PetriNetIsomorphismTester;
-    let parserService: PetriNetParserService;
+    let parserService: PetriNetParser;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         isomorphismService = new PetriNetIsomorphismTester(new PetriNetToPartialOrderTransformer(), new PartialOrderIsomorphismTester());
-        parserService = new PetriNetParserService();
+        parserService = new PetriNetParser();
     });
 
 

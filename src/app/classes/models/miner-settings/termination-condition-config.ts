@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import { jsonMember, jsonObject } from 'typedjson';
 import { Duration } from 'ts-duration';
+import {PetriNet} from "../petri-net/petri-net";
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class TerminationConditionConfig {
-    //abstract toPredicate: (value: any) => boolean; TODO
-
-    // TODO Method to Function<PetriNet, Boolean> [Predicate] o.ä.
 
     abstract getSimpleName(): string;
+
+    abstract toIsTerminationConditionReachedFunction() : (actState: PetriNet) => boolean;
 }
 
 @jsonObject
@@ -33,11 +33,20 @@ export class LoopBasedTerminationConfig extends TerminationConditionConfig {
     }
 
     set loopAmount(value: number) {
-        if (value == null || value < 0) {
-            this.loopAmount = LoopBasedTerminationConfig.DEFAULT_ITERATIONS;
+        if (value == null || value <= 0) {
+            this._loopAmount = LoopBasedTerminationConfig.DEFAULT_ITERATIONS;
         } else {
             this._loopAmount = value;
         }
+    }
+
+    toIsTerminationConditionReachedFunction(): (actState: PetriNet) => boolean {
+        const loopAmount = this._loopAmount;
+        let actLoop = 0;
+        return function (actState: PetriNet) {
+            actLoop++;
+            return actLoop >= loopAmount;
+        };
     }
 }
 
@@ -116,6 +125,14 @@ export class TimeBasedTerminationConfig extends TerminationConditionConfig {
                     break;
             }
         }
+    }
+
+    toIsTerminationConditionReachedFunction(): (actState: PetriNet) => boolean {
+        const durationInMs = this._durationInMs;
+        const startTime = new Date();
+        return function (actState: PetriNet) {
+            return Duration.since(startTime).milliseconds >= durationInMs;
+        };
     }
 }
 

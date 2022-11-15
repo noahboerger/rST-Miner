@@ -9,7 +9,7 @@ import {Node} from '../../models/petri-net/node'
 
 
 
-export class PetriNetParserService extends AbstractBlockParser<PetriNet> { // TODO remove this parser (full folder) and AbstrachtBlockParser
+export class PetriNetParser extends AbstractBlockParser<PetriNet> { // TODO remove this parser (full folder) and AbstrachtBlockParser
 
     constructor() {
         super(

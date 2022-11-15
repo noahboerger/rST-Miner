@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {RstMinerDataService} from '../../services/data/rst-miner-data.service';
-import {MinerSettings} from '../../classes/models/miner-settings/miner-settings';
+import {RstMinerSettings} from '../../classes/models/miner-settings/rst-miner-settings';
 import {
     LoopBasedTerminationConfig,
     TimeBasedTerminationConfig,
@@ -12,6 +12,7 @@ import {
     NoneOracleConfig,
     TimestampOracleConfig
 } from "../../classes/models/miner-settings/concurrency-oracle-config";
+import {PrimitiveGeneratorConfig} from "../../classes/models/miner-settings/random-place-generator-config";
 
 @Component({
     selector: 'app-rst-settings-dialog',
@@ -20,11 +21,13 @@ import {
 })
 export class RstSettingsDialogComponent {
     // Zugriff auf statische Felder aus HTML ermöglichen
-    MinerSettings = MinerSettings;
+    MinerSettings = RstMinerSettings;
 
     NoneOracle = NoneOracleConfig;
     AlphaOracle = AlphaOracleConfig;
     TimestampOracle = TimestampOracleConfig;
+
+    PrimitiveGenerator = PrimitiveGeneratorConfig;
 
     LoopBasedTermination = LoopBasedTerminationConfig;
     TimeBasedTermination = TimeBasedTerminationConfig;
@@ -128,6 +131,27 @@ export class RstSettingsDialogComponent {
         if (oracle instanceof AlphaOracleConfig || oracle instanceof TimestampOracleConfig) {
             oracle.distinguishSameEvents = value;
         }
+    }
+
+    get actRandomPlaceGeneratorSimpleName(): string {
+        return this.rstMinerDataService.minerSettings.randomPlaceGenerator.getSimpleName();
+    }
+
+    set actRandomPlaceGeneratorSimpleName(value: string) {
+        switch (value) {
+            case PrimitiveGeneratorConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.randomPlaceGenerator =
+                    new PrimitiveGeneratorConfig();
+                break;
+        }
+    }
+
+    get primitiveGeneratorProbability(): number {
+        return (this.rstMinerDataService.minerSettings.randomPlaceGenerator as PrimitiveGeneratorConfig).probability;
+    }
+
+    set primitiveGeneratorProbability(value : number) {
+        (this.rstMinerDataService.minerSettings.randomPlaceGenerator as PrimitiveGeneratorConfig).probability = value;
     }
 
     downloadMinerSettingsJsonFile() {

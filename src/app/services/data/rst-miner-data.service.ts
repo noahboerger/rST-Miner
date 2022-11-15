@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Eventlog } from '../../classes/models/eventlog/eventlog';
-import { MinerSettings } from '../../classes/models/miner-settings/miner-settings';
+import { RstMinerSettings } from '../../classes/models/miner-settings/rst-miner-settings';
 
 @Injectable({
     providedIn: 'root',
 })
 export class RstMinerDataService {
     private _eventLog: Eventlog;
-    private _minerSettings: MinerSettings;
+    private _minerSettings: RstMinerSettings;
 
     constructor() {
         this._eventLog = new Eventlog([], [], [], [], []);
-        this._minerSettings = new MinerSettings();
+        this._minerSettings = new RstMinerSettings();
     }
 
     public get eventLog(): Eventlog {
@@ -22,15 +22,15 @@ export class RstMinerDataService {
         this._eventLog = value;
     }
 
-    public get minerSettings(): MinerSettings {
+    public get minerSettings(): RstMinerSettings {
         return this._minerSettings;
     }
 
-    public set minerSettings(value: MinerSettings) {
+    public set minerSettings(value: RstMinerSettings) {
         this._minerSettings = value;
     }
 
     public resetMinerSettingsToDefault() {
-        this.minerSettings = new MinerSettings();
+        this.minerSettings = new RstMinerSettings();
     }
 }

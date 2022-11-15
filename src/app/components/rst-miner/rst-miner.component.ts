@@ -10,7 +10,7 @@ import {TypedJSON} from 'typedjson';
 import {MatDialog} from '@angular/material/dialog';
 import {RstSettingsDialogComponent} from '../rst-settings-dialog/rst-settings-dialog.component';
 import {minerSettingsToJson, readAndUseMinerSettingsFile} from '../../classes/serde/miner-settings-serde-helper';
-import {RstMiner} from "../../classes/algorithms/rst-miner/rstMiner";
+import {RstMiner} from "../../classes/algorithms/rst-miner/rst-miner";
 import {saveAs} from "file-saver";
 import {serialisePetriNet} from "../../classes/serde/petri-net-serialisation";
 

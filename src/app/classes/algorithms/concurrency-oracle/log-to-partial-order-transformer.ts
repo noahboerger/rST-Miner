@@ -24,17 +24,17 @@ export class LogToPartialOrderTransformer extends LogCleaner {
     public static readonly START_SYMBOL = '▶';
     public static readonly STOP_SYMBOL = '■';
 
-    constructor(protected _pnIsomorphismService: PetriNetIsomorphismTester) {
+    constructor(protected _pnIsomorphismService: PetriNetIsomorphismTester, private _config: LogToPartialOrderTransformerConfiguration = {}) {
         super();
     }
 
-    public transformToPartialOrders(eventlog: Eventlog, concurrencyRelation: ConcurrencyRelation, config: LogToPartialOrderTransformerConfiguration = {}): Array<PartialOrderNetWithContainedTraces> {
+    public transformToPartialOrders(eventlog: Eventlog, concurrencyRelation: ConcurrencyRelation): Array<PartialOrderNetWithContainedTraces> {
         let eventlogTraces = eventlog.traces;
         if (eventlogTraces.length === 0) {
             return [];
         }
 
-        if (!!config.cleanLog) {
+        if (!!this._config.cleanLog) {
             eventlogTraces = this.cleanLog(eventlogTraces);
         } else {
             console.warn(`relabeling a log with both 'start' and 'complete' events will result in unexpected label associations!`);
@@ -42,7 +42,7 @@ export class LogToPartialOrderTransformer extends LogCleaner {
 
         concurrencyRelation.relabeler.relabelSequencesPreserveNonUniqueIdentities(eventlogTraces);
 
-        const sequences = this.convertLogToPetriNetSequences(eventlogTraces, !!config.discardPrefixes);
+        const sequences = this.convertLogToPetriNetSequences(eventlogTraces, !!this._config.discardPrefixes);
 
         // transitive reduction requires all places to be internal => always add start/stop and remove later
         sequences.forEach(seq => {
@@ -50,7 +50,7 @@ export class LogToPartialOrderTransformer extends LogCleaner {
         });
         const partialOrders = this.convertSequencesToPartialOrders(sequences, concurrencyRelation);
         this.removeTransitiveDependencies(partialOrders);
-        if (!config.addStartStopEvent) {
+        if (!this._config.addStartStopEvent) {
             partialOrders.forEach(po => {
                 this.removeStartAndStopEvent(po);
             });

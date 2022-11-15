@@ -83,6 +83,7 @@
                                                     alphaOracleLookAheadDistance
                                                 "
                                                 matInput
+                                                min="0"
                                                 placeholder="Default {{
                                                     AlphaOracle.DEFAULT_LOOK_AHEAD_DISTANCE
                                                 }}"
@@ -90,8 +91,7 @@
                                         </mat-form-field>
                                         <br />
                                          <mat-checkbox
-                                             [(ngModel)]="concurrencyOracleDistinguishSameEvents"
-                                             class="example-margin">
+                                             [(ngModel)]="concurrencyOracleDistinguishSameEvents">
                                             Distinguish same Events
                                         </mat-checkbox>
                                     </span>
@@ -101,8 +101,7 @@
                                             TimestampOracle.SIMPLE_NAME
                                         ">
                                          <mat-checkbox
-                                             [(ngModel)]="concurrencyOracleDistinguishSameEvents"
-                                             class="example-margin">
+                                             [(ngModel)]="concurrencyOracleDistinguishSameEvents">
                                             Distinguish same Events
                                         </mat-checkbox>
                                     </span>
@@ -111,6 +110,21 @@
                             </span>
                         </div>
                     </mat-radio-group>
+                    <p><b>Eventlog Transformation to Partial Orders</b></p>
+                    <mat-checkbox
+                        [(ngModel)]="rstMinerDataService.minerSettings.partialOrderTransformation.cleanLifecycle">
+                        Clean Lifecycle Events
+                    </mat-checkbox>
+                    <br />
+                    <mat-checkbox
+                        [(ngModel)]="rstMinerDataService.minerSettings.partialOrderTransformation.addStartStopEvent">
+                        Add Start and Stop Event
+                    </mat-checkbox>
+                    <br />
+                    <mat-checkbox
+                        [(ngModel)]="rstMinerDataService.minerSettings.partialOrderTransformation.discardPrefixes">
+                        Discard prefixes
+                    </mat-checkbox>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
@@ -119,7 +133,54 @@
                             Random Place Generator
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <p>Choose between different generators</p>
+                    <mat-radio-group
+                        [(ngModel)]="actRandomPlaceGeneratorSimpleName">
+                        <div class="full-width" style="float: left">
+                            <span
+                                *ngFor="
+                                    let randomPlaceGeneratorTypeSimpleName of MinerSettings.randomPlaceGeneratorTypesSimpleNames
+                                ">
+                                <mat-radio-button
+                                    value="{{ randomPlaceGeneratorTypeSimpleName }}"
+                                >{{
+                                    randomPlaceGeneratorTypeSimpleName
+                                    }}</mat-radio-button
+                                >
+
+                                <div
+                                    *ngIf="
+                                        rstMinerDataService.minerSettings.randomPlaceGenerator.getSimpleName() ===
+                                        randomPlaceGeneratorTypeSimpleName
+                                    "
+                                    [ngSwitch]="randomPlaceGeneratorTypeSimpleName">
+                                    <span
+                                        *ngSwitchCase="
+                                            PrimitiveGenerator.SIMPLE_NAME
+                                        ">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                            >Probability</mat-label
+                                            >
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="1"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_PROBABILITY
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorProbability
+                                                " />
+                                        </mat-form-field>
+                                    </span>
+                                </div>
+                                <br />
+                            </span>
+                        </div>
+                    </mat-radio-group>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
@@ -160,6 +221,7 @@
                                             >
                                             <input
                                                 matInput
+                                                min="1"
                                                 placeholder="Default {{
                                                     LoopBasedTermination.DEFAULT_ITERATIONS
                                                 }}"
@@ -180,6 +242,7 @@
                                             <mat-label>Duration</mat-label>
                                             <input
                                                 matInput
+                                                min="0"
                                                 placeholder="Default {{
                                                     TimeBasedTermination.DEFAULT_DURATION
                                                 }}"
@@ -217,7 +280,6 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <mat-checkbox
-                        class="example-margin"
                         [(ngModel)]="rstMinerDataService.minerSettings.isDebugModusEnabled">
                         Enabled
                     </mat-checkbox>

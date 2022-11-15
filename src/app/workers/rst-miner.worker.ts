@@ -1,12 +1,12 @@
 /// <reference lib="webworker" />
 import {TypedJSON} from 'typedjson';
 import {Eventlog} from '../classes/models/eventlog/eventlog';
-import {MinerSettings} from "../classes/models/miner-settings/miner-settings";
-import {RstMiner} from "../classes/algorithms/rst-miner/rstMiner";
+import {RstMinerSettings} from "../classes/models/miner-settings/rst-miner-settings";
+import {RstMiner} from "../classes/algorithms/rst-miner/rst-miner";
 import {serialisePetriNet} from "../classes/serde/petri-net-serialisation";
 
 onmessage = function (data) {
-    const minerSettings = new TypedJSON(MinerSettings).parse(data.data[0]); // TODO ggf utility fkt nutzen
+    const minerSettings = new TypedJSON(RstMinerSettings).parse(data.data[0]); // TODO ggf utility fkt nutzen
     const eventlog = new TypedJSON(Eventlog).parse(data.data[1])
 
 
