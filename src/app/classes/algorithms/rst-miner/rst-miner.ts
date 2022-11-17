@@ -10,8 +10,6 @@ import {PartialOrderNetWithContainedTraces} from "../../models/petri-net/partial
 import {Transition} from "../../models/petri-net/transition";
 import {LpoFireValidator} from "../petri-net/validation/lpo-fire-validator";
 import {RandomPlaceGenerator} from "./generators/random-place-generator";
-import {ImplicitPlaceRemover} from "../petri-net/transformation/implicit-place-remover";
-import {PetriNetCoverabilityTester} from "../petri-net/reachability/petri-net-coverability-tester";
 
 export class RstMiner {
 
@@ -24,7 +22,6 @@ export class RstMiner {
     private _petriNetToPartialOrderTransformer : PetriNetToPartialOrderTransformer;
     private _randomPlaceGenerator: RandomPlaceGenerator;
 
-    private _activityToTransition: Map<string, Transition> = new Map<string, Transition>(); // TODO besser nur lokale Variable
 
     constructor(private _minerSettings: RstMinerSettings) {
         this._concurrencyOracle = _minerSettings.concurrencyOracle.generateConcurrencyOracle();
@@ -42,7 +39,9 @@ export class RstMiner {
         const partialOrders = partialOrderNetsWithContainedTraces
             .map(partialOrderNetWithContainedTraces => partialOrderNetWithContainedTraces.net)
             .map(partialOrderNet => this._petriNetToPartialOrderTransformer.transform(partialOrderNet))
-        let petriNet = this.createFlowerModel(partialOrderNetsWithContainedTraces);
+
+        const allTransitionActivities = RstMiner.calculateTransitionActivities(partialOrderNetsWithContainedTraces); // TODO nutzen für implicit place remover
+        let petriNet = this.createFlowerModel(allTransitionActivities);
 
         const terminationConditionReachedFct = this._minerSettings.terminationCondition.toIsTerminationConditionReachedFunction();
 
@@ -52,7 +51,7 @@ export class RstMiner {
             const clonedPetriNet = petriNet.clone();
 
 
-            this._randomPlaceGenerator.insertRandomPlace("p" + addedPlaces, clonedPetriNet, this._activityToTransition);
+            this._randomPlaceGenerator.insertRandomPlace("p" + addedPlaces, clonedPetriNet);
 
             // TODO hauptalgorithmus mit würfeln Testen und optimieren
 
@@ -87,20 +86,23 @@ export class RstMiner {
         return petriNet;
     }
 
-    private createFlowerModel(partialOrders: Array<PartialOrderNetWithContainedTraces>) : PetriNet {
-        const allActivities = new Set(partialOrders
+    private static calculateTransitionActivities(partialOrders: Array<PartialOrderNetWithContainedTraces>) : Set<string> {
+        return new Set(partialOrders
             .flatMap(value => value.net.getTransitions())
             .map(transition => transition.label)
-            .filter(activity => activity != null));
+            .filter(transitionActivity => transitionActivity != null)
+            .map(transitionActivity => transitionActivity!));
+    }
 
-        const allTransitions = [...allActivities]
+    private createFlowerModel(transitionActivities: Set<string>) : PetriNet {
+
+        const allTransitions = [...transitionActivities]
             .map(activity => new Transition(activity, undefined, undefined, activity));
 
         const petriNet = new PetriNet();
 
         allTransitions.forEach(transition => {
             petriNet.addTransition(transition);
-            this._activityToTransition.set(transition.getId(), transition)
         });
 
         return petriNet;

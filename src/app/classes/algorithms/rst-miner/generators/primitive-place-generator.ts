@@ -14,24 +14,22 @@ export class PrimitivePlaceGenerator implements RandomPlaceGenerator {
         return 0; // TODO
     }
 
-    insertRandomPlace(id: string, petriNet: PetriNet, activityToTransition: Map<string, Transition>): void {
+    insertRandomPlace(id: string, petriNet: PetriNet): void {
         const newPlace = new Place(Math.random() < 0.5? 0 : 1, undefined, undefined, id); // TODO generate marking
         petriNet.addPlace(newPlace);
 
         // TODO aktuell werden "dumm" Transitionen eingefügt die ggf nie genutzt werden aber trotzdem validiert
 
         // Add random ingoing arcs TODO zu dumm (nur hinzufügen, wenn eine Folgebeziehung hierfür existiert)
-        Array.from(activityToTransition.keys())
-            .filter(activity => Math.random() < this._probability)
-            .filter(activity => activityToTransition.has(activity))
-            .map(activity => new Arc("i" + id + activity, (activityToTransition.get(activity) as Transition), newPlace))
+        Array.from(petriNet.getTransitions())
+            .filter(transition => Math.random() < this._probability)
+            .map(transition => new Arc("i" + id + transition.label, transition, newPlace))
             .forEach(arc => petriNet.addArc(arc));
 
         // Add random outgoing arcs TODO zu dumm (nur hinzufügen, wenn eine Folgebeziehung hierfür existiert)
-        Array.from(activityToTransition.keys())
-            .filter(value => Math.random() < this._probability)
-            .filter(activity => activityToTransition.has(activity))
-            .map(activity => new Arc("o" + id + activity, newPlace, (activityToTransition.get(activity) as Transition)))
+        Array.from(petriNet.getTransitions())
+            .filter(transition => Math.random() < this._probability)
+            .map(transition => new Arc("o" + id + transition.label, newPlace, transition))
             .forEach(arc => petriNet.addArc(arc));
 
 
