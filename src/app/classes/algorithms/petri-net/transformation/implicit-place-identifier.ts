@@ -3,41 +3,62 @@ import {EventlogTrace} from "../../../models/eventlog/eventlog-trace";
 import {Place} from "../../../models/petri-net/place";
 import {Arc} from "../../../models/petri-net/arc";
 import {Transition} from "../../../models/petri-net/transition";
-import ArcType = ImplicitPlaceIdentifier.ArcType;
+import {ArcType, getArcs, reduceArcsToMapActivityKeyArcValue} from "./classes/arc-type";
+import {ImplicitResult} from "./classes/implicit-result";
+import { v4 as uuidv4 } from 'uuid';
+
 
 
 export class ImplicitPlaceIdentifier {
 
 
-    constructor(private _transitions: Array<string>, private _uniqueTraces: Array<EventlogTrace>) {
+    constructor(private _transitions: Array<string>, private _uniqueTraces: Array<EventlogTrace>) { // TODO -> Use partial orders instead?!
     }
 
 
-    public calculateImplicitPlacesFor(currentPlace: Place, petriNet: PetriNet) //: Array<Place> { TODO -> ggf Ersatzplatz einfügen
-    {
+    public calculateImplicitPlacesFor(currentPlace: Place, petriNet: PetriNet) : Array<ImplicitResult> { // TODO -> ggf Ersatzplatz einfügen
+        // place without outgoing arcs is always implicit
+        if (currentPlace.outgoingArcs.length === 0 || (currentPlace.ingoingArcs.length === 0 && currentPlace.marking === 0)) { // TODO passt das?
+            return [new ImplicitResult(currentPlace)];
+        }
+
+        const implicitPlaces: Array<ImplicitResult> = [];
         const relatedPlaces = this.calculateRelatedPlaces(currentPlace, petriNet);
-        const implicitPlaces: Array<Place> = [];
 
         for (const relatedPlace of relatedPlaces) {
             switch (this.testRelation(currentPlace, relatedPlace)) {
                 // Neuer Platz eine Subregion vom relatedPlace
                 case -1:
-                    if (validateCombinedPlace(relatedPlace, currentPlace)) {
-                        implicitPlaces.push(relatedPlace)
-                    }
+
+                        implicitPlaces.push(new ImplicitResult(relatedPlace, this.buildCombinedPlace(relatedPlace, currentPlace)))
+
                     break;
                 // Keine Beziehung zwischen den Plätzen
                 case 0:
                     break
                 // Neuer Platz eine Superregion vom relatedPlace
                 case 1:
-                    if (validateCombinedPlace(currentPlace, relatedPlace) && !implicitPlaces.includes(currentPlace)) {
-                        implicitPlaces.push(currentPlace)
+                    if (!implicitPlaces.map(value => value.implicitPlace).includes(currentPlace)) {
+                        implicitPlaces.push(new ImplicitResult(currentPlace, this.buildCombinedPlace(currentPlace, relatedPlace)))
                     }
                     break;
-                default:
-                    if (this.isTransitionsAndMarkingEquals(currentPlace, relatedPlace)) {
-                        implicitPlaces.push(currentPlace);
+                default: // TODO check if all is still needed // TODO passt das?
+                    // Places are behaving same related to the given eventlog
+                    if(currentPlace.marking === relatedPlace.marking &&
+                        this.isTransitionsEquals(currentPlace, relatedPlace, ArcType.INGOING)) {
+                        if(this.isTransitionsEquals(currentPlace, relatedPlace, ArcType.OUTGOING)) {
+                            // Equal places
+                            implicitPlaces.push(new ImplicitResult(currentPlace));
+                        } else {
+                            // Equals incoming arcs but one place has more outgoings arc which are not used
+                            if(currentPlace.outgoingArcs.length > relatedPlace.outgoingArcs.length) {
+                                implicitPlaces.push(new ImplicitResult(currentPlace));
+                            } else if (currentPlace.outgoingArcs.length < relatedPlace.outgoingArcs.length) {
+                                implicitPlaces.push(new ImplicitResult(relatedPlace));
+                            } else {
+                                throw new Error("Unexpected place relation occurred in ImplicitPlaceIdentifier!")
+                            }
+                        }
                     } else {
                         throw new Error("Unexpected place relation occurred in ImplicitPlaceIdentifier!")
                     }
@@ -53,7 +74,7 @@ export class ImplicitPlaceIdentifier {
             .filter(potentialPlace => ImplicitPlaceIdentifier.hasCommonTransition(potentialPlace, place))
     }
 
-    private static hasCommonTransition(p1: Place, p2: Place) { // TODO darf das so sein? (ggf Methode deaktivieren)
+    private static hasCommonTransition(p1: Place, p2: Place) {
         const p1Sources = p1.ingoingArcs.map(arc => arc.source)
         for (const p2InArc of p2.ingoingArcs) {
             const p2Source = p2InArc.source;
@@ -61,16 +82,18 @@ export class ImplicitPlaceIdentifier {
                 return true;
             }
         }
+
+        const p1Destinations = p1.outgoingArcs.map(arc => arc.destination)
+        for(const p2OutArc of p2.outgoingArcs) {
+            const p2Destination = p2OutArc.destination
+            if(p1Destinations.includes(p2Destination)) {
+                return true
+            }
+        }
         return false;
     }
 
-    private isTransitionsAndMarkingEquals(currentPlace: Place, relatedPlace: Place) {
-        return currentPlace.marking === relatedPlace.marking &&
-            this.isTransitionsEquals(currentPlace, relatedPlace, ArcType.INGOING) &&
-            this.isTransitionsEquals(currentPlace, relatedPlace, ArcType.OUTGOING);
-    }
-
-    private isTransitionsEquals(p1: Place, p2: Place, arcType: ImplicitPlaceIdentifier.ArcType) {
+    private isTransitionsEquals(p1: Place, p2: Place, arcType: ArcType) {
         function reduceArcsToMapTransitionKeyArcValue(arcs: Array<Arc>) {
             return arcs.reduce(function (map, arc) {
                 const transition = arc.source instanceof Transition ? arc.source : (arc.destination as Transition);
@@ -83,8 +106,8 @@ export class ImplicitPlaceIdentifier {
             return false;
         }
 
-        const p1TransToArcs = reduceArcsToMapTransitionKeyArcValue(ArcType.getArcs(arcType, p1));
-        const p2TransToArcs = reduceArcsToMapTransitionKeyArcValue(ArcType.getArcs(arcType, p1));
+        const p1TransToArcs = reduceArcsToMapTransitionKeyArcValue(getArcs(arcType, p1));
+        const p2TransToArcs = reduceArcsToMapTransitionKeyArcValue(getArcs(arcType, p1));
 
         for (let p1Trans of p1TransToArcs.keys()) {
             if (!p2TransToArcs.has(p1Trans)) {
@@ -104,21 +127,111 @@ export class ImplicitPlaceIdentifier {
 
         let p1: FireablePlace;
         let p2: FireablePlace;
-        let result = 2; // TODO nutzer lieber max / min
-        let tempResult;
+        let result = 2; // TODO nutzer lieber max / min && TODO cleanup --> was wenn 2 zurückgegeben wird?
 
-        for(let trace of this._uniqueTraces) {
+
+        for (let trace of this._uniqueTraces) {
             p1 = new FireablePlace(place1)
             p2 = new FireablePlace(place2)
-            for(let event of trace.events) {
+
+            // Compare markings before start TODO cleanup
+            result = ImplicitPlaceIdentifier.compareMarkingsUpdateResult(p1, p2, result);
+            if (result == 0) {
+                return result;
+            }
+
+            for (let event of trace.events) {
                 const activity = event.activity;
-                // TODO
+
+                //compare markings after consumption
+                p1.consumeFire(activity);
+                p2.consumeFire(activity);
+                result = ImplicitPlaceIdentifier.compareMarkingsUpdateResult(p1, p2, result);
+                if (result == 0) {
+                    return result;
+                }
+                //compare markings after production
+                p1.produceFire(activity);
+                p2.produceFire(activity);
+                result = ImplicitPlaceIdentifier.compareMarkingsUpdateResult(p1, p2, result);
+                if (result == 0) {
+                    return result;
+                }
             }
         }
-        // TODO
+        return result;
     }
 
+    private static compareMarkingsUpdateResult(p1: FireablePlace, p2: FireablePlace, resultBefore: number) {
+        const tempResult = FireablePlace.compareMarkings(p1, p2) //-1 for p1<p2, 0 for p1=p2, 1=p1>p2
+        switch (tempResult) { // TODO codestyle
+            case -1: //p1<p2
+                if (resultBefore == 2 || resultBefore == -1) {//first or consistent result
+                    return -1;
+                } else {
+                    return 0;
+                }
+            case 0: //p1=p2
+               return resultBefore;
+            case 1: //p1>p2
+                if (resultBefore == 2 || resultBefore == 1) {//first or consistent result
+                    return  1;
+                } else {
+                    return  0;
+                }
+            default:
+                return resultBefore;
+        }
+    }
 
+// Build and check whether the place resulting from p1-p2 is valid TODO kein short loop support
+    private buildCombinedPlace(p1: Place, p2: Place) { // TODO --> Funktioniert nicht bei short loops
+        const newPlaceId = uuidv4()// TODO --> p1 wird entfernt?
+        const resultingPlace = new Place(p1.marking - p2.marking, undefined, undefined, newPlaceId); // TODO sinvolle id
+        const p1Ingoing = reduceArcsToMapActivityKeyArcValue(p1.ingoingArcs)
+        const p2Ingoing = reduceArcsToMapActivityKeyArcValue(p2.ingoingArcs)
+        const p1Outgoing = reduceArcsToMapActivityKeyArcValue(p1.outgoingArcs)
+        const p2Outgoing = reduceArcsToMapActivityKeyArcValue(p2.outgoingArcs)
+
+        const relevantActivities = new Set([...p1Ingoing.keys()].concat([...p2Ingoing.keys()]).concat([...p1Outgoing.keys()]).concat([...p2Outgoing.keys()]))
+
+        for (const activity of relevantActivities) { // TODO cleanup
+            let transition: Transition | undefined = undefined;
+            let weight = 0;
+            // Ingoing (positive)
+            if (p1Ingoing.has(activity)) {
+                transition = p1Ingoing.get(activity)!.source as Transition;
+                weight = weight + p1Ingoing.get(activity)!.weight;
+            }
+            if (p2Ingoing.has(activity)) {
+                transition = p2Ingoing.get(activity)!.source as Transition;
+                weight = weight - p2Ingoing.get(activity)!.weight;
+
+            }
+            // Outgoing (negative)
+            if (p1Outgoing.has(activity)) {
+                transition = p1Outgoing.get(activity)!.destination as Transition;
+                weight = weight - p1Outgoing.get(activity)!.weight;
+            }
+            if (p2Outgoing.has(activity)) {
+                transition = p2Outgoing.get(activity)!.destination as Transition;
+                weight = weight + (p2Outgoing.get(activity)!.weight);
+
+            }
+
+            if (transition == null) {
+                throw new Error("Invalid state")
+            }
+
+            if (weight > 0) { // TODO validate weight
+                resultingPlace.addIngoingArc(new Arc("i" + newPlaceId + transition.label, transition, resultingPlace, weight))
+            } else if (weight < 0) {
+                resultingPlace.addOutgoingArc(new Arc("o" + newPlaceId + transition.label, resultingPlace, transition, Math.abs(weight)))
+            }
+        }
+
+        return resultingPlace; // TODO build instead of validate and VALIDATE
+    }
 }
 
 class FireablePlace {
@@ -129,45 +242,31 @@ class FireablePlace {
 
 
     constructor(private place: Place) {
-        function reduceArcsToMapActivityKeyArcValue(arcs: Array<Arc>) {
-            return arcs.reduce(function (map, arc) {
-                const transition = arc.source instanceof Transition ? arc.source : (arc.destination as Transition);
-                map.set(transition.label!, arc);
-                return map;
-            }, new Map<string, Arc>)
-        }
-
         this._ingoingActivityToArcs = reduceArcsToMapActivityKeyArcValue(place.ingoingArcs)
-        this._outgoingActivityToArcs = reduceArcsToMapActivityKeyArcValue(place.ingoingArcs)
+        this._outgoingActivityToArcs = reduceArcsToMapActivityKeyArcValue(place.outgoingArcs)
         this.currentTokens = place.marking;
     }
 
     public produceFire(activity: string) {
-        if(this._ingoingActivityToArcs.has(activity)) {
+        if (this._ingoingActivityToArcs.has(activity)) {
             this.currentTokens += this._ingoingActivityToArcs.get(activity)!.weight;
         }
     }
 
     public consumeFire(activity: string) {
-        if(this._outgoingActivityToArcs.has(activity)) {
+        if (this._outgoingActivityToArcs.has(activity)) {
             this.currentTokens -= this._outgoingActivityToArcs.get(activity)!.weight;
         }
     }
-}
 
-
-export namespace ImplicitPlaceIdentifier {
-    export enum ArcType {
-        INGOING, OUTGOING
-    }
-
-    export namespace ArcType {
-        export function getArcs(arcType: ArcType, place: Place) {
-            if (arcType === ArcType.INGOING) {
-                return place.ingoingArcs;
-            } else {
-                return place.outgoingArcs;
-            }
+    public static compareMarkings(p1: FireablePlace, p2: FireablePlace) {
+        let result = 0;
+        const compareValue = p1.currentTokens - p2.currentTokens;
+        if (compareValue < 0) { //p1 has less tokens than p2
+            result = -1;
+        } else if (compareValue > 0) { //p1 has more tokens than p2
+            result = 1;
         }
+        return result;
     }
 }

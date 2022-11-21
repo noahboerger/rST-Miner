@@ -44,7 +44,8 @@ p4 t4`)!;
 
         const p1 = net.getPlaces().filter(place => place.id === "p1")[0];
 
-         implicitPlaceIdentifier.calculateImplicitPlacesFor(p1, net);
+         const result = implicitPlaceIdentifier.calculateImplicitPlacesFor(p1, net);
+         console.log(result)
 
         // expect(noImplicit).toBeTruthy();
         // expect(noImplicit.getTransitions().length).toBe(3);

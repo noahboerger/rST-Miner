@@ -10,8 +10,18 @@ import {PartialOrderNetWithContainedTraces} from "../../models/petri-net/partial
 import {Transition} from "../../models/petri-net/transition";
 import {LpoFireValidator} from "../petri-net/validation/lpo-fire-validator";
 import {RandomPlaceGenerator} from "./generators/random-place-generator";
+import {ImplicitPlaceIdentifier} from "../petri-net/transformation/implicit-place-identifier";
+import {Place} from "../../models/petri-net/place";
 
 export class RstMiner {
+
+    /*
+    TODO s:
+    - Anpassung der Labels
+    - Code Cleanup
+    - Merge
+    - Short-Loop-Support
+     */
 
     public static MINING_ERROR = new Error(
         'given .type log string can not be parsed'
@@ -41,6 +51,8 @@ export class RstMiner {
             .map(partialOrderNet => this._petriNetToPartialOrderTransformer.transform(partialOrderNet))
 
         const allTransitionActivities = RstMiner.calculateTransitionActivities(partialOrderNetsWithContainedTraces); // TODO nutzen für implicit place remover
+        const implicitPlaceIdentifier = new ImplicitPlaceIdentifier([...allTransitionActivities], partialOrderNetsWithContainedTraces.flatMap(partialOrderNetsWithContainedTraces => partialOrderNetsWithContainedTraces.containedTraces))
+
         let petriNet = this.createFlowerModel(allTransitionActivities);
 
         const terminationConditionReachedFct = this._minerSettings.terminationCondition.toIsTerminationConditionReachedFunction();
@@ -51,7 +63,7 @@ export class RstMiner {
             const clonedPetriNet = petriNet.clone();
 
 
-            this._randomPlaceGenerator.insertRandomPlace("p" + addedPlaces, clonedPetriNet);
+            const addedPlace = this._randomPlaceGenerator.insertRandomPlace("p" + addedPlaces, clonedPetriNet);
 
             // TODO hauptalgorithmus mit würfeln Testen und optimieren
 
@@ -79,7 +91,7 @@ export class RstMiner {
             petriNet = clonedPetriNet
             addedPlaces++;
 
-            // TODO remove implicit places
+            this.removeImplicitPlacesFor(implicitPlaceIdentifier, addedPlace, petriNet);
         }
 
         // TODO anders initialisieren und nutzen in der loop
@@ -106,5 +118,27 @@ export class RstMiner {
         });
 
         return petriNet;
+    }
+
+    private removeImplicitPlacesFor(implicitPlaceIdentifier: ImplicitPlaceIdentifier, addedPlace: Place, petriNet: PetriNet) {
+        implicitPlaceIdentifier.calculateImplicitPlacesFor(addedPlace, petriNet)
+            .filter(implicitResult => this.checkValidPlaceOrUndefined(implicitResult.substitutePlace))
+            .forEach(implicitResult => {
+                petriNet.removePlace(implicitResult.implicitPlace);
+                const substPlace = implicitResult.substitutePlace;
+                if (substPlace != null) {
+                    petriNet.addPlace(substPlace);
+                    substPlace.ingoingArcs.forEach(arc => petriNet.addArc(arc))
+                    substPlace.outgoingArcs.forEach(arc => petriNet.addArc(arc))
+                    this.removeImplicitPlacesFor(implicitPlaceIdentifier, substPlace, petriNet)
+                }
+            })
+    }
+
+    private checkValidPlaceOrUndefined(substitutePlace: Place | undefined) {
+        if(substitutePlace == null) {
+            return true;
+        }
+        return true; // TODO (combined place auf max tokens, max weight, etc. validieren)
     }
 }

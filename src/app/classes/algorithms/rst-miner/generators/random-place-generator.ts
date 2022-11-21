@@ -1,9 +1,10 @@
 import {PetriNet} from "../../../models/petri-net/petri-net";
 import {Transition} from "../../../models/petri-net/transition";
 import {PartialOrder} from "../../../models/partial-order/partial-order";
+import {Place} from "../../../models/petri-net/place";
 
 export interface RandomPlaceGenerator {
-    insertRandomPlace(id: string, petriNet: PetriNet): void;
+    insertRandomPlace(id: string, petriNet: PetriNet): Place;
 
     init(petriNet: PetriNet, partialOrders: PartialOrder[]) : number;
 }
