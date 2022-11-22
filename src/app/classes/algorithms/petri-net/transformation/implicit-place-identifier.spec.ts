@@ -72,7 +72,7 @@ p4 t4`)!;
             substitutePlace?._unconnectedIngoingTemplateArcs?.length
         ).toEqual(1);
         expect(
-            substitutePlace?._unconnectedOutgoingTemplateArcs[0]._weight
+            substitutePlace?._unconnectedIngoingTemplateArcs[0]._weight
         ).toEqual(2);
 
         expect(
