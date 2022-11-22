@@ -1,8 +1,7 @@
-import {Node} from './node';
-import {EditableString} from '../../utility/string-sequence';
+import { Node } from './node';
+import { EditableString } from '../../utility/string-sequence';
 
 export class Transition extends Node implements EditableString {
-
     private _label: string | undefined;
 
     constructor(label?: string, id?: string) {

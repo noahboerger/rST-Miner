@@ -1,17 +1,18 @@
-import {ConcurrencyOracle} from '../concurrency-oracle';
-import {TimestampOracleConfiguration} from './timestamp-oracle-configuration';
-import {EventlogTrace} from "../../../models/eventlog/eventlog-trace";
-import {ConcurrencyRelation} from "../../../models/concurrency/concurrency-relation";
-import {OccurenceMatrixType, OccurrenceMatrix} from "../../../models/concurrency/occurrence-matrix";
-import {TraceCleaner} from "../trace-cleaner";
-import {Lifecycle} from "../../../models/eventlog/utils/lifecycle";
-import {Relabeler} from "../../../utility/relabeler";
-import {EventlogEvent} from "../../../models/eventlog/eventlog-event";
-import {Eventlog} from "../../../models/eventlog/eventlog";
-
+import { ConcurrencyOracle } from '../concurrency-oracle';
+import { TimestampOracleConfiguration } from './timestamp-oracle-configuration';
+import { EventlogTrace } from '../../../models/eventlog/eventlog-trace';
+import { ConcurrencyRelation } from '../../../models/concurrency/concurrency-relation';
+import {
+    OccurenceMatrixType,
+    OccurrenceMatrix,
+} from '../../../models/concurrency/occurrence-matrix';
+import { TraceCleaner } from '../trace-cleaner';
+import { Lifecycle } from '../../../models/eventlog/utils/lifecycle';
+import { Relabeler } from '../../../utility/relabeler';
+import { EventlogEvent } from '../../../models/eventlog/eventlog-event';
+import { Eventlog } from '../../../models/eventlog/eventlog';
 
 export class TimestampOracle extends TraceCleaner implements ConcurrencyOracle {
-
     constructor(private config: TimestampOracleConfiguration = {}) {
         super();
     }
@@ -24,16 +25,21 @@ export class TimestampOracle extends TraceCleaner implements ConcurrencyOracle {
 
         eventlogTraces.forEach(t => {
             this.filterTraceAndPairStartCompleteEvents(t);
-        })
+        });
 
         const relabeler = new Relabeler();
         if (this.config.distinguishSameLabels) {
             this.relabelPairedLog(eventlogTraces, relabeler);
         } else {
-            relabeler.relabelSequencesPreserveNonUniqueIdentities(eventlogTraces);
+            relabeler.relabelSequencesPreserveNonUniqueIdentities(
+                eventlogTraces
+            );
         }
 
-        const matrix = this.constructOccurrenceMatrix(eventlogTraces, !!this.config.distinguishSameLabels);
+        const matrix = this.constructOccurrenceMatrix(
+            eventlogTraces,
+            !!this.config.distinguishSameLabels
+        );
         return ConcurrencyRelation.fromOccurrenceMatrix(matrix, relabeler);
     }
 
@@ -44,7 +50,9 @@ export class TimestampOracle extends TraceCleaner implements ConcurrencyOracle {
             switch (e.lifecycle) {
                 case Lifecycle.START:
                     if (startedEvents.has(e.activity)) {
-                        throw new Error('TimestampOracle does not currently support auto-concurrency in the log!');
+                        throw new Error(
+                            'TimestampOracle does not currently support auto-concurrency in the log!'
+                        );
                     }
                     startedEvents.set(e.activity, e);
                     break;
@@ -66,7 +74,10 @@ export class TimestampOracle extends TraceCleaner implements ConcurrencyOracle {
         }
     }
 
-    protected relabelPairedLog(log: Array<EventlogTrace>, relabeler: Relabeler) {
+    protected relabelPairedLog(
+        log: Array<EventlogTrace>,
+        relabeler: Relabeler
+    ) {
         const filteredLog = this.cleanLog(log);
         relabeler.uniquelyRelabelSequences(filteredLog);
         for (const trace of filteredLog) {
@@ -79,15 +90,24 @@ export class TimestampOracle extends TraceCleaner implements ConcurrencyOracle {
         }
     }
 
-    protected constructOccurrenceMatrix(log: Array<EventlogTrace>, unique: boolean): OccurrenceMatrix {
-        const matrix = new OccurrenceMatrix(unique ? OccurenceMatrixType.UNIQUE : OccurenceMatrixType.WILDCARD);
+    protected constructOccurrenceMatrix(
+        log: Array<EventlogTrace>,
+        unique: boolean
+    ): OccurrenceMatrix {
+        const matrix = new OccurrenceMatrix(
+            unique ? OccurenceMatrixType.UNIQUE : OccurenceMatrixType.WILDCARD
+        );
 
         for (const trace of log) {
             const startedEvents = new Set<string>();
             for (const event of trace.events) {
                 switch (event.lifecycle) {
                     case Lifecycle.START:
-                        this.addAllInProgressToMatrix(event.activity, startedEvents, matrix);
+                        this.addAllInProgressToMatrix(
+                            event.activity,
+                            startedEvents,
+                            matrix
+                        );
                         startedEvents.add(event.activity);
                         break;
                     case Lifecycle.COMPLETE:
@@ -95,7 +115,11 @@ export class TimestampOracle extends TraceCleaner implements ConcurrencyOracle {
                             startedEvents.delete(event.activity);
                         } else {
                             // standalone
-                            this.addAllInProgressToMatrix(event.activity, startedEvents, matrix);
+                            this.addAllInProgressToMatrix(
+                                event.activity,
+                                startedEvents,
+                                matrix
+                            );
                         }
                         break;
                 }
@@ -105,7 +129,11 @@ export class TimestampOracle extends TraceCleaner implements ConcurrencyOracle {
         return matrix;
     }
 
-    protected addAllInProgressToMatrix(started: string, inProgress: Set<string>, matrix: OccurrenceMatrix): void {
+    protected addAllInProgressToMatrix(
+        started: string,
+        inProgress: Set<string>,
+        matrix: OccurrenceMatrix
+    ): void {
         for (const progress of inProgress) {
             matrix.add(started, progress);
             matrix.add(progress, started);

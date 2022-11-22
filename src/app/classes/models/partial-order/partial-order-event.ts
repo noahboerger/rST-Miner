@@ -1,4 +1,4 @@
-import {Transition} from '../petri-net/transition';
+import { Transition } from '../petri-net/transition';
 
 export class PartialOrderEvent {
     private readonly _id: string;

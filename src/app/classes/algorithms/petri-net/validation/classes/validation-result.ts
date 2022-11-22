@@ -11,5 +11,5 @@ export class ValidationResult {
 export enum ValidationPhase {
     FLOW = 'flow',
     FORWARDS = 'forwards',
-    BACKWARDS = 'backwards'
+    BACKWARDS = 'backwards',
 }

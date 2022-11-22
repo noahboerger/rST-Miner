@@ -1,14 +1,13 @@
 import 'reflect-metadata';
-import {jsonMember, jsonObject} from 'typedjson';
-import {PrimitivePlaceGenerator} from "../../algorithms/rst-miner/generators/primitive-place-generator";
-import {RandomPlaceGenerator} from "../../algorithms/rst-miner/generators/random-place-generator";
+import { jsonMember, jsonObject } from 'typedjson';
+import { PrimitivePlaceGenerator } from '../../algorithms/rst-miner/generators/primitive-place-generator';
+import { RandomPlaceGenerator } from '../../algorithms/rst-miner/generators/random-place-generator';
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class RandomPlaceGeneratorConfig {
-
     abstract getSimpleName(): string;
 
-    abstract buildRandomPlaceGenerator() : RandomPlaceGenerator;
+    abstract buildRandomPlaceGenerator(): RandomPlaceGenerator;
 }
 
 @jsonObject
@@ -20,7 +19,9 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
     @jsonMember(Number)
     private _probability: number;
 
-    constructor(probability: number = PrimitiveGeneratorConfig.DEFAULT_PROBABILITY) {
+    constructor(
+        probability: number = PrimitiveGeneratorConfig.DEFAULT_PROBABILITY
+    ) {
         super();
         this._probability = probability;
     }
@@ -45,6 +46,5 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
         return new PrimitivePlaceGenerator(this._probability);
     }
 }
-
 
 // TODO implement real generators

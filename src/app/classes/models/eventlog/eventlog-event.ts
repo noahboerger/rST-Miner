@@ -7,8 +7,8 @@ import {
     StringAttribute,
 } from './eventlog-attribute';
 import 'reflect-metadata';
-import {jsonArrayMember, jsonMember, jsonObject} from 'typedjson';
-import {Lifecycle} from "./utils/lifecycle";
+import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson';
+import { Lifecycle } from './utils/lifecycle';
 
 @jsonObject({
     knownTypes: [
@@ -20,7 +20,6 @@ import {Lifecycle} from "./utils/lifecycle";
     ],
 })
 export class EventlogEvent {
-
     @jsonArrayMember(EventlogAttribute)
     private _attributes: Array<EventlogAttribute>;
 
@@ -28,13 +27,15 @@ export class EventlogEvent {
     private _activity: string;
 
     @jsonMember(String)
-    private _lifecycleAsString?: string; // TODO private setters for alle attributes (einfache finale Datentypen)
-// TODO PARSEN!!!!
+    private _lifecycleAsString?: string;
 
-    private _pair?: EventlogEvent; // TODO kein guter Stil, nutze Map Pair oder ähnliches wo notwendig
+    private _pair?: EventlogEvent;
 
-
-    constructor(attributes: Array<EventlogAttribute>, activity: string, lifecycle?: Lifecycle) {
+    constructor(
+        attributes: Array<EventlogAttribute>,
+        activity: string,
+        lifecycle?: Lifecycle
+    ) {
         this._activity = activity;
         this._attributes = attributes;
         this._lifecycleAsString = lifecycle;

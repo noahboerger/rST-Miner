@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {jsonMember, jsonObject} from 'typedjson';
+import { jsonMember, jsonObject } from 'typedjson';
 import {
     LoopBasedTerminationConfig,
     TerminationConditionConfig,
@@ -9,18 +9,25 @@ import {
     AlphaOracleConfig,
     ConcurrencyOracleConfig,
     NoneOracleConfig,
-    TimestampOracleConfig
-} from "./concurrency-oracle-config";
-import {PartialOrderTransformationConfig} from "./partial-order-transformation-config";
-import {PrimitiveGeneratorConfig, RandomPlaceGeneratorConfig} from "./random-place-generator-config";
+    TimestampOracleConfig,
+} from './concurrency-oracle-config';
+import { PartialOrderTransformationConfig } from './partial-order-transformation-config';
+import {
+    PrimitiveGeneratorConfig,
+    RandomPlaceGeneratorConfig,
+} from './random-place-generator-config';
 
 @jsonObject({
-    knownTypes: [NoneOracleConfig, AlphaOracleConfig, TimestampOracleConfig,
+    knownTypes: [
+        NoneOracleConfig,
+        AlphaOracleConfig,
+        TimestampOracleConfig,
         PrimitiveGeneratorConfig,
-        LoopBasedTerminationConfig, TimeBasedTerminationConfig],
+        LoopBasedTerminationConfig,
+        TimeBasedTerminationConfig,
+    ],
 })
 export class RstMinerSettings {
-
     public static readonly concurrencyOracleTypesSimpleNames = [
         NoneOracleConfig.SIMPLE_NAME,
         AlphaOracleConfig.SIMPLE_NAME,
@@ -33,8 +40,8 @@ export class RstMinerSettings {
     ];
 
     public static readonly randomPlaceGeneratorTypesSimpleNames = [
-        PrimitiveGeneratorConfig.SIMPLE_NAME
-    ]
+        PrimitiveGeneratorConfig.SIMPLE_NAME,
+    ];
 
     @jsonMember(ConcurrencyOracleConfig)
     public concurrencyOracle: ConcurrencyOracleConfig;
@@ -64,6 +71,5 @@ export class RstMinerSettings {
         this.randomPlaceGenerator = randomPlaceGenerator;
         this.terminationCondition = terminationCondition;
         this.isDebugModusEnabled = isDebugModusEnabled;
-
     }
 }

@@ -1,6 +1,6 @@
-import {Node} from '../../models/petri-net/node'
+import { Node } from '../../models/petri-net/node';
 
 export interface SourceAndDestination {
-    source: Node,
-    destination: Node
+    source: Node;
+    destination: Node;
 }

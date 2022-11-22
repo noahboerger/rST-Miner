@@ -1,11 +1,9 @@
-
-import {ValidationResult} from './validation-result';
-import {PartialOrderEvent} from "../../../../models/partial-order/partial-order-event";
-import {PartialOrder} from "../../../../models/partial-order/partial-order";
-import {PetriNet} from "../../../../models/petri-net/petri-net";
+import { ValidationResult } from './validation-result';
+import { PartialOrderEvent } from '../../../../models/partial-order/partial-order-event';
+import { PartialOrder } from '../../../../models/partial-order/partial-order';
+import { PetriNet } from '../../../../models/petri-net/petri-net';
 
 export abstract class LpoValidator {
-
     protected readonly _petriNet: PetriNet;
     protected readonly _lpo: PartialOrder;
 
@@ -20,13 +18,17 @@ export abstract class LpoValidator {
             for (const t of this._petriNet.getTransitions()) {
                 if (e.label === t.label) {
                     if (e.transition !== undefined) {
-                        throw new Error(`The algorithm does not support label-splitted nets`);
+                        throw new Error(
+                            `The algorithm does not support label-splitted nets`
+                        );
                     }
                     e.transition = t;
                 }
             }
             if (e.transition === undefined) {
-                throw new Error(`The net does not contain a transition with the label '${e.label}' of the event '${e.id}'`);
+                throw new Error(
+                    `The net does not contain a transition with the label '${e.label}' of the event '${e.id}'`
+                );
             }
         }
 
@@ -43,5 +45,4 @@ export abstract class LpoValidator {
     }
 
     public abstract validate(): Array<ValidationResult>;
-
 }

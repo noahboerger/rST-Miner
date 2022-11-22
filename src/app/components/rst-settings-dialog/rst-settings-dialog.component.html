@@ -54,29 +54,31 @@
                                     let concurrencyOracleTypeSimpleName of MinerSettings.concurrencyOracleTypesSimpleNames
                                 ">
                                 <mat-radio-button
-                                    value="{{ concurrencyOracleTypeSimpleName }}"
-                                >{{
-                                    concurrencyOracleTypeSimpleName
+                                    value="{{
+                                        concurrencyOracleTypeSimpleName
+                                    }}"
+                                    >{{
+                                        concurrencyOracleTypeSimpleName
                                     }}</mat-radio-button
                                 >
 
                                 <div
                                     *ngIf="
                                         rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() ===
-                                        concurrencyOracleTypeSimpleName &&
-                                        rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() !== NoneOracle.SIMPLE_NAME
+                                            concurrencyOracleTypeSimpleName &&
+                                        rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() !==
+                                            NoneOracle.SIMPLE_NAME
                                     "
-                                    [ngSwitch]="concurrencyOracleTypeSimpleName">
-
+                                    [ngSwitch]="
+                                        concurrencyOracleTypeSimpleName
+                                    ">
                                     <span
-                                        *ngSwitchCase="
-                                            AlphaOracle.SIMPLE_NAME
-                                        ">
+                                        *ngSwitchCase="AlphaOracle.SIMPLE_NAME">
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
                                             <mat-label
-                                            >Look Ahead Distance</mat-label
+                                                >Look Ahead Distance</mat-label
                                             >
                                             <input
                                                 [(ngModel)]="
@@ -87,11 +89,13 @@
                                                 placeholder="Default {{
                                                     AlphaOracle.DEFAULT_LOOK_AHEAD_DISTANCE
                                                 }}"
-                                                type="number"/>
+                                                type="number" />
                                         </mat-form-field>
                                         <br />
-                                         <mat-checkbox
-                                             [(ngModel)]="concurrencyOracleDistinguishSameEvents">
+                                        <mat-checkbox
+                                            [(ngModel)]="
+                                                concurrencyOracleDistinguishSameEvents
+                                            ">
                                             Distinguish same Events
                                         </mat-checkbox>
                                     </span>
@@ -100,29 +104,40 @@
                                         *ngSwitchCase="
                                             TimestampOracle.SIMPLE_NAME
                                         ">
-                                         <mat-checkbox
-                                             [(ngModel)]="concurrencyOracleDistinguishSameEvents">
+                                        <mat-checkbox
+                                            [(ngModel)]="
+                                                concurrencyOracleDistinguishSameEvents
+                                            ">
                                             Distinguish same Events
                                         </mat-checkbox>
                                     </span>
                                 </div>
-                                <br/>
+                                <br />
                             </span>
                         </div>
                     </mat-radio-group>
                     <p><b>Eventlog Transformation to Partial Orders</b></p>
                     <mat-checkbox
-                        [(ngModel)]="rstMinerDataService.minerSettings.partialOrderTransformation.cleanLifecycle">
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .partialOrderTransformation.cleanLifecycle
+                        ">
                         Clean Lifecycle Events
                     </mat-checkbox>
                     <br />
                     <mat-checkbox
-                        [(ngModel)]="rstMinerDataService.minerSettings.partialOrderTransformation.addStartStopEvent">
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .partialOrderTransformation.addStartStopEvent
+                        ">
                         Add Start and Stop Event
                     </mat-checkbox>
                     <br />
                     <mat-checkbox
-                        [(ngModel)]="rstMinerDataService.minerSettings.partialOrderTransformation.discardPrefixes">
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .partialOrderTransformation.discardPrefixes
+                        ">
                         Discard prefixes
                     </mat-checkbox>
                 </mat-expansion-panel>
@@ -141,9 +156,11 @@
                                     let randomPlaceGeneratorTypeSimpleName of MinerSettings.randomPlaceGeneratorTypesSimpleNames
                                 ">
                                 <mat-radio-button
-                                    value="{{ randomPlaceGeneratorTypeSimpleName }}"
-                                >{{
-                                    randomPlaceGeneratorTypeSimpleName
+                                    value="{{
+                                        randomPlaceGeneratorTypeSimpleName
+                                    }}"
+                                    >{{
+                                        randomPlaceGeneratorTypeSimpleName
                                     }}</mat-radio-button
                                 >
 
@@ -152,7 +169,9 @@
                                         rstMinerDataService.minerSettings.randomPlaceGenerator.getSimpleName() ===
                                         randomPlaceGeneratorTypeSimpleName
                                     "
-                                    [ngSwitch]="randomPlaceGeneratorTypeSimpleName">
+                                    [ngSwitch]="
+                                        randomPlaceGeneratorTypeSimpleName
+                                    ">
                                     <span
                                         *ngSwitchCase="
                                             PrimitiveGenerator.SIMPLE_NAME
@@ -160,9 +179,7 @@
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
-                                            <mat-label
-                                            >Probability</mat-label
-                                            >
+                                            <mat-label>Probability</mat-label>
                                             <input
                                                 matInput
                                                 min="0"
@@ -275,12 +292,13 @@
 
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Debug Mode
-                        </mat-panel-title>
+                        <mat-panel-title> Debug Mode </mat-panel-title>
                     </mat-expansion-panel-header>
                     <mat-checkbox
-                        [(ngModel)]="rstMinerDataService.minerSettings.isDebugModusEnabled">
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .isDebugModusEnabled
+                        ">
                         Enabled
                     </mat-checkbox>
                 </mat-expansion-panel>

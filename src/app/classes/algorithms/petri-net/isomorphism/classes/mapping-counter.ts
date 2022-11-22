@@ -1,5 +1,4 @@
 export class MappingCounter {
-
     public mappedId: string;
     private _currentChoice: number;
     private readonly _maximum: number;

@@ -1,9 +1,8 @@
-import {Marking} from './marking';
-
+import { Marking } from './marking';
 
 describe('Marking', () => {
     it('should create', () => {
-        let m = new Marking({'a': 1, 'b': 0});
+        let m = new Marking({ a: 1, b: 0 });
         expect(m).toBeTruthy();
         expect(m.get('a')).toBe(1);
         expect(m.get('b')).toBe(0);
@@ -14,7 +13,7 @@ describe('Marking', () => {
     });
 
     it('should check equality', () => {
-        const m1 = new Marking({'a': 0, 'b': 1});
+        const m1 = new Marking({ a: 0, b: 1 });
         const m2 = new Marking(m1);
         expect(m1.equals(m2)).toBeTrue();
         expect(m2.equals(m1)).toBeTrue();
@@ -36,8 +35,8 @@ describe('Marking', () => {
     });
 
     it('should check greaterThan', () => {
-        const m1 = new Marking({'a': 0, 'b': 1});
-        const m2 = new Marking({'a': 0, 'b': 1});
+        const m1 = new Marking({ a: 0, b: 1 });
+        const m2 = new Marking({ a: 0, b: 1 });
         expect(m1.isGreaterThan(m2)).toBeFalse();
         expect(m2.isGreaterThan(m1)).toBeFalse();
         m1.set('a', 1);
@@ -61,7 +60,7 @@ describe('Marking', () => {
     });
 
     it('should introduce omegas', () => {
-        const m1 = new Marking({'a': 0, 'b': 1});
+        const m1 = new Marking({ a: 0, b: 1 });
         const m2 = new Marking(m1);
         m1.introduceOmegas(m2);
         expect(m1.equals(m2)).toBeTrue();

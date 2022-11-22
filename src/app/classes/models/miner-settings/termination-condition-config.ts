@@ -1,14 +1,15 @@
 import 'reflect-metadata';
 import { jsonMember, jsonObject } from 'typedjson';
 import { Duration } from 'ts-duration';
-import {PetriNet} from "../petri-net/petri-net";
+import { PetriNet } from '../petri-net/petri-net';
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class TerminationConditionConfig {
-
     abstract getSimpleName(): string;
 
-    abstract toIsTerminationConditionReachedFunction() : (actState: PetriNet) => boolean;
+    abstract toIsTerminationConditionReachedFunction(): (
+        actState: PetriNet
+    ) => boolean;
 }
 
 @jsonObject
@@ -19,7 +20,9 @@ export class LoopBasedTerminationConfig extends TerminationConditionConfig {
     @jsonMember(Number)
     private _loopAmount: number;
 
-    constructor(loopAmount: number = LoopBasedTerminationConfig.DEFAULT_ITERATIONS) {
+    constructor(
+        loopAmount: number = LoopBasedTerminationConfig.DEFAULT_ITERATIONS
+    ) {
         super();
         this._loopAmount = loopAmount;
     }
@@ -70,7 +73,9 @@ export class TimeBasedTerminationConfig extends TerminationConditionConfig {
     @jsonMember(Number)
     private _durationInMs: number;
 
-    constructor(duration: Duration = TimeBasedTerminationConfig.DEFAULT_DURATION) {
+    constructor(
+        duration: Duration = TimeBasedTerminationConfig.DEFAULT_DURATION
+    ) {
         super();
         this._durationInMs = duration.milliseconds;
     }

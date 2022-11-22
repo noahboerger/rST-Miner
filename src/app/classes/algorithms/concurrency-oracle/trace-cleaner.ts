@@ -1,5 +1,5 @@
-import {EventlogTrace} from "../../models/eventlog/eventlog-trace";
-import {Lifecycle} from "../../models/eventlog/utils/lifecycle";
+import { EventlogTrace } from '../../models/eventlog/eventlog-trace';
+import { Lifecycle } from '../../models/eventlog/utils/lifecycle';
 
 export abstract class TraceCleaner {
     protected cleanLog(traces: Array<EventlogTrace>): Array<EventlogTrace> {
@@ -7,8 +7,9 @@ export abstract class TraceCleaner {
     }
 
     protected cleanTrace(trace: EventlogTrace): EventlogTrace {
-        const cleanedEvents = trace.events.filter(e => e.lifecycle === undefined || e.lifecycle === Lifecycle.COMPLETE);
+        const cleanedEvents = trace.events.filter(
+            e => e.lifecycle === undefined || e.lifecycle === Lifecycle.COMPLETE
+        );
         return new EventlogTrace(trace.attributes, cleanedEvents, trace.caseId);
-        ;
     }
 }

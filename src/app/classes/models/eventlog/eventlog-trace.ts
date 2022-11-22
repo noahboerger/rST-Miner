@@ -6,10 +6,10 @@ import {
     IntAttribute,
     StringAttribute,
 } from './eventlog-attribute';
-import {EventlogEvent} from './eventlog-event';
+import { EventlogEvent } from './eventlog-event';
 import 'reflect-metadata';
-import {jsonArrayMember, jsonMember, jsonObject} from 'typedjson';
-import {EditableStringSequence} from "../../utility/string-sequence";
+import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson';
+import { EditableStringSequence } from '../../utility/string-sequence';
 
 @jsonObject({
     knownTypes: [
@@ -76,6 +76,10 @@ export class EventlogTrace implements EditableStringSequence {
     }
 
     clone() {
-        return new EventlogTrace([...this.attributes], [...this.events], this.caseId);
+        return new EventlogTrace(
+            [...this.attributes],
+            [...this.events],
+            this.caseId
+        );
     }
 }

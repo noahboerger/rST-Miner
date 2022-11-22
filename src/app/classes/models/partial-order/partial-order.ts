@@ -1,4 +1,4 @@
-import {PartialOrderEvent} from './partial-order-event';
+import { PartialOrderEvent } from './partial-order-event';
 
 export class PartialOrder {
     private readonly _events: Map<string, PartialOrderEvent>;
@@ -29,7 +29,9 @@ export class PartialOrder {
 
     public addEvent(event: PartialOrderEvent): void {
         if (this._events.has(event.id)) {
-            throw new Error(`An event with id '${event.id}' already exists in this partial order!`);
+            throw new Error(
+                `An event with id '${event.id}' already exists in this partial order!`
+            );
         }
         this._events.set(event.id, event);
     }
@@ -55,7 +57,9 @@ export class PartialOrder {
         for (const e of this._events.values()) {
             const cloneE = result.getEvent(e.id) as PartialOrderEvent;
             for (const nextE of e.nextEvents) {
-                cloneE.addNextEvent(result.getEvent(nextE.id) as PartialOrderEvent);
+                cloneE.addNextEvent(
+                    result.getEvent(nextE.id) as PartialOrderEvent
+                );
             }
         }
         result.determineInitialAndFinalEvents();

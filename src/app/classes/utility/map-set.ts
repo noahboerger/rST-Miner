@@ -1,4 +1,4 @@
-import {iterate} from './iterate';
+import { iterate } from './iterate';
 
 export class MapSet<K, V> {
     private _map: Map<K, Set<V>>;

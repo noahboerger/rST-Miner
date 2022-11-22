@@ -22,7 +22,11 @@ export interface SetLike<T> {
     has(s: T): boolean;
 }
 
-export function createUniqueString(prefix: string, existingNames: SetLike<string>, counter: IncrementingCounter): string {
+export function createUniqueString(
+    prefix: string,
+    existingNames: SetLike<string>,
+    counter: IncrementingCounter
+): string {
     let result;
     do {
         result = `${prefix}${counter.next()}`;

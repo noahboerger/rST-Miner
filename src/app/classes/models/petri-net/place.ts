@@ -1,7 +1,6 @@
-import {Node} from './node';
+import { Node } from './node';
 
 export class Place extends Node {
-
     private _marking: number;
 
     constructor(marking: number = 0, id?: string) {

@@ -1,6 +1,6 @@
-import {expect} from '@angular/flex-layout/_private-utils/testing';
-import {MapSet} from '../../../../utility/map-set';
-import {MappingManager} from './mapping-manager';
+import { expect } from '@angular/flex-layout/_private-utils/testing';
+import { MapSet } from '../../../../utility/map-set';
+import { MappingManager } from './mapping-manager';
 
 describe('MappingManager', () => {
     it('should cycle mappings', () => {

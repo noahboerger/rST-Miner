@@ -12,7 +12,7 @@ import {
 import { EventlogTrace } from '../../../classes/models/eventlog/eventlog-trace';
 import { Eventlog } from '../../../classes/models/eventlog/eventlog';
 import { LogParser } from '../../../classes/parser/eventlog/logParser';
-import {Lifecycle} from "../../../classes/models/eventlog/utils/lifecycle";
+import { Lifecycle } from '../../../classes/models/eventlog/utils/lifecycle';
 
 describe('LogParserService', () => {
     let service: LogParserService;

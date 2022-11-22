@@ -1,13 +1,13 @@
 export enum OccurenceMatrixType {
     UNIQUE,
-    WILDCARD
+    WILDCARD,
 }
 
 export class OccurrenceMatrix {
     private readonly _matrix: {
         [k: string]: {
-            [k: string]: number
-        }
+            [k: string]: number;
+        };
     };
 
     private readonly _keys: Set<string>;
@@ -28,7 +28,7 @@ export class OccurrenceMatrix {
     public add(e1: string, e2: string) {
         const row = this._matrix[e1];
         if (row === undefined) {
-            this._matrix[e1] = {[e2]: 1};
+            this._matrix[e1] = { [e2]: 1 };
         } else {
             row[e2] = (row[e2] ?? 0) + 1;
         }

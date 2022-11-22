@@ -1,18 +1,21 @@
-import {Component} from '@angular/core';
-import {RstMinerDataService} from '../../services/data/rst-miner-data.service';
-import {RstMinerSettings} from '../../classes/models/miner-settings/rst-miner-settings';
+import { Component } from '@angular/core';
+import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
+import { RstMinerSettings } from '../../classes/models/miner-settings/rst-miner-settings';
 import {
     LoopBasedTerminationConfig,
     TimeBasedTerminationConfig,
 } from '../../classes/models/miner-settings/termination-condition-config';
-import {minerSettingsToJson, readAndUseMinerSettingsFile,} from '../../classes/serde/miner-settings-serde-helper';
-import {saveAs} from 'file-saver';
+import {
+    minerSettingsToJson,
+    readAndUseMinerSettingsFile,
+} from '../../classes/serde/miner-settings-serde-helper';
+import { saveAs } from 'file-saver';
 import {
     AlphaOracleConfig,
     NoneOracleConfig,
-    TimestampOracleConfig
-} from "../../classes/models/miner-settings/concurrency-oracle-config";
-import {PrimitiveGeneratorConfig} from "../../classes/models/miner-settings/random-place-generator-config";
+    TimestampOracleConfig,
+} from '../../classes/models/miner-settings/concurrency-oracle-config';
+import { PrimitiveGeneratorConfig } from '../../classes/models/miner-settings/random-place-generator-config';
 
 @Component({
     selector: 'app-rst-settings-dialog',
@@ -82,7 +85,6 @@ export class RstSettingsDialogComponent {
         ).setDurationIn(this.durationTimeUnit, value);
     }
 
-
     get actConcurrencyOracleSimpleName(): string {
         return this.rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName();
     }
@@ -120,15 +122,21 @@ export class RstSettingsDialogComponent {
 
     get concurrencyOracleDistinguishSameEvents(): boolean {
         const oracle = this.rstMinerDataService.minerSettings.concurrencyOracle;
-        if (oracle instanceof AlphaOracleConfig || oracle instanceof TimestampOracleConfig) {
+        if (
+            oracle instanceof AlphaOracleConfig ||
+            oracle instanceof TimestampOracleConfig
+        ) {
             return oracle.distinguishSameEvents;
         }
-        throw new Error("Unexpected State!");
+        throw new Error('Unexpected State!');
     }
 
     set concurrencyOracleDistinguishSameEvents(value: boolean) {
         const oracle = this.rstMinerDataService.minerSettings.concurrencyOracle;
-        if (oracle instanceof AlphaOracleConfig || oracle instanceof TimestampOracleConfig) {
+        if (
+            oracle instanceof AlphaOracleConfig ||
+            oracle instanceof TimestampOracleConfig
+        ) {
             oracle.distinguishSameEvents = value;
         }
     }
@@ -147,18 +155,24 @@ export class RstSettingsDialogComponent {
     }
 
     get primitiveGeneratorProbability(): number {
-        return (this.rstMinerDataService.minerSettings.randomPlaceGenerator as PrimitiveGeneratorConfig).probability;
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).probability;
     }
 
-    set primitiveGeneratorProbability(value : number) {
-        (this.rstMinerDataService.minerSettings.randomPlaceGenerator as PrimitiveGeneratorConfig).probability = value;
+    set primitiveGeneratorProbability(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).probability = value;
     }
 
     downloadMinerSettingsJsonFile() {
         saveAs(
             new Blob(
                 [minerSettingsToJson(this.rstMinerDataService.minerSettings)],
-                {type: 'application/json;charset=utf-8'}
+                { type: 'application/json;charset=utf-8' }
             ),
             'rST-Miner-Settings_' + new Date().toLocaleString() + '.json'
         );

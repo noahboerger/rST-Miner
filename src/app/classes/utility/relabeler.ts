@@ -1,9 +1,11 @@
-import {createUniqueString, IncrementingCounter} from './incrementing-counter';
-import {EditableStringSequence} from './string-sequence';
-import {iterate} from './iterate';
+import {
+    createUniqueString,
+    IncrementingCounter,
+} from './incrementing-counter';
+import { EditableStringSequence } from './string-sequence';
+import { iterate } from './iterate';
 
 export class Relabeler {
-
     private readonly _existingLabels: Set<string>;
     private readonly _labelCounter: IncrementingCounter;
     private readonly _labelMapping: Map<string, string>;
@@ -36,7 +38,7 @@ export class Relabeler {
         });
         this._nonUniqueIdentities.forEach(nui => {
             result._nonUniqueIdentities.add(nui);
-        })
+        });
         return result;
     }
 
@@ -48,7 +50,10 @@ export class Relabeler {
         return this.getNewLabel(oldLabel, true);
     }
 
-    protected getNewLabel(oldLabel: string, preserveNonUniqueIdentities: boolean): string {
+    protected getNewLabel(
+        oldLabel: string,
+        preserveNonUniqueIdentities: boolean
+    ): string {
         if (!this._existingLabels.has(oldLabel)) {
             // label encountered for the first time
             this._existingLabels.add(oldLabel);
@@ -72,7 +77,10 @@ export class Relabeler {
             let relabelingOrder = this._labelOrder.get(oldLabel);
             if (relabelingOrder === undefined) {
                 // relabeling collision or non-unique identity
-                if (preserveNonUniqueIdentities && this._nonUniqueIdentities.has(oldLabel)) {
+                if (
+                    preserveNonUniqueIdentities &&
+                    this._nonUniqueIdentities.has(oldLabel)
+                ) {
                     return oldLabel;
                 }
                 relabelingOrder = [];
@@ -82,7 +90,11 @@ export class Relabeler {
 
             if (newLabelIndex >= relabelingOrder.length) {
                 // new label must be generated
-                const newLabel = createUniqueString(oldLabel, this._existingLabels, this._labelCounter);
+                const newLabel = createUniqueString(
+                    oldLabel,
+                    this._existingLabels,
+                    this._labelCounter
+                );
                 this._existingLabels.add(newLabel);
                 relabelingOrder.push(newLabel);
                 this._labelMapping.set(newLabel, oldLabel);
@@ -109,26 +121,38 @@ export class Relabeler {
         this.relabel(sequence, false);
     }
 
-    public uniquelyRelabelSequences(sequences: Iterable<EditableStringSequence>) {
+    public uniquelyRelabelSequences(
+        sequences: Iterable<EditableStringSequence>
+    ) {
         iterate(sequences, s => {
             this.uniquelyRelabelSequence(s);
         });
     }
 
-    public relabelSequencePreserveNonUniqueIdentities(sequence: EditableStringSequence) {
+    public relabelSequencePreserveNonUniqueIdentities(
+        sequence: EditableStringSequence
+    ) {
         this.relabel(sequence, true);
     }
 
-    public relabelSequencesPreserveNonUniqueIdentities(sequences: Iterable<EditableStringSequence>) {
+    public relabelSequencesPreserveNonUniqueIdentities(
+        sequences: Iterable<EditableStringSequence>
+    ) {
         iterate(sequences, s => {
             this.relabelSequencePreserveNonUniqueIdentities(s);
         });
     }
 
-    protected relabel(sequence: EditableStringSequence, preserveIdentities: boolean) {
+    protected relabel(
+        sequence: EditableStringSequence,
+        preserveIdentities: boolean
+    ) {
         this.restartSequence();
         for (let i = 0; i < sequence.length(); i++) {
-            sequence.set(i, this.getNewLabel(sequence.get(i), preserveIdentities));
+            sequence.set(
+                i,
+                this.getNewLabel(sequence.get(i), preserveIdentities)
+            );
         }
     }
 
@@ -145,6 +169,6 @@ export class Relabeler {
     }
 
     public undoLabel(label: string): string {
-        return this._labelMapping.get(label) ?? label
+        return this._labelMapping.get(label) ?? label;
     }
 }

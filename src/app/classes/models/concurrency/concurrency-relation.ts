@@ -1,10 +1,8 @@
-import {Relabeler} from "../../utility/relabeler";
-import {OccurenceMatrixType, OccurrenceMatrix} from "./occurrence-matrix";
-import {ConcurrencyMatrices, ConcurrencyMatrix} from "./concurrency-matrix";
-
+import { Relabeler } from '../../utility/relabeler';
+import { OccurenceMatrixType, OccurrenceMatrix } from './occurrence-matrix';
+import { ConcurrencyMatrices, ConcurrencyMatrix } from './concurrency-matrix';
 
 export class ConcurrencyRelation {
-
     private readonly _relabeler: Relabeler;
     private readonly _uniqueConcurrencyMatrix: ConcurrencyMatrix;
     private readonly _wildcardConcurrencyMatrix: ConcurrencyMatrix;
@@ -23,7 +21,10 @@ export class ConcurrencyRelation {
         return new ConcurrencyRelation(new Relabeler());
     }
 
-    public static fromOccurrenceMatrix(matrix: OccurrenceMatrix, relabeler: Relabeler): ConcurrencyRelation {
+    public static fromOccurrenceMatrix(
+        matrix: OccurrenceMatrix,
+        relabeler: Relabeler
+    ): ConcurrencyRelation {
         const result = new ConcurrencyRelation(relabeler);
 
         const keys = Array.from(matrix.keys);
@@ -34,10 +35,20 @@ export class ConcurrencyRelation {
                 if (matrix.get(k1, k2) && matrix.get(k2, k1)) {
                     switch (matrix.type) {
                         case OccurenceMatrixType.UNIQUE:
-                            result.setUniqueConcurrent(k1, k2, matrix.getOccurrenceFrequency(k1, k2)!, matrix.getOccurrenceFrequency(k2, k1)!);
+                            result.setUniqueConcurrent(
+                                k1,
+                                k2,
+                                matrix.getOccurrenceFrequency(k1, k2)!,
+                                matrix.getOccurrenceFrequency(k2, k1)!
+                            );
                             break;
                         case OccurenceMatrixType.WILDCARD:
-                            result.setWildcardConcurrent(k1, k2, matrix.getOccurrenceFrequency(k1, k2)!, matrix.getOccurrenceFrequency(k2, k1)!);
+                            result.setWildcardConcurrent(
+                                k1,
+                                k2,
+                                matrix.getOccurrenceFrequency(k1, k2)!,
+                                matrix.getOccurrenceFrequency(k2, k1)!
+                            );
                             break;
                     }
                 }
@@ -58,58 +69,137 @@ export class ConcurrencyRelation {
         if (!wildcardA && !wildcardB) {
             return false;
         } else if (wildcardA && wildcardB) {
-            return this.read(this._wildcardConcurrencyMatrix, wildcardA, wildcardB);
+            return this.read(
+                this._wildcardConcurrencyMatrix,
+                wildcardA,
+                wildcardB
+            );
         } else if (wildcardA && !wildcardB) {
             return this.read(this._mixedConcurrencyMatrix, wildcardA, labelB);
         } else {
             return this.read(this._mixedConcurrencyMatrix, wildcardB!, labelA);
         }
     }
-
-    public setUniqueConcurrent(uniqueLabelA: string, uniqueLabelB: string, concurrency?: boolean): void;
-    public setUniqueConcurrent(uniqueLabelA: string, uniqueLabelB: string, frequencyAB: number, frequencyBA: number): void;
-    public setUniqueConcurrent(uniqueLabelA: string, uniqueLabelB: string, value: boolean | number = true, frequencyBA?: number) {
+    public setUniqueConcurrent(
+        uniqueLabelA: string,
+        uniqueLabelB: string,
+        frequencyAB: number,
+        frequencyBA: number
+    ): void;
+    public setUniqueConcurrent(
+        uniqueLabelA: string,
+        uniqueLabelB: string,
+        value: boolean | number = true,
+        frequencyBA?: number
+    ) {
         if (typeof value === 'boolean') {
-            this.set(this._uniqueConcurrencyMatrix, uniqueLabelA, uniqueLabelB, value);
-            this.set(this._uniqueConcurrencyMatrix, uniqueLabelB, uniqueLabelA, value);
+            this.set(
+                this._uniqueConcurrencyMatrix,
+                uniqueLabelA,
+                uniqueLabelB,
+                value
+            );
+            this.set(
+                this._uniqueConcurrencyMatrix,
+                uniqueLabelB,
+                uniqueLabelA,
+                value
+            );
         } else {
-            this.set(this._uniqueConcurrencyMatrix, uniqueLabelA, uniqueLabelB, value);
-            this.set(this._uniqueConcurrencyMatrix, uniqueLabelB, uniqueLabelA, frequencyBA!);
+            this.set(
+                this._uniqueConcurrencyMatrix,
+                uniqueLabelA,
+                uniqueLabelB,
+                value
+            );
+            this.set(
+                this._uniqueConcurrencyMatrix,
+                uniqueLabelB,
+                uniqueLabelA,
+                frequencyBA!
+            );
         }
     }
 
-    public setWildcardConcurrent(wildcardLabelA: string, wildcardLabelB: string, concurrency?: boolean): void;
-    public setWildcardConcurrent(wildcardLabelA: string, wildcardLabelB: string, frequencyAB: number, frequencyBA: number): void;
-    public setWildcardConcurrent(wildcardLabelA: string, wildcardLabelB: string, value: boolean | number = true, frequencyBA?: number) {
+    public setWildcardConcurrent(
+        wildcardLabelA: string,
+        wildcardLabelB: string,
+        concurrency?: boolean
+    ): void;
+    public setWildcardConcurrent(
+        wildcardLabelA: string,
+        wildcardLabelB: string,
+        frequencyAB: number,
+        frequencyBA: number
+    ): void;
+    public setWildcardConcurrent(
+        wildcardLabelA: string,
+        wildcardLabelB: string,
+        value: boolean | number = true,
+        frequencyBA?: number
+    ) {
         if (typeof value === 'boolean') {
-            this.set(this._wildcardConcurrencyMatrix, wildcardLabelA, wildcardLabelB, value);
-            this.set(this._wildcardConcurrencyMatrix, wildcardLabelB, wildcardLabelA, value);
+            this.set(
+                this._wildcardConcurrencyMatrix,
+                wildcardLabelA,
+                wildcardLabelB,
+                value
+            );
+            this.set(
+                this._wildcardConcurrencyMatrix,
+                wildcardLabelB,
+                wildcardLabelA,
+                value
+            );
         } else {
-            this.set(this._wildcardConcurrencyMatrix, wildcardLabelA, wildcardLabelB, value);
-            this.set(this._wildcardConcurrencyMatrix, wildcardLabelB, wildcardLabelA, frequencyBA!);
+            this.set(
+                this._wildcardConcurrencyMatrix,
+                wildcardLabelA,
+                wildcardLabelB,
+                value
+            );
+            this.set(
+                this._wildcardConcurrencyMatrix,
+                wildcardLabelB,
+                wildcardLabelA,
+                frequencyBA!
+            );
         }
 
         this._wildCardLabels.add(wildcardLabelA);
         this._wildCardLabels.add(wildcardLabelB);
     }
-
-    public setMixedConcurrent(wildcardLabel: string, uniqueLabel: string, concurrency: boolean = true) {
-        this.set(this._mixedConcurrencyMatrix, wildcardLabel, uniqueLabel, concurrency);
-        this._wildCardLabels.add(wildcardLabel);
-    }
-
-    protected set(matrix: ConcurrencyMatrix, uniqueLabelA: string, uniqueLabelB: string, concurrency?: boolean): void;
-    protected set(matrix: ConcurrencyMatrix, uniqueLabelA: string, uniqueLabelB: string, frequency: number): void;
-    protected set(matrix: ConcurrencyMatrix, uniqueLabelA: string, uniqueLabelB: string, value: boolean | number = true) {
+    protected set(
+        matrix: ConcurrencyMatrix,
+        uniqueLabelA: string,
+        uniqueLabelB: string,
+        concurrency?: boolean
+    ): void;
+    protected set(
+        matrix: ConcurrencyMatrix,
+        uniqueLabelA: string,
+        uniqueLabelB: string,
+        frequency: number
+    ): void;
+    protected set(
+        matrix: ConcurrencyMatrix,
+        uniqueLabelA: string,
+        uniqueLabelB: string,
+        value: boolean | number = true
+    ) {
         const row = matrix[uniqueLabelA];
         if (row === undefined) {
-            matrix[uniqueLabelA] = {[uniqueLabelB]: value};
+            matrix[uniqueLabelA] = { [uniqueLabelB]: value };
             return;
         }
         row[uniqueLabelB] = value;
     }
 
-    protected read(matrix: ConcurrencyMatrix, row: string, column: string): boolean {
+    protected read(
+        matrix: ConcurrencyMatrix,
+        row: string,
+        column: string
+    ): boolean {
         const matrixRow = matrix[row];
         if (matrixRow === undefined) {
             return false;
@@ -133,7 +223,7 @@ export class ConcurrencyRelation {
         return {
             unique: this.cloneMatrix(this._uniqueConcurrencyMatrix),
             wildcard: this.cloneMatrix(this._wildcardConcurrencyMatrix),
-            mixed: this.cloneMatrix(this._mixedConcurrencyMatrix)
+            mixed: this.cloneMatrix(this._mixedConcurrencyMatrix),
         };
     }
 
@@ -152,4 +242,3 @@ export class ConcurrencyRelation {
         return result;
     }
 }
-

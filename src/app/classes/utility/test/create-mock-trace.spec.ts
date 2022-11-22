@@ -1,12 +1,13 @@
-import {createMockTrace} from './create-mock-trace';
-import {expect} from '@angular/flex-layout/_private-utils/testing';
-import {Lifecycle} from "../../models/eventlog/utils/lifecycle";
-
+import { createMockTrace } from './create-mock-trace';
+import { expect } from '@angular/flex-layout/_private-utils/testing';
+import { Lifecycle } from '../../models/eventlog/utils/lifecycle';
 
 describe('TimestampOracleService', () => {
-
     it('should create mock trace', () => {
-        const trace = createMockTrace([{n: 'A', p: Lifecycle.START}, {n: 'B', p: Lifecycle.COMPLETE}]);
+        const trace = createMockTrace([
+            { n: 'A', p: Lifecycle.START },
+            { n: 'B', p: Lifecycle.COMPLETE },
+        ]);
         expect(trace).toBeTruthy();
         expect(trace.events).toBeTruthy();
         expect(Array.isArray(trace.events)).toBeTrue();
@@ -16,5 +17,4 @@ describe('TimestampOracleService', () => {
         expect(trace.events[1].activity).toBe('B');
         expect(trace.events[1].lifecycle).toBe(Lifecycle.COMPLETE);
     });
-
 });

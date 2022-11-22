@@ -1,13 +1,12 @@
 import 'reflect-metadata';
-import {jsonMember, jsonObject} from 'typedjson';
-import {ConcurrencyOracle} from "../../algorithms/concurrency-oracle/concurrency-oracle";
-import {NoneOracle} from "../../algorithms/concurrency-oracle/none-oracle/none-oracle";
-import {AlphaOracle} from "../../algorithms/concurrency-oracle/alpha-oracle/alpha-oracle";
-import {TimestampOracle} from "../../algorithms/concurrency-oracle/timestamp-oracle/timestamp-oracle";
+import { jsonMember, jsonObject } from 'typedjson';
+import { ConcurrencyOracle } from '../../algorithms/concurrency-oracle/concurrency-oracle';
+import { NoneOracle } from '../../algorithms/concurrency-oracle/none-oracle/none-oracle';
+import { AlphaOracle } from '../../algorithms/concurrency-oracle/alpha-oracle/alpha-oracle';
+import { TimestampOracle } from '../../algorithms/concurrency-oracle/timestamp-oracle/timestamp-oracle';
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class ConcurrencyOracleConfig {
-
     abstract getSimpleName(): string;
 
     abstract generateConcurrencyOracle(): ConcurrencyOracle;
@@ -28,7 +27,6 @@ export class NoneOracleConfig extends ConcurrencyOracleConfig {
 
 @jsonObject
 export class AlphaOracleConfig extends ConcurrencyOracleConfig {
-
     public static readonly SIMPLE_NAME = 'Alpha';
 
     public static readonly DEFAULT_LOOK_AHEAD_DISTANCE = 1;
@@ -40,8 +38,10 @@ export class AlphaOracleConfig extends ConcurrencyOracleConfig {
     @jsonMember(Boolean)
     public distinguishSameEvents: boolean;
 
-    constructor(lookAheadDistance: number = AlphaOracleConfig.DEFAULT_LOOK_AHEAD_DISTANCE,
-                distinguishSameEvents: boolean = AlphaOracleConfig.DEFAULT_DISTINGUISH_SAME_EVENTS) {
+    constructor(
+        lookAheadDistance: number = AlphaOracleConfig.DEFAULT_LOOK_AHEAD_DISTANCE,
+        distinguishSameEvents: boolean = AlphaOracleConfig.DEFAULT_DISTINGUISH_SAME_EVENTS
+    ) {
         super();
         this._lookAheadDistance = lookAheadDistance;
         this.distinguishSameEvents = distinguishSameEvents;
@@ -57,7 +57,8 @@ export class AlphaOracleConfig extends ConcurrencyOracleConfig {
 
     set lookAheadDistance(value: number) {
         if (value == null || value < 0) {
-            this._lookAheadDistance = AlphaOracleConfig.DEFAULT_LOOK_AHEAD_DISTANCE;
+            this._lookAheadDistance =
+                AlphaOracleConfig.DEFAULT_LOOK_AHEAD_DISTANCE;
         }
         this._lookAheadDistance = value;
     }
@@ -65,14 +66,13 @@ export class AlphaOracleConfig extends ConcurrencyOracleConfig {
     generateConcurrencyOracle(): AlphaOracle {
         return new AlphaOracle({
             lookAheadDistance: this._lookAheadDistance,
-            distinguishSameLabels: this.distinguishSameEvents
+            distinguishSameLabels: this.distinguishSameEvents,
         });
     }
 }
 
 @jsonObject
 export class TimestampOracleConfig extends ConcurrencyOracleConfig {
-
     public static readonly SIMPLE_NAME = 'Timestamp';
 
     public static readonly DEFAULT_DISTINGUISH_SAME_EVENTS = false;
@@ -81,7 +81,8 @@ export class TimestampOracleConfig extends ConcurrencyOracleConfig {
     public distinguishSameEvents: boolean;
 
     constructor(
-        distinguishSameEvents: boolean = TimestampOracleConfig.DEFAULT_DISTINGUISH_SAME_EVENTS) {
+        distinguishSameEvents: boolean = TimestampOracleConfig.DEFAULT_DISTINGUISH_SAME_EVENTS
+    ) {
         super();
         this.distinguishSameEvents = distinguishSameEvents;
     }
@@ -92,8 +93,7 @@ export class TimestampOracleConfig extends ConcurrencyOracleConfig {
 
     generateConcurrencyOracle(): TimestampOracle {
         return new TimestampOracle({
-            distinguishSameLabels: this.distinguishSameEvents
+            distinguishSameLabels: this.distinguishSameEvents,
         });
     }
 }
-

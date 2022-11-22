@@ -1,11 +1,10 @@
-import {Place} from "../../../../models/petri-net/place";
-import {Arc} from "../../../../models/petri-net/arc";
-import {Transition} from "../../../../models/petri-net/transition";
+import { Place } from '../../../../models/petri-net/place';
+import { Arc } from '../../../../models/petri-net/arc';
+import { Transition } from '../../../../models/petri-net/transition';
 
 export enum ArcType {
-    INGOING, OUTGOING
-
-
+    INGOING,
+    OUTGOING,
 }
 
 export function getArcs(arcType: ArcType, place: Place) {
@@ -18,8 +17,11 @@ export function getArcs(arcType: ArcType, place: Place) {
 
 export function reduceArcsToMapActivityKeyArcValue(arcs: Array<Arc>) {
     return arcs.reduce(function (map, arc) {
-        const transition = arc.source instanceof Transition ? arc.source : (arc.destination as Transition);
+        const transition =
+            arc.source instanceof Transition
+                ? arc.source
+                : (arc.destination as Transition);
         map.set(transition.label!, arc);
         return map;
-    }, new Map<string, Arc>)
+    }, new Map<string, Arc>());
 }

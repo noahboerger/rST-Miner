@@ -13,7 +13,6 @@ export interface EditableString {
 }
 
 export class EditableStringSequenceWrapper implements EditableStringSequence {
-
     private readonly _array: Array<EditableString>;
 
     constructor(array: Array<EditableString>) {

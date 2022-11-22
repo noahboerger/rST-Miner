@@ -1,11 +1,10 @@
-import {PetriNet} from "../../../models/petri-net/petri-net";
-import {Place} from "../../../models/petri-net/place";
-import {Transition} from "../../../models/petri-net/transition";
-import {EventlogTrace} from "../../../models/eventlog/eventlog-trace";
-import {EventlogEvent} from "../../../models/eventlog/eventlog-event";
+import { PetriNet } from '../../../models/petri-net/petri-net';
+import { Place } from '../../../models/petri-net/place';
+import { Transition } from '../../../models/petri-net/transition';
+import { EventlogTrace } from '../../../models/eventlog/eventlog-trace';
+import { EventlogEvent } from '../../../models/eventlog/eventlog-event';
 
 export class PetriNetSequence {
-
     private _net: PetriNet;
     private _lastPlace: Place;
     private _trace: EventlogTrace;

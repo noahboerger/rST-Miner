@@ -1,6 +1,6 @@
-import {Eventlog} from '../../models/eventlog/eventlog';
-import {EventlogEvent} from '../../models/eventlog/eventlog-event';
-import {EventlogTrace} from '../../models/eventlog/eventlog-trace';
+import { Eventlog } from '../../models/eventlog/eventlog';
+import { EventlogEvent } from '../../models/eventlog/eventlog-event';
+import { EventlogTrace } from '../../models/eventlog/eventlog-trace';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -9,7 +9,7 @@ import {
     IntAttribute,
     StringAttribute,
 } from '../../models/eventlog/eventlog-attribute';
-import {Lifecycle} from "../../models/eventlog/utils/lifecycle";
+import { Lifecycle } from '../../models/eventlog/utils/lifecycle';
 
 export class LogParser {
     public static PARSING_ERROR = new Error(
@@ -75,7 +75,10 @@ export class LogParser {
         );
 
         // Duplicate Attributes
-        if (headers.filter((item, index) => headers.indexOf(item) !== index).length > 0) {
+        if (
+            headers.filter((item, index) => headers.indexOf(item) !== index)
+                .length > 0
+        ) {
             throw LogParser.PARSING_ERROR;
         }
 
@@ -88,7 +91,10 @@ export class LogParser {
         return new Eventlog([], [], [], traces, []);
     }
 
-    private parseTraces(headers: string[], eventLines: string[]): EventlogTrace[] {
+    private parseTraces(
+        headers: string[],
+        eventLines: string[]
+    ): EventlogTrace[] {
         const asTable = eventLines.map(eventLine =>
             this.splitEventLineString(eventLine)
         );
@@ -99,7 +105,7 @@ export class LogParser {
                 eventLineSplit[headers.indexOf(this._caseIdElement)] ===
                     undefined ||
                 eventLineSplit[headers.indexOf(this._activityElement)] ===
-                undefined
+                    undefined
             ) {
                 throw LogParser.PARSING_ERROR;
             }
@@ -110,17 +116,24 @@ export class LogParser {
             const activity: string =
                 eventLineSplit[headers.indexOf(this._activityElement)];
             let lifecycle: Lifecycle | undefined = undefined;
-            const lifecycleHeaderIndex = headers.indexOf(this._lifecycleElement);
-            if (lifecycleHeaderIndex > -1 && lifecycleHeaderIndex < eventLineSplit.length) {
-                    lifecycle = eventLineSplit[lifecycleHeaderIndex] as Lifecycle;
+            const lifecycleHeaderIndex = headers.indexOf(
+                this._lifecycleElement
+            );
+            if (
+                lifecycleHeaderIndex > -1 &&
+                lifecycleHeaderIndex < eventLineSplit.length
+            ) {
+                lifecycle = eventLineSplit[lifecycleHeaderIndex] as Lifecycle;
             }
 
             const eventLogAttributes: EventlogAttribute[] = headers
                 .filter(
                     header =>
-                        ![this._caseIdElement, this._activityElement, this._lifecycleElement].includes(
-                            header
-                        )
+                        ![
+                            this._caseIdElement,
+                            this._activityElement,
+                            this._lifecycleElement,
+                        ].includes(header)
                 )
                 .filter(
                     header => headers.indexOf(header) < eventLineSplit.length
@@ -145,7 +158,9 @@ export class LogParser {
             }
             dictCaseIdentifierToTrace
                 .get(caseId)
-                ?.events.push(new EventlogEvent(eventLogAttributes, activity, lifecycle));
+                ?.events.push(
+                    new EventlogEvent(eventLogAttributes, activity, lifecycle)
+                );
         });
 
         return Array.from(dictCaseIdentifierToTrace.values());

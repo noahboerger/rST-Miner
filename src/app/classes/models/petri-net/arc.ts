@@ -1,12 +1,17 @@
-import {Node} from './node';
-import {Identifiable} from '../../utility/get-by-id';
+import { Node } from './node';
+import { Identifiable } from '../../utility/get-by-id';
 
 export class Arc extends Identifiable {
     private readonly _source: Node;
     private readonly _destination: Node;
     private _weight: number;
 
-    constructor(id: string, source: Node, destination: Node, weight: number = 1) {
+    constructor(
+        id: string,
+        source: Node,
+        destination: Node,
+        weight: number = 1
+    ) {
         super(id);
         this._source = source;
         this._destination = destination;

@@ -1,14 +1,13 @@
-import {MaxFlowPreflowN3} from '../../flow-network/max-flow-preflow-n3';
-import {LpoValidator} from './classes/lpo-validator';
-import {ValidationPhase, ValidationResult} from './classes/validation-result';
-import {PetriNet} from "../../../models/petri-net/petri-net";
-import {PartialOrder} from "../../../models/partial-order/partial-order";
-import {PartialOrderEvent} from "../../../models/partial-order/partial-order-event";
-import {Place} from "../../../models/petri-net/place";
-import {Transition} from "../../../models/petri-net/transition";
+import { MaxFlowPreflowN3 } from '../../flow-network/max-flow-preflow-n3';
+import { LpoValidator } from './classes/lpo-validator';
+import { ValidationPhase, ValidationResult } from './classes/validation-result';
+import { PetriNet } from '../../../models/petri-net/petri-net';
+import { PartialOrder } from '../../../models/partial-order/partial-order';
+import { PartialOrderEvent } from '../../../models/partial-order/partial-order-event';
+import { Place } from '../../../models/petri-net/place';
+import { Transition } from '../../../models/petri-net/transition';
 
 export class LpoFlowValidator extends LpoValidator {
-
     constructor(petriNet: PetriNet, lpo: PartialOrder) {
         super(petriNet, lpo);
     }
@@ -21,13 +20,19 @@ export class LpoFlowValidator extends LpoValidator {
 
         for (let i = 0; i < places.length; i++) {
             const place = places[i];
-            flow[i] = new ValidationResult(this.checkFlowForPlace(place, events), ValidationPhase.FLOW);
+            flow[i] = new ValidationResult(
+                this.checkFlowForPlace(place, events),
+                ValidationPhase.FLOW
+            );
         }
 
         return flow;
     }
 
-    protected checkFlowForPlace(place: Place, events: Array<PartialOrderEvent>): boolean {
+    protected checkFlowForPlace(
+        place: Place,
+        events: Array<PartialOrderEvent>
+    ): boolean {
         const n = events.length * 2 + 2;
         const SOURCE = 0;
         const SINK = n - 1;
@@ -35,29 +40,51 @@ export class LpoFlowValidator extends LpoValidator {
         const network = new MaxFlowPreflowN3(n);
 
         for (let eIndex = 0; eIndex < events.length; eIndex++) {
-            network.setUnbounded(this.eventStart(eIndex), this.eventEnd(eIndex));
+            network.setUnbounded(
+                LpoFlowValidator.eventStart(eIndex),
+                LpoFlowValidator.eventEnd(eIndex)
+            );
 
             const event = events[eIndex];
             if (event.transition === undefined) {
                 if (place.marking > 0) {
-                    network.setCap(SOURCE, this.eventEnd(eIndex), place.marking);
+                    network.setCap(
+                        SOURCE,
+                        LpoFlowValidator.eventEnd(eIndex),
+                        place.marking
+                    );
                 }
             } else {
-                for (const outArc of (event.transition as unknown as Transition).outgoingArcs) {
+                for (const outArc of (event.transition as unknown as Transition)
+                    .outgoingArcs) {
                     const postPlace = outArc.destination as Place;
                     if (postPlace === place) {
-                        network.setCap(SOURCE, this.eventEnd(eIndex), outArc.weight);
+                        network.setCap(
+                            SOURCE,
+                            LpoFlowValidator.eventEnd(eIndex),
+                            outArc.weight
+                        );
                     }
                 }
-                for (const inArc of (event.transition as unknown as Transition).ingoingArcs) {
+                for (const inArc of (event.transition as unknown as Transition)
+                    .ingoingArcs) {
                     const prePlace = inArc.source as Place;
                     if (prePlace === place) {
-                        network.setCap(this.eventStart(eIndex), SINK, inArc.weight);
+                        network.setCap(
+                            LpoFlowValidator.eventStart(eIndex),
+                            SINK,
+                            inArc.weight
+                        );
                     }
                 }
             }
             for (const postEvent of event.nextEvents) {
-                network.setUnbounded(this.eventEnd(eIndex), this.eventStart(events.findIndex(e => e === postEvent)));
+                network.setUnbounded(
+                    LpoFlowValidator.eventEnd(eIndex),
+                    LpoFlowValidator.eventStart(
+                        events.findIndex(e => e === postEvent)
+                    )
+                );
             }
         }
 
@@ -71,12 +98,11 @@ export class LpoFlowValidator extends LpoValidator {
         return need === f;
     }
 
-    private eventStart(eventIndex: number): number {
+    private static eventStart(eventIndex: number): number {
         return eventIndex * 2 + 1;
     }
 
-    private eventEnd(eventIndex: number): number {
+    private static eventEnd(eventIndex: number): number {
         return eventIndex * 2 + 2;
     }
-
 }

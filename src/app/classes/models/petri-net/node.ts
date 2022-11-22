@@ -1,8 +1,7 @@
-import {Arc} from './arc';
-import {getById, Identifiable} from '../../utility/get-by-id';
+import { Arc } from './arc';
+import { getById, Identifiable } from '../../utility/get-by-id';
 
 export class Node extends Identifiable {
-
     private readonly _ingoingArcs: Map<string, Arc>;
     private readonly _outgoingArcs: Map<string, Arc>;
 

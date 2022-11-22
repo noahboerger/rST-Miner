@@ -39,7 +39,7 @@ export class MaxFlowPreflowN3 {
             e[i] = this.cap[s][i];
         }
 
-        for (let sz = 0; ;) {
+        for (let sz = 0; ; ) {
             if (sz === 0) {
                 for (let i = 0; i < this.n; i++) {
                     if (i !== s && i !== t && e[i] > 0) {

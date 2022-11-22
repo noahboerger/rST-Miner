@@ -1,12 +1,10 @@
-import {TestBed} from '@angular/core/testing';
-import {PetriNetIsomorphismTester} from './petri-net-isomorphism-tester';
-import {expect} from '@angular/flex-layout/_private-utils/testing';
-import {PetriNet} from "../../../models/petri-net/petri-net";
-import {PetriNetParser} from "../../../parser/petri-net/petri-net-parser";
-import {
-    PetriNetToPartialOrderTransformer
-} from "../../transformation/petri-net-to-partial-order-transformer";
-import {PartialOrderIsomorphismTester} from "../../partial-order/isomorphism/partial-order-isomorphism-tester"; // TODO
+import { TestBed } from '@angular/core/testing';
+import { PetriNetIsomorphismTester } from './petri-net-isomorphism-tester';
+import { expect } from '@angular/flex-layout/_private-utils/testing';
+import { PetriNet } from '../../../models/petri-net/petri-net';
+import { PetriNetParser } from '../../../parser/petri-net/petri-net-parser';
+import { PetriNetToPartialOrderTransformer } from '../../transformation/petri-net-to-partial-order-transformer';
+import { PartialOrderIsomorphismTester } from '../../partial-order/isomorphism/partial-order-isomorphism-tester';
 
 describe('PetriNetIsomorphismService', () => {
     let isomorphismService: PetriNetIsomorphismTester;
@@ -14,14 +12,26 @@ describe('PetriNetIsomorphismService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        isomorphismService = new PetriNetIsomorphismTester(new PetriNetToPartialOrderTransformer(), new PartialOrderIsomorphismTester());
+        isomorphismService = new PetriNetIsomorphismTester(
+            new PetriNetToPartialOrderTransformer(),
+            new PartialOrderIsomorphismTester()
+        );
         parserService = new PetriNetParser();
     });
 
-
     it('empty net isomorphic', () => {
-        expect(isomorphismService.arePartialOrderPetriNetsIsomorphic(new PetriNet(), new PetriNet())).toBeTrue();
-        expect(isomorphismService.arePetriNetsIsomorphic(new PetriNet(), new PetriNet())).toBeTrue();
+        expect(
+            isomorphismService.arePartialOrderPetriNetsIsomorphic(
+                new PetriNet(),
+                new PetriNet()
+            )
+        ).toBeTrue();
+        expect(
+            isomorphismService.arePetriNetsIsomorphic(
+                new PetriNet(),
+                new PetriNet()
+            )
+        ).toBeTrue();
     });
 
     it('A B parallel PO is isomorphic', () => {
@@ -59,8 +69,12 @@ p3 b
 b p4`
         );
         expect(po2).toBeTruthy();
-        expect(isomorphismService.arePartialOrderPetriNetsIsomorphic(po1!, po2!)).toBeTrue();
-        expect(isomorphismService.arePetriNetsIsomorphic(po1!, po2!)).toBeTrue();
+        expect(
+            isomorphismService.arePartialOrderPetriNetsIsomorphic(po1!, po2!)
+        ).toBeTrue();
+        expect(
+            isomorphismService.arePetriNetsIsomorphic(po1!, po2!)
+        ).toBeTrue();
     });
 
     it('3A sequence PO is isomorphic', () => {
@@ -104,8 +118,12 @@ p3 c
 c p4`
         );
         expect(po2).toBeTruthy();
-        expect(isomorphismService.arePartialOrderPetriNetsIsomorphic(po1!, po2!)).toBeTrue();
-        expect(isomorphismService.arePetriNetsIsomorphic(po1!, po2!)).toBeTrue();
+        expect(
+            isomorphismService.arePartialOrderPetriNetsIsomorphic(po1!, po2!)
+        ).toBeTrue();
+        expect(
+            isomorphismService.arePetriNetsIsomorphic(po1!, po2!)
+        ).toBeTrue();
     });
 
     it('AB then C is not C then AB PO', () => {
@@ -153,8 +171,12 @@ p3 b
 b p5`
         );
         expect(po2).toBeTruthy();
-        expect(isomorphismService.arePartialOrderPetriNetsIsomorphic(po1!, po2!)).toBeFalse();
-        expect(isomorphismService.arePetriNetsIsomorphic(po1!, po2!)).toBeFalse();
+        expect(
+            isomorphismService.arePartialOrderPetriNetsIsomorphic(po1!, po2!)
+        ).toBeFalse();
+        expect(
+            isomorphismService.arePetriNetsIsomorphic(po1!, po2!)
+        ).toBeFalse();
     });
 
     it('A B conflict is isomorphic', () => {
@@ -188,7 +210,9 @@ p1 b
 b p2`
         );
         expect(po2).toBeTruthy();
-        expect(isomorphismService.arePetriNetsIsomorphic(po1!, po2!)).toBeTrue();
+        expect(
+            isomorphismService.arePetriNetsIsomorphic(po1!, po2!)
+        ).toBeTrue();
     });
 
     it('unlabeled loop is isomorphic', () => {
@@ -222,7 +246,9 @@ p2 b
 b p1`
         );
         expect(po2).toBeTruthy();
-        expect(isomorphismService.arePetriNetsIsomorphic(po1!, po2!)).toBeTrue();
+        expect(
+            isomorphismService.arePetriNetsIsomorphic(po1!, po2!)
+        ).toBeTrue();
     });
 
     it('considers arc weights', () => {
@@ -246,7 +272,9 @@ p1 0
 p1 a 2`
         );
         expect(po2).toBeTruthy();
-        expect(isomorphismService.arePetriNetsIsomorphic(po1!, po2!)).toBeFalse();
+        expect(
+            isomorphismService.arePetriNetsIsomorphic(po1!, po2!)
+        ).toBeFalse();
     });
 
     it('prime miner incorrect mapping counter incrementation bug', () => {
@@ -344,6 +372,8 @@ Analyze_Defect p9 2
 p9 Restart_Repair`
         );
         expect(po2).toBeTruthy();
-        expect(isomorphismService.arePetriNetsIsomorphic(po1!, po2!)).toBeFalse();
+        expect(
+            isomorphismService.arePetriNetsIsomorphic(po1!, po2!)
+        ).toBeFalse();
     });
 });

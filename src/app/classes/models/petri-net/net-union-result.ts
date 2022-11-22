@@ -1,4 +1,4 @@
-import {PetriNet} from './petri-net';
+import { PetriNet } from './petri-net';
 
 export interface NetUnionResult {
     net: PetriNet;

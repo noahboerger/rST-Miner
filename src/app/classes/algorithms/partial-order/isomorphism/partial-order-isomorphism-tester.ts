@@ -1,16 +1,23 @@
-import {IsomorphismCandidate} from './model/isomorphism-candidate';
-import {PartialOrder} from "../../../models/partial-order/partial-order";
-import {PartialOrderEvent} from "../../../models/partial-order/partial-order-event";
+import { IsomorphismCandidate } from './model/isomorphism-candidate';
+import { PartialOrder } from '../../../models/partial-order/partial-order';
+import { PartialOrderEvent } from '../../../models/partial-order/partial-order-event';
 
 export class PartialOrderIsomorphismTester {
-
-    public arePartialOrdersIsomorphic(partialOrderA: PartialOrder, partialOrderB: PartialOrder): boolean {
+    public arePartialOrdersIsomorphic(
+        partialOrderA: PartialOrder,
+        partialOrderB: PartialOrder
+    ): boolean {
         partialOrderA.determineInitialAndFinalEvents();
         partialOrderB.determineInitialAndFinalEvents();
 
         const unsolved: Array<IsomorphismCandidate> = [];
         for (const initialEvent of partialOrderA.initialEvents) {
-            unsolved.push(new IsomorphismCandidate(initialEvent, Array.from(partialOrderB.initialEvents)));
+            unsolved.push(
+                new IsomorphismCandidate(
+                    initialEvent,
+                    Array.from(partialOrderB.initialEvents)
+                )
+            );
         }
 
         const mappingAB = new Map<string, PartialOrderEvent>();
@@ -18,7 +25,9 @@ export class PartialOrderIsomorphismTester {
         const pushedToBack = new Set<IsomorphismCandidate>();
         while (unsolved.length > 0) {
             const problem = unsolved.shift()!;
-            const previous: Array<PartialOrderEvent> = Array.from(problem.target.previousEvents);
+            const previous: Array<PartialOrderEvent> = Array.from(
+                problem.target.previousEvents
+            );
             if (previous.some(p => !mappingAB.has(p.id))) {
                 // pre-set was not yet determined, we have to wait
                 if (pushedToBack.has(problem)) {
@@ -28,20 +37,26 @@ export class PartialOrderIsomorphismTester {
                 unsolved.push(problem);
                 continue;
             }
-            problem.candidates = problem.candidates.filter(c => !mappingBA.has(c.id));
+            problem.candidates = problem.candidates.filter(
+                c => !mappingBA.has(c.id)
+            );
 
             const match = problem.candidates.find(c => {
                 const sameLabel = c.label === problem.target.label;
                 if (!sameLabel) {
                     return false;
                 }
-                if (c.previousEvents.size !== problem.target.previousEvents.size) {
+                if (
+                    c.previousEvents.size !== problem.target.previousEvents.size
+                ) {
                     return false;
                 }
                 if (c.nextEvents.size !== problem.target.nextEvents.size) {
                     return false;
                 }
-                const previousLabels = new Set(Array.from(c.previousEvents).map(p => p.label!));
+                const previousLabels = new Set(
+                    Array.from(c.previousEvents).map(p => p.label!)
+                );
                 for (const p of problem.target.previousEvents) {
                     if (!previousLabels.has(p.label!)) {
                         return false;
@@ -60,7 +75,9 @@ export class PartialOrderIsomorphismTester {
             mappingBA.set(match.id, problem.target);
 
             for (const next of problem.target.nextEvents) {
-                unsolved.push(new IsomorphismCandidate(next, Array.from(match.nextEvents)));
+                unsolved.push(
+                    new IsomorphismCandidate(next, Array.from(match.nextEvents))
+                );
             }
         }
 

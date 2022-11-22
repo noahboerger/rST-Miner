@@ -1,19 +1,22 @@
-import {Place} from './place';
-import {Transition} from './transition';
-import {Arc} from './arc';
-import {Subject} from 'rxjs';
-import {createUniqueString, IncrementingCounter} from '../../utility/incrementing-counter';
-import {NetUnionResult} from './net-union-result';
-import {getById} from '../../utility/get-by-id';
-import {Marking} from './marking';
+import { Place } from './place';
+import { Transition } from './transition';
+import { Arc } from './arc';
+import { Subject } from 'rxjs';
+import {
+    createUniqueString,
+    IncrementingCounter,
+} from '../../utility/incrementing-counter';
+import { NetUnionResult } from './net-union-result';
+import { getById } from '../../utility/get-by-id';
+import { Marking } from './marking';
 
 export class PetriNet {
-    private _places: Map<string, Place>;
-    private _transitions: Map<string, Transition>;
-    private _arcs: Map<string, Arc>;
+    private readonly _places: Map<string, Place>;
+    private readonly _transitions: Map<string, Transition>;
+    private readonly _arcs: Map<string, Arc>;
     private _frequency: number | undefined;
-    private _inputPlaces: Set<string>;
-    private _outputPlaces: Set<string>;
+    private readonly _inputPlaces: Set<string>;
+    private readonly _outputPlaces: Set<string>;
 
     private _kill$: Subject<void>;
 
@@ -33,7 +36,10 @@ export class PetriNet {
         this._outputPlaces = new Set<string>();
     }
 
-    public static createFromArcSubset(net: PetriNet, arcs: Array<Arc>): PetriNet {
+    public static createFromArcSubset(
+        net: PetriNet,
+        arcs: Array<Arc>
+    ): PetriNet {
         const result = new PetriNet();
         net.getPlaces().forEach(p => {
             result.addPlace(new Place(p.marking, p.id));
@@ -46,7 +52,9 @@ export class PetriNet {
             let destination;
             if (a.source instanceof Place) {
                 source = result.getPlace(a.sourceId) as Place;
-                destination = result.getTransition(a.destinationId) as Transition;
+                destination = result.getTransition(
+                    a.destinationId
+                ) as Transition;
             } else {
                 source = result.getTransition(a.sourceId) as Transition;
                 destination = result.getPlace(a.destinationId) as Place;
@@ -87,9 +95,31 @@ export class PetriNet {
                 arcId = arc.getId() + counter.next();
             }
             if (arc.source instanceof Place) {
-                result.addArc(new Arc(arcId, result.getPlace(placeMap.get(arc.sourceId) as string) as Place, result.getTransition(transitionMap.get(arc.destinationId) as string) as Transition, arc.weight));
+                result.addArc(
+                    new Arc(
+                        arcId,
+                        result.getPlace(
+                            placeMap.get(arc.sourceId) as string
+                        ) as Place,
+                        result.getTransition(
+                            transitionMap.get(arc.destinationId) as string
+                        ) as Transition,
+                        arc.weight
+                    )
+                );
             } else {
-                result.addArc(new Arc(arcId, result.getTransition(transitionMap.get(arc.sourceId) as string) as Transition, result.getPlace(placeMap.get(arc.destinationId) as string) as Place, arc.weight));
+                result.addArc(
+                    new Arc(
+                        arcId,
+                        result.getTransition(
+                            transitionMap.get(arc.sourceId) as string
+                        ) as Transition,
+                        result.getPlace(
+                            placeMap.get(arc.destinationId) as string
+                        ) as Place,
+                        arc.weight
+                    )
+                );
             }
         });
 
@@ -98,18 +128,24 @@ export class PetriNet {
 
         a.inputPlaces.forEach(p => {
             inputPlacesB.delete(p);
-        })
+        });
         a.outputPlaces.forEach(p => {
-            outputPlacesB.delete(p)
-        })
+            outputPlacesB.delete(p);
+        });
 
-        return {net: result, inputPlacesB, outputPlacesB};
+        return { net: result, inputPlacesB, outputPlacesB };
     }
 
-    public static fireTransitionInMarking(net: PetriNet, transitionId: string, marking: Marking): Marking {
+    public static fireTransitionInMarking(
+        net: PetriNet,
+        transitionId: string,
+        marking: Marking
+    ): Marking {
         const transition = net.getTransition(transitionId);
         if (transition === undefined) {
-            throw new Error(`The given net does not contain a transition with id '${transitionId}'`);
+            throw new Error(
+                `The given net does not contain a transition with id '${transitionId}'`
+            );
         }
 
         const newMarking: Marking = new Marking(marking);
@@ -117,10 +153,14 @@ export class PetriNet {
         for (const inArc of transition.ingoingArcs) {
             const m = marking.get(inArc.sourceId);
             if (m === undefined) {
-                throw new Error(`The transition with id '${transitionId}' has an incoming arc from a place with id '${inArc.sourceId}' but no such place is defined in the provided marking!`);
+                throw new Error(
+                    `The transition with id '${transitionId}' has an incoming arc from a place with id '${inArc.sourceId}' but no such place is defined in the provided marking!`
+                );
             }
             if (m - inArc.weight < 0) {
-                throw new Error(`The transition with id '${transitionId}' is not enabled in the provided marking! The place with id '${inArc.sourceId}' contains ${m} tokens, but the arc weight is ${inArc.weight}.`);
+                throw new Error(
+                    `The transition with id '${transitionId}' is not enabled in the provided marking! The place with id '${inArc.sourceId}' contains ${m} tokens, but the arc weight is ${inArc.weight}.`
+                );
             }
             newMarking.set(inArc.sourceId, m - inArc.weight);
         }
@@ -128,7 +168,9 @@ export class PetriNet {
         for (const outArc of transition.outgoingArcs) {
             const m = marking.get(outArc.destinationId);
             if (m === undefined) {
-                throw new Error(`The transition with id '${transitionId}' has an outgoing arc to a place with id '${outArc.destinationId}' but no such place is defined in the provided marking!`);
+                throw new Error(
+                    `The transition with id '${transitionId}' has an outgoing arc to a place with id '${outArc.destinationId}' but no such place is defined in the provided marking!`
+                );
             }
             newMarking.set(outArc.destinationId, m + outArc.weight);
         }
@@ -136,20 +178,35 @@ export class PetriNet {
         return newMarking;
     }
 
-    public static getAllEnabledTransitions(net: PetriNet, marking: Marking): Array<Transition> {
-        return net.getTransitions().filter(t => PetriNet.isTransitionEnabledInMarking(net, t.id!, marking));
+    public static getAllEnabledTransitions(
+        net: PetriNet,
+        marking: Marking
+    ): Array<Transition> {
+        return net
+            .getTransitions()
+            .filter(t =>
+                PetriNet.isTransitionEnabledInMarking(net, t.id!, marking)
+            );
     }
 
-    public static isTransitionEnabledInMarking(net: PetriNet, transitionId: string, marking: Marking): boolean {
+    public static isTransitionEnabledInMarking(
+        net: PetriNet,
+        transitionId: string,
+        marking: Marking
+    ): boolean {
         const transition = net.getTransition(transitionId);
         if (transition === undefined) {
-            throw new Error(`The given net does not contain a transition with id '${transitionId}'`);
+            throw new Error(
+                `The given net does not contain a transition with id '${transitionId}'`
+            );
         }
 
         for (const inArc of transition.ingoingArcs) {
             const m = marking.get(inArc.sourceId);
             if (m === undefined) {
-                throw new Error(`The transition with id '${transitionId}' has an incoming arc from a place with id '${inArc.sourceId}' but no such place is defined in the provided marking!`);
+                throw new Error(
+                    `The transition with id '${transitionId}' has an incoming arc from a place with id '${inArc.sourceId}' but no such place is defined in the provided marking!`
+                );
             }
             if (m - inArc.weight < 0) {
                 return false;
@@ -158,7 +215,11 @@ export class PetriNet {
         return true;
     }
 
-    private static determineInOut(p: Place, input: Set<string>, output: Set<string>) {
+    private static determineInOut(
+        p: Place,
+        input: Set<string>,
+        output: Set<string>
+    ) {
         if (p.ingoingArcs.length === 0) {
             input.add(p.getId());
         }
@@ -181,7 +242,11 @@ export class PetriNet {
 
     public addTransition(transition: Transition) {
         if (transition.id === undefined) {
-            transition.id = createUniqueString('t', this._transitions, this._transitionCounter);
+            transition.id = createUniqueString(
+                't',
+                this._transitions,
+                this._transitionCounter
+            );
         }
         this._transitions.set(transition.id, transition);
     }
@@ -216,7 +281,11 @@ export class PetriNet {
 
     public addPlace(place: Place) {
         if (place.id === undefined) {
-            place.id = createUniqueString('p', this._places, this._placeCounter);
+            place.id = createUniqueString(
+                'p',
+                this._places,
+                this._placeCounter
+            );
         }
         this._places.set(place.id, place);
         this._inputPlaces.add(place.id);
@@ -224,8 +293,7 @@ export class PetriNet {
     }
 
     public removePlace(place: Place | string) {
-        const p =
-            getById(this._places, place);
+        const p = getById(this._places, place);
         if (p === undefined) {
             return;
         }
@@ -256,9 +324,21 @@ export class PetriNet {
     }
 
     public addArc(arc: Arc): void;
-    public addArc(source: Transition, destination: Place, weight?: number): void;
-    public addArc(source: Place, destination: Transition, weight?: number): void;
-    public addArc(arcOrSource: Arc | Transition | Place, destination?: Place | Transition, weight: number = 1) {
+    public addArc(
+        source: Transition,
+        destination: Place,
+        weight?: number
+    ): void;
+    public addArc(
+        source: Place,
+        destination: Transition,
+        weight?: number
+    ): void;
+    public addArc(
+        arcOrSource: Arc | Transition | Place,
+        destination?: Place | Transition,
+        weight: number = 1
+    ) {
         if (arcOrSource instanceof Arc) {
             this._arcs.set(arcOrSource.getId(), arcOrSource);
             if (arcOrSource.source instanceof Place) {
@@ -267,7 +347,14 @@ export class PetriNet {
                 this._inputPlaces.delete(arcOrSource.destinationId);
             }
         } else {
-            this.addArc(new Arc(createUniqueString('a', this._arcs, this._arcCounter), arcOrSource, destination!, weight));
+            this.addArc(
+                new Arc(
+                    createUniqueString('a', this._arcs, this._arcCounter),
+                    arcOrSource,
+                    destination!,
+                    weight
+                )
+            );
         }
     }
 
@@ -281,9 +368,15 @@ export class PetriNet {
         this._arcs.delete(arc.getId());
         arc.source.removeArc(arc);
         arc.destination.removeArc(arc);
-        if (arc.source instanceof Place && arc.source.outgoingArcs.length === 0) {
+        if (
+            arc.source instanceof Place &&
+            arc.source.outgoingArcs.length === 0
+        ) {
             this._outputPlaces.add(arc.sourceId);
-        } else if (arc.destination instanceof Place && arc.destination.ingoingArcs.length === 0) {
+        } else if (
+            arc.destination instanceof Place &&
+            arc.destination.ingoingArcs.length === 0
+        ) {
             this._inputPlaces.add(arc.destinationId);
         }
     }

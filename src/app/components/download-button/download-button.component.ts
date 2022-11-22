@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
     selector: 'app-download-button',
@@ -9,8 +9,8 @@ export class DownloadButtonComponent {
     @Input() buttonText: string | undefined;
     @Input() buttonIcon: string | undefined;
     @Input() disabled: boolean = true;
-    @Output() downloadButtonClick: EventEmitter<MouseEvent> = new EventEmitter();
-
+    @Output() downloadButtonClick: EventEmitter<MouseEvent> =
+        new EventEmitter();
 
     constructor() {}
 

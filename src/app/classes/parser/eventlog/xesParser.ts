@@ -1,6 +1,6 @@
-import {Eventlog} from '../../models/eventlog/eventlog';
+import { Eventlog } from '../../models/eventlog/eventlog';
 import * as xml2js from 'xml2js';
-import {EventlogClassifier} from '../../models/eventlog/eventlog-classifier';
+import { EventlogClassifier } from '../../models/eventlog/eventlog-classifier';
 import {
     BooleanAttribute,
     DateAttribute,
@@ -9,9 +9,9 @@ import {
     IntAttribute,
     StringAttribute,
 } from '../../models/eventlog/eventlog-attribute';
-import {EventlogTrace} from '../../models/eventlog/eventlog-trace';
-import {EventlogEvent} from '../../models/eventlog/eventlog-event';
-import {Lifecycle} from "../../models/eventlog/utils/lifecycle";
+import { EventlogTrace } from '../../models/eventlog/eventlog-trace';
+import { EventlogEvent } from '../../models/eventlog/eventlog-event';
+import { Lifecycle } from '../../models/eventlog/utils/lifecycle';
 
 export class XesParser {
     public static PARSING_ERROR = new Error(
@@ -214,24 +214,47 @@ export class XesParser {
             return undefined;
         }
         const eventLogAttributes = this.extractEventLogAttributes(eventObj);
-        const activity = this.getAttributeWithKey(eventLogAttributes, this._activityEventLogAttributeKey);
+        const activity = this.getAttributeWithKey(
+            eventLogAttributes,
+            this._activityEventLogAttributeKey
+        );
         if (activity == null || !(activity instanceof StringAttribute)) {
             throw XesParser.PARSING_ERROR;
         }
-        const lifecycleAttribute = this.getAttributeWithKey(eventLogAttributes, this._lifecycleEventLogAttributeKey);
+        const lifecycleAttribute = this.getAttributeWithKey(
+            eventLogAttributes,
+            this._lifecycleEventLogAttributeKey
+        );
         let lifecycle = undefined;
-        if (lifecycleAttribute != null && lifecycleAttribute instanceof StringAttribute) {
+        if (
+            lifecycleAttribute != null &&
+            lifecycleAttribute instanceof StringAttribute
+        ) {
             lifecycle = lifecycleAttribute.value as Lifecycle;
         }
 
         const eventLogAttributesWithoutActivity = eventLogAttributes.filter(
-            eventLogAttribute => ![this._activityEventLogAttributeKey, this._lifecycleEventLogAttributeKey].includes(eventLogAttribute.key.toLowerCase()));
-        return new EventlogEvent(eventLogAttributesWithoutActivity, activity.value, lifecycle);
+            eventLogAttribute =>
+                ![
+                    this._activityEventLogAttributeKey,
+                    this._lifecycleEventLogAttributeKey,
+                ].includes(eventLogAttribute.key.toLowerCase())
+        );
+        return new EventlogEvent(
+            eventLogAttributesWithoutActivity,
+            activity.value,
+            lifecycle
+        );
     }
 
-    private getAttributeWithKey(eventLogAttributes: EventlogAttribute[], key: string): EventlogAttribute | undefined {
-        const actsWithKey = eventLogAttributes
-            .filter(eventLogAttribute => eventLogAttribute.key.toLowerCase() === key.toLowerCase());
+    private getAttributeWithKey(
+        eventLogAttributes: EventlogAttribute[],
+        key: string
+    ): EventlogAttribute | undefined {
+        const actsWithKey = eventLogAttributes.filter(
+            eventLogAttribute =>
+                eventLogAttribute.key.toLowerCase() === key.toLowerCase()
+        );
         if (actsWithKey.length > 1) {
             throw XesParser.PARSING_ERROR;
         }

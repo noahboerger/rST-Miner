@@ -1,15 +1,18 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {XesParserService} from './xes-parser.service';
-import {expect} from '@angular/flex-layout/_private-utils/testing';
-import {Eventlog} from '../../../classes/models/eventlog/eventlog';
-import {EventlogTrace} from '../../../classes/models/eventlog/eventlog-trace';
-import {EventlogEvent} from '../../../classes/models/eventlog/eventlog-event';
-import {FloatAttribute, StringAttribute,} from '../../../classes/models/eventlog/eventlog-attribute';
-import {EventlogClassifier} from '../../../classes/models/eventlog/eventlog-classifier';
-import {MatFormField} from '@angular/material/form-field';
-import {XesParser} from '../../../classes/parser/eventlog/xesParser';
-import {Lifecycle} from "../../../classes/models/eventlog/utils/lifecycle";
+import { XesParserService } from './xes-parser.service';
+import { expect } from '@angular/flex-layout/_private-utils/testing';
+import { Eventlog } from '../../../classes/models/eventlog/eventlog';
+import { EventlogTrace } from '../../../classes/models/eventlog/eventlog-trace';
+import { EventlogEvent } from '../../../classes/models/eventlog/eventlog-event';
+import {
+    FloatAttribute,
+    StringAttribute,
+} from '../../../classes/models/eventlog/eventlog-attribute';
+import { EventlogClassifier } from '../../../classes/models/eventlog/eventlog-classifier';
+import { MatFormField } from '@angular/material/form-field';
+import { XesParser } from '../../../classes/parser/eventlog/xesParser';
+import { Lifecycle } from '../../../classes/models/eventlog/utils/lifecycle';
 
 describe('XesParserService', () => {
     let service: XesParserService;

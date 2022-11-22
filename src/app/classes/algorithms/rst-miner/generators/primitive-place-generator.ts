@@ -1,15 +1,13 @@
-import {PetriNet} from "../../../models/petri-net/petri-net";
-import {RandomPlaceGenerator} from "./random-place-generator";
-import {Place} from "../../../models/petri-net/place";
-import {Arc} from "../../../models/petri-net/arc";
-import {PartialOrder} from "../../../models/partial-order/partial-order";
+import { PetriNet } from '../../../models/petri-net/petri-net';
+import { RandomPlaceGenerator } from './random-place-generator';
+import { Place } from '../../../models/petri-net/place';
+import { Arc } from '../../../models/petri-net/arc';
+import { PartialOrder } from '../../../models/partial-order/partial-order';
 
 export class PrimitivePlaceGenerator implements RandomPlaceGenerator {
+    constructor(private _probability: number) {}
 
-    constructor(private _probability: number) {
-    }
-
-    init(petriNet: PetriNet, partialOrders: PartialOrder[]) :number{
+    init(petriNet: PetriNet, partialOrders: PartialOrder[]): number {
         return 0; // TODO
     }
 
@@ -33,11 +31,13 @@ export class PrimitivePlaceGenerator implements RandomPlaceGenerator {
 
         Array.from(petriNet.getTransitions()) // TODO generiert erstmal keine short loops
             .filter(transition => Math.random() < this._probability)
-            .map(transition => Math.random() > 0.5 ? new Arc("i" + id + transition.label, transition, newPlace) : new Arc("o" + id + transition.label, newPlace, transition))
+            .map(transition =>
+                Math.random() > 0.5
+                    ? new Arc('i' + id + transition.label, transition, newPlace)
+                    : new Arc('o' + id + transition.label, newPlace, transition)
+            )
             .forEach(arc => petriNet.addArc(arc)); // TODO -> Return Template Place
 
-
-        // TODO auch beziehungen zwischen den plätzen genieren?! (pseudo Transitionen einführen?) --> Not supported
         return newPlace;
     }
 }

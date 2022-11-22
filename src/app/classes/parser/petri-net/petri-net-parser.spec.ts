@@ -1,6 +1,6 @@
-import {PetriNetParser} from './petri-net-parser';
-import {TestBed} from '@angular/core/testing';
-import {expect} from '@angular/flex-layout/_private-utils/testing';
+import { PetriNetParser } from './petri-net-parser';
+import { TestBed } from '@angular/core/testing';
+import { expect } from '@angular/flex-layout/_private-utils/testing';
 
 describe('PetriNetParserService', () => {
     let originalLogFunction: (...data: any[]) => void;
@@ -29,7 +29,7 @@ describe('PetriNetParserService', () => {
 .transitions
 .places
 .arcs`
-        )
+        );
         expect(result).toBeTruthy();
         expect(result?.getTransitions().length).toBe(0);
         expect(result?.getPlaces().length).toBe(0);
