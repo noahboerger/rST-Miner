@@ -12,6 +12,7 @@ import {LpoFireValidator} from "../petri-net/validation/lpo-fire-validator";
 import {RandomPlaceGenerator} from "./generators/random-place-generator";
 import {ImplicitPlaceIdentifier} from "../petri-net/transformation/implicit-place-identifier";
 import {Place} from "../../models/petri-net/place";
+import {TemplatePlace} from "../petri-net/transformation/classes/template-place";
 
 export class RstMiner {
 
@@ -57,28 +58,16 @@ export class RstMiner {
 
         const terminationConditionReachedFct = this._minerSettings.terminationCondition.toIsTerminationConditionReachedFunction();
 
-        let addedPlaces =  this._randomPlaceGenerator.init(petriNet, partialOrders);
+        let counterTestedPlaces =  this._randomPlaceGenerator.init(petriNet, partialOrders);
         while (!terminationConditionReachedFct(petriNet)) {
 
             const clonedPetriNet = petriNet.clone();
 
 
-            const addedPlace = this._randomPlaceGenerator.insertRandomPlace("p" + addedPlaces, clonedPetriNet);
+            const addedPlace = this._randomPlaceGenerator.insertRandomPlace("p" + counterTestedPlaces++, clonedPetriNet);
 
             // TODO hauptalgorithmus mit würfeln Testen und optimieren
 
-             // TODO ACHTUNG: Besser keine unverbundenen Plätze einfügen<
-
-            // const t1 = new Transition("test", undefined, undefined, "t1"); TODO delete this example net
-            // const p1 = new Place(undefined, undefined, undefined, "p1");
-            // const p2 = new Place(undefined, undefined, undefined, "p2");
-            // const arc1 = new Arc("arc1", p1, t1);
-            // const arc2 = new Arc("arc2", t1, p2);
-            // petriNet.addTransition(t1);
-            // petriNet.addPlace(p1);
-            // petriNet.addPlace(p2);
-            // petriNet.addArc(arc1);
-            // petriNet.addArc(arc2);
             const validationResults = partialOrders
                 .flatMap(partialOrder => new LpoFireValidator(clonedPetriNet.clone(), partialOrder.clone()).validate()) // TODO -> Achtung verändert
             if(validationResults
@@ -89,9 +78,7 @@ export class RstMiner {
 
 
             petriNet = clonedPetriNet
-            addedPlaces++;
-
-            this.removeImplicitPlacesFor(implicitPlaceIdentifier, addedPlace, petriNet);
+            counterTestedPlaces = this.removeImplicitPlacesForAndIncreaseCounter(implicitPlaceIdentifier, addedPlace, petriNet, counterTestedPlaces);
         }
 
         // TODO anders initialisieren und nutzen in der loop
@@ -109,7 +96,7 @@ export class RstMiner {
     private createFlowerModel(transitionActivities: Set<string>) : PetriNet {
 
         const allTransitions = [...transitionActivities]
-            .map(activity => new Transition(activity, undefined, undefined, activity));
+            .map(activity => new Transition(activity, activity));
 
         const petriNet = new PetriNet();
 
@@ -120,22 +107,24 @@ export class RstMiner {
         return petriNet;
     }
 
-    private removeImplicitPlacesFor(implicitPlaceIdentifier: ImplicitPlaceIdentifier, addedPlace: Place, petriNet: PetriNet) {
+    private removeImplicitPlacesForAndIncreaseCounter(implicitPlaceIdentifier: ImplicitPlaceIdentifier, addedPlace: Place, petriNet: PetriNet, counter: number) : number {
         implicitPlaceIdentifier.calculateImplicitPlacesFor(addedPlace, petriNet)
-            .filter(implicitResult => this.checkValidPlaceOrUndefined(implicitResult.substitutePlace))
+            .filter(implicitResult => RstMiner.checkValidPlaceOrUndefined(implicitResult.substitutePlace))
             .forEach(implicitResult => {
-                petriNet.removePlace(implicitResult.implicitPlace);
-                const substPlace = implicitResult.substitutePlace;
-                if (substPlace != null) {
+                petriNet.removePlace(implicitResult.implicitPlace); // TODO --> Nur removen, wenn (einer) aus replacement recursiver Chain valide
+                const substTemplatePlace = implicitResult.substitutePlace;
+                if (substTemplatePlace != null) {
+                    const substPlace = substTemplatePlace.buildPlaceWithId("p" + counter++)
                     petriNet.addPlace(substPlace);
                     substPlace.ingoingArcs.forEach(arc => petriNet.addArc(arc))
                     substPlace.outgoingArcs.forEach(arc => petriNet.addArc(arc))
-                    this.removeImplicitPlacesFor(implicitPlaceIdentifier, substPlace, petriNet)
+                    counter = this.removeImplicitPlacesForAndIncreaseCounter(implicitPlaceIdentifier, substPlace, petriNet, counter)
                 }
             })
+        return counter;
     }
 
-    private checkValidPlaceOrUndefined(substitutePlace: Place | undefined) {
+    private static checkValidPlaceOrUndefined(substitutePlace: TemplatePlace | undefined) { // TODO potentiell mehrfach abziehbar
         if(substitutePlace == null) {
             return true;
         }

@@ -9,7 +9,7 @@ import {Node} from '../../models/petri-net/node'
 
 
 
-export class PetriNetParser extends AbstractBlockParser<PetriNet> { // TODO remove this parser (full folder) and AbstrachtBlockParser
+export class PetriNetParser extends AbstractBlockParser<PetriNet> {
 
     constructor() {
         super(
@@ -50,7 +50,7 @@ export class PetriNetParser extends AbstractBlockParser<PetriNet> { // TODO remo
             if (net.getPlace(parts[0]) !== undefined || net.getTransition(parts[0]) !== undefined) {
                 throw new Error(`line '${line}' place ids must be unique!`);
             }
-            const place = new Place(initialMarking, 0, 0, parts[0]);
+            const place = new Place(initialMarking, parts[0]);
             net.addPlace(place);
         });
     }
@@ -63,7 +63,7 @@ export class PetriNetParser extends AbstractBlockParser<PetriNet> { // TODO remo
             if (net.getTransition(parts[0]) !== undefined || net.getPlace(parts[0]) !== undefined) {
                 throw new Error(`line '${line}' transition ids must be unique!`);
             }
-            net.addTransition(new Transition(parts[1], 0, 0, parts[0]))
+            net.addTransition(new Transition(parts[1], parts[0]))
         });
     }
 
@@ -82,7 +82,7 @@ export class PetriNetParser extends AbstractBlockParser<PetriNet> { // TODO remo
                     throw new Error(`line '${line}' arc weight is less than 1! Arc weight must be a positive integer!`);
                 }
             }
-            const srcDest = this.extractSourceAndDestination(parts[0], parts[1], line, net);
+            const srcDest = PetriNetParser.extractSourceAndDestination(parts[0], parts[1], line, net);
 
             const arcId = parts[0] + ' ' + parts[1];
             if (net.getArc(arcId) !== undefined) {
@@ -94,7 +94,7 @@ export class PetriNetParser extends AbstractBlockParser<PetriNet> { // TODO remo
         });
     }
 
-    private extractSourceAndDestination(sourceId: string, destinationId: string, line: string, net: PetriNet): SourceAndDestination {
+    private static extractSourceAndDestination(sourceId: string, destinationId: string, line: string, net: PetriNet): SourceAndDestination {
         let source: Node | undefined = net.getPlace(sourceId);
         let destination: Node | undefined = net.getTransition(destinationId);
         if (!!source && !!destination) {

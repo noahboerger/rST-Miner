@@ -35,8 +35,8 @@ export class XesParser {
     private readonly _keysToken = 'KEYS';
     private readonly _keyToken = 'KEY';
     private readonly _valueToken = 'VALUE';
-    private readonly _activityEventLogAttributeKey = 'concept:name'; // TODO .log parser ()
-    private readonly _lifecycleEventLogAttributeKey = 'lifecycle:transition'; // TODO .log parser () --> + .log parser Attriubute dürfen nur einmal vorkommen
+    private readonly _activityEventLogAttributeKey = 'concept:name';
+    private readonly _lifecycleEventLogAttributeKey = 'lifecycle:transition';
     private readonly _eventScopeValue = 'event';
     private readonly _traceScopeValue = 'trace';
 

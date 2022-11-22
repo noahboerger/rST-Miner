@@ -1,4 +1,4 @@
-export abstract class AbstractParser<T> { // TODO -> rausschmeißen oder überall nutzen
+export abstract class AbstractParser<T> {
 
     public static readonly TYPE_BLOCK = '.type';
 

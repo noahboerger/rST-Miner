@@ -4,8 +4,8 @@ export class Place extends Node {
 
     private _marking: number;
 
-    constructor(marking: number = 0, x: number = 0, y: number = 0, id?: string) {
-        super(x, y, id);
+    constructor(marking: number = 0, id?: string) {
+        super(id);
         this._marking = marking;
     }
 
@@ -15,13 +15,5 @@ export class Place extends Node {
 
     set marking(value: number) {
         this._marking = value;
-    }
-
-    protected override svgX(): string {
-        return 'cx';
-    }
-
-    protected override svgY(): string {
-        return 'cy';
     }
 }

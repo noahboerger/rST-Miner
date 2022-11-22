@@ -14,7 +14,7 @@ export class PrimitivePlaceGenerator implements RandomPlaceGenerator {
     }
 
     insertRandomPlace(id: string, petriNet: PetriNet): Place {
-        const newPlace = new Place(Math.random() < 0.5 ? 0 : 1, undefined, undefined, id); // TODO generate marking
+        const newPlace = new Place(Math.random() < 0.5 ? 0 : 1, id); // TODO generate marking
         petriNet.addPlace(newPlace);
 
         // TODO aktuell werden "dumm" Transitionen eingefügt die ggf nie genutzt werden aber trotzdem validiert
@@ -34,7 +34,7 @@ export class PrimitivePlaceGenerator implements RandomPlaceGenerator {
         Array.from(petriNet.getTransitions()) // TODO generiert erstmal keine short loops
             .filter(transition => Math.random() < this._probability)
             .map(transition => Math.random() > 0.5 ? new Arc("i" + id + transition.label, transition, newPlace) : new Arc("o" + id + transition.label, newPlace, transition))
-            .forEach(arc => petriNet.addArc(arc));
+            .forEach(arc => petriNet.addArc(arc)); // TODO -> Return Template Place
 
 
         // TODO auch beziehungen zwischen den plätzen genieren?! (pseudo Transitionen einführen?) --> Not supported

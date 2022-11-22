@@ -1,7 +1,7 @@
 import {Place} from './place';
 import {Transition} from './transition';
 import {Arc} from './arc';
-import {Observable, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {createUniqueString, IncrementingCounter} from '../../utility/incrementing-counter';
 import {NetUnionResult} from './net-union-result';
 import {getById} from '../../utility/get-by-id';
@@ -36,10 +36,10 @@ export class PetriNet {
     public static createFromArcSubset(net: PetriNet, arcs: Array<Arc>): PetriNet {
         const result = new PetriNet();
         net.getPlaces().forEach(p => {
-            result.addPlace(new Place(p.marking, p.x, p.y, p.id));
+            result.addPlace(new Place(p.marking, p.id));
         });
         net.getTransitions().forEach(t => {
-            result.addTransition(new Transition(t.label, t.x, t.y, t.id));
+            result.addTransition(new Transition(t.label, t.id));
         });
         arcs.forEach(a => {
             let source;
@@ -69,7 +69,7 @@ export class PetriNet {
                 mappedId = p.getId() + counter.next();
             }
             placeMap.set(p.getId(), mappedId);
-            result.addPlace(new Place(p.marking, p.x, p.y, mappedId));
+            result.addPlace(new Place(p.marking, mappedId));
         });
 
         b.getTransitions().forEach(t => {
@@ -78,7 +78,7 @@ export class PetriNet {
                 mappedId = t.getId() + counter.next();
             }
             transitionMap.set(t.getId(), mappedId);
-            result.addTransition(new Transition(t.label, t.x, t.y, mappedId));
+            result.addTransition(new Transition(t.label, mappedId));
         });
 
         b.getArcs().forEach(arc => {
@@ -224,7 +224,8 @@ export class PetriNet {
     }
 
     public removePlace(place: Place | string) {
-        const p = getById(this._places, place);
+        const p =
+            getById(this._places, place);
         if (p === undefined) {
             return;
         }
@@ -327,15 +328,5 @@ export class PetriNet {
             this._kill$.complete();
         }
         this._redraw$.complete();
-    }
-
-    public bindEvents(mouseMoved$: Subject<MouseEvent>, mouseUp$: Subject<MouseEvent>) {
-        this._places.forEach((v, k) => v.bindEvents(mouseMoved$, mouseUp$, this._kill$.asObservable(), this._redraw$));
-        this._transitions.forEach((v, k) => v.bindEvents(mouseMoved$, mouseUp$, this._kill$.asObservable(), this._redraw$));
-        this._arcs.forEach((v, k) => v.bindEvents(mouseMoved$, mouseUp$, this._kill$.asObservable(), this._redraw$));
-    }
-
-    public redrawRequest$(): Observable<void> {
-        return this._redraw$.asObservable();
     }
 }

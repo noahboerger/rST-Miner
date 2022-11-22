@@ -5,8 +5,8 @@ import {Arc} from "../../../models/petri-net/arc";
 import {Transition} from "../../../models/petri-net/transition";
 import {ArcType, getArcs, reduceArcsToMapActivityKeyArcValue} from "./classes/arc-type";
 import {ImplicitResult} from "./classes/implicit-result";
-import { v4 as uuidv4 } from 'uuid';
-
+import {TemplatePlace} from "./classes/template-place";
+import {TemplateArc} from "./classes/template-arc";
 
 
 export class ImplicitPlaceIdentifier {
@@ -29,9 +29,7 @@ export class ImplicitPlaceIdentifier {
             switch (this.testRelation(currentPlace, relatedPlace)) {
                 // Neuer Platz eine Subregion vom relatedPlace
                 case -1:
-
-                        implicitPlaces.push(new ImplicitResult(relatedPlace, this.buildCombinedPlace(relatedPlace, currentPlace)))
-
+                        implicitPlaces.push(new ImplicitResult(relatedPlace, ImplicitPlaceIdentifier.buildCombinedPlace(relatedPlace, currentPlace)))
                     break;
                 // Keine Beziehung zwischen den Plätzen
                 case 0:
@@ -39,7 +37,9 @@ export class ImplicitPlaceIdentifier {
                 // Neuer Platz eine Superregion vom relatedPlace
                 case 1:
                     if (!implicitPlaces.map(value => value.implicitPlace).includes(currentPlace)) {
-                        implicitPlaces.push(new ImplicitResult(currentPlace, this.buildCombinedPlace(currentPlace, relatedPlace)))
+                        implicitPlaces.push(new ImplicitResult(currentPlace, ImplicitPlaceIdentifier.buildCombinedPlace(currentPlace, relatedPlace)))
+                    } else {
+                        // TODO build other combined places
                     }
                     break;
                 default: // TODO check if all is still needed // TODO passt das?
@@ -175,9 +175,9 @@ export class ImplicitPlaceIdentifier {
                return resultBefore;
             case 1: //p1>p2
                 if (resultBefore == 2 || resultBefore == 1) {//first or consistent result
-                    return  1;
+                    return 1;
                 } else {
-                    return  0;
+                    return 0;
                 }
             default:
                 return resultBefore;
@@ -185,15 +185,17 @@ export class ImplicitPlaceIdentifier {
     }
 
 // Build and check whether the place resulting from p1-p2 is valid TODO kein short loop support
-    private buildCombinedPlace(p1: Place, p2: Place) { // TODO --> Funktioniert nicht bei short loops
-        const newPlaceId = uuidv4()// TODO --> p1 wird entfernt?
-        const resultingPlace = new Place(p1.marking - p2.marking, undefined, undefined, newPlaceId); // TODO sinvolle id
+    private static buildCombinedPlace(p1: Place, p2: Place): TemplatePlace { // TODO --> Funktioniert nicht bei short loops
+        const resultingMarking = p1.marking - p2.marking; // TODO sinvolle id
         const p1Ingoing = reduceArcsToMapActivityKeyArcValue(p1.ingoingArcs)
         const p2Ingoing = reduceArcsToMapActivityKeyArcValue(p2.ingoingArcs)
         const p1Outgoing = reduceArcsToMapActivityKeyArcValue(p1.outgoingArcs)
         const p2Outgoing = reduceArcsToMapActivityKeyArcValue(p2.outgoingArcs)
 
         const relevantActivities = new Set([...p1Ingoing.keys()].concat([...p2Ingoing.keys()]).concat([...p1Outgoing.keys()]).concat([...p2Outgoing.keys()]))
+
+        const unconnectedIngoingArcs : Array<TemplateArc> = [];
+        const unconnectedOutgoingArcs : Array<TemplateArc> = [];
 
         for (const activity of relevantActivities) { // TODO cleanup
             let transition: Transition | undefined = undefined;
@@ -224,13 +226,13 @@ export class ImplicitPlaceIdentifier {
             }
 
             if (weight > 0) { // TODO validate weight
-                resultingPlace.addIngoingArc(new Arc("i" + newPlaceId + transition.label, transition, resultingPlace, weight))
+                unconnectedIngoingArcs.push(new TemplateArc(transition, undefined, weight))
             } else if (weight < 0) {
-                resultingPlace.addOutgoingArc(new Arc("o" + newPlaceId + transition.label, resultingPlace, transition, Math.abs(weight)))
+                unconnectedOutgoingArcs.push(new TemplateArc(undefined, transition, Math.abs(weight)))
             }
         }
 
-        return resultingPlace; // TODO build instead of validate and VALIDATE
+        return new TemplatePlace(resultingMarking, unconnectedIngoingArcs, unconnectedOutgoingArcs); // TODO build instead of validate and VALIDATE
     }
 }
 

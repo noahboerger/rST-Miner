@@ -6,13 +6,12 @@ import {RstMiner} from "../classes/algorithms/rst-miner/rst-miner";
 import {serialisePetriNet} from "../classes/serde/petri-net-serialisation";
 
 onmessage = function (data) {
-    const minerSettings = new TypedJSON(RstMinerSettings).parse(data.data[0]); // TODO ggf utility fkt nutzen
+    const minerSettings = new TypedJSON(RstMinerSettings).parse(data.data[0]);
     const eventlog = new TypedJSON(Eventlog).parse(data.data[1])
 
 
     if (minerSettings == null || eventlog == null) {
-        // TODO
-        return;
+       throw RstMiner.MINING_ERROR
     }
 
     const resultingPetriNet = new RstMiner(minerSettings).mine(eventlog);

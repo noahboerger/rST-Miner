@@ -74,6 +74,11 @@ export class LogParser {
             attribute.trim()
         );
 
+        // Duplicate Attributes
+        if (headers.filter((item, index) => headers.indexOf(item) !== index).length > 0) {
+            throw LogParser.PARSING_ERROR;
+        }
+
         const eventLines: string[] = lines.slice(
             indexEvents + 1,
             LogParser.nextKeyword(keywordIndices, indexEvents)
