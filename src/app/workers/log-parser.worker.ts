@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 import { TypedJSON } from 'typedjson';
-import { Eventlog } from '../classes/eventlog/eventlog';
-import { LogParser } from '../classes/parser/logParser';
+import { Eventlog } from '../classes/models/eventlog/eventlog';
+import { LogParser } from '../classes/parser/eventlog/logParser';
 
 onmessage = function (data) {
     const parser = new LogParser();

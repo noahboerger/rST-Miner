@@ -45,7 +45,101 @@
                             Initialization Phase
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <p>Concurrency Oracle</p>
+                    <p><b>Concurrency Oracle</b></p>
+                    <mat-radio-group
+                        [(ngModel)]="actConcurrencyOracleSimpleName">
+                        <div class="full-width" style="float: left">
+                            <span
+                                *ngFor="
+                                    let concurrencyOracleTypeSimpleName of MinerSettings.concurrencyOracleTypesSimpleNames
+                                ">
+                                <mat-radio-button
+                                    value="{{
+                                        concurrencyOracleTypeSimpleName
+                                    }}"
+                                    >{{
+                                        concurrencyOracleTypeSimpleName
+                                    }}</mat-radio-button
+                                >
+
+                                <div
+                                    *ngIf="
+                                        rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() ===
+                                            concurrencyOracleTypeSimpleName &&
+                                        rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() !==
+                                            NoneOracle.SIMPLE_NAME
+                                    "
+                                    [ngSwitch]="
+                                        concurrencyOracleTypeSimpleName
+                                    ">
+                                    <span
+                                        *ngSwitchCase="AlphaOracle.SIMPLE_NAME">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                                >Look Ahead Distance</mat-label
+                                            >
+                                            <input
+                                                [(ngModel)]="
+                                                    alphaOracleLookAheadDistance
+                                                "
+                                                matInput
+                                                min="0"
+                                                placeholder="Default {{
+                                                    AlphaOracle.DEFAULT_LOOK_AHEAD_DISTANCE
+                                                }}"
+                                                type="number" />
+                                        </mat-form-field>
+                                        <br />
+                                        <mat-checkbox
+                                            [(ngModel)]="
+                                                concurrencyOracleDistinguishSameEvents
+                                            ">
+                                            Distinguish same Events
+                                        </mat-checkbox>
+                                    </span>
+
+                                    <span
+                                        *ngSwitchCase="
+                                            TimestampOracle.SIMPLE_NAME
+                                        ">
+                                        <mat-checkbox
+                                            [(ngModel)]="
+                                                concurrencyOracleDistinguishSameEvents
+                                            ">
+                                            Distinguish same Events
+                                        </mat-checkbox>
+                                    </span>
+                                </div>
+                                <br />
+                            </span>
+                        </div>
+                    </mat-radio-group>
+                    <p><b>Eventlog Transformation to Partial Orders</b></p>
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .partialOrderTransformation.cleanLifecycle
+                        ">
+                        Clean Lifecycle Events
+                    </mat-checkbox>
+                    <br />
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .partialOrderTransformation.addStartStopEvent
+                        ">
+                        Add Start and Stop Event
+                    </mat-checkbox>
+                    <br />
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .partialOrderTransformation.discardPrefixes
+                        ">
+                        Discard prefixes
+                    </mat-checkbox>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
@@ -54,7 +148,56 @@
                             Random Place Generator
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <p>Choose between different generators</p>
+                    <mat-radio-group
+                        [(ngModel)]="actRandomPlaceGeneratorSimpleName">
+                        <div class="full-width" style="float: left">
+                            <span
+                                *ngFor="
+                                    let randomPlaceGeneratorTypeSimpleName of MinerSettings.randomPlaceGeneratorTypesSimpleNames
+                                ">
+                                <mat-radio-button
+                                    value="{{
+                                        randomPlaceGeneratorTypeSimpleName
+                                    }}"
+                                    >{{
+                                        randomPlaceGeneratorTypeSimpleName
+                                    }}</mat-radio-button
+                                >
+
+                                <div
+                                    *ngIf="
+                                        rstMinerDataService.minerSettings.randomPlaceGenerator.getSimpleName() ===
+                                        randomPlaceGeneratorTypeSimpleName
+                                    "
+                                    [ngSwitch]="
+                                        randomPlaceGeneratorTypeSimpleName
+                                    ">
+                                    <span
+                                        *ngSwitchCase="
+                                            PrimitiveGenerator.SIMPLE_NAME
+                                        ">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Probability</mat-label>
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="1"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_PROBABILITY
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorProbability
+                                                " />
+                                        </mat-form-field>
+                                    </span>
+                                </div>
+                                <br />
+                            </span>
+                        </div>
+                    </mat-radio-group>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
@@ -95,6 +238,7 @@
                                             >
                                             <input
                                                 matInput
+                                                min="1"
                                                 placeholder="Default {{
                                                     LoopBasedTermination.DEFAULT_ITERATIONS
                                                 }}"
@@ -115,6 +259,7 @@
                                             <mat-label>Duration</mat-label>
                                             <input
                                                 matInput
+                                                min="0"
                                                 placeholder="Default {{
                                                     TimeBasedTermination.DEFAULT_DURATION
                                                 }}"
@@ -143,6 +288,19 @@
                             </span>
                         </div>
                     </mat-radio-group>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> Debug Mode </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .isDebugModusEnabled
+                        ">
+                        Enabled
+                    </mat-checkbox>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>

@@ -19,7 +19,7 @@
         "importHelpers": true,
         "target": "es2017",
         "module": "es2020",
-        "skipLibCheck": true, // TODO nicht ganz ungefährlich!!!
+        "skipLibCheck": true, // nicht ganz ungefährlich
         "lib": [
             "es2020",
             "dom"

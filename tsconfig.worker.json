@@ -4,8 +4,9 @@
   "compilerOptions": {
     "outDir": "./out-tsc/worker",
     "lib": [
-      "es2020",
-      "webworker"
+        "es2020",
+        "dom",
+        "webworker",
     ],
     "types": []
   },
