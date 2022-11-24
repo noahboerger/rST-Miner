@@ -66,19 +66,23 @@ p4 t4`)!;
 
         expect(result.length).toEqual(1);
         expect(result.map(result => result.implicitPlace)[0]).toEqual(p1);
-        const substitutePlace = result.map(result => result.substitutePlace)[0];
-        expect(substitutePlace?._marking).toEqual(0);
+        const substitutePlaces = result.map(
+            result => result.substitutePlaces
+        )[0];
+        expect(substitutePlaces.length).toEqual(3);
+        const substitutePlace0 = substitutePlaces[0];
+        expect(substitutePlace0._marking).toEqual(0);
         expect(
-            substitutePlace?._unconnectedIngoingTemplateArcs?.length
+            substitutePlace0._unconnectedIngoingTemplateArcs?.length
         ).toEqual(1);
         expect(
-            substitutePlace?._unconnectedIngoingTemplateArcs[0]._weight
+            substitutePlace0._unconnectedIngoingTemplateArcs[0]._weight
         ).toEqual(2);
 
         expect(
-            substitutePlace?._unconnectedOutgoingTemplateArcs?.length
+            substitutePlace0._unconnectedOutgoingTemplateArcs?.length
         ).toEqual(2);
-        substitutePlace?._unconnectedOutgoingTemplateArcs?.forEach(tArc =>
+        substitutePlace0._unconnectedOutgoingTemplateArcs?.forEach(tArc =>
             expect(tArc._weight).toEqual(1)
         );
     });

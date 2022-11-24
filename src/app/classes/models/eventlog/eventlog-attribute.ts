@@ -5,6 +5,8 @@ export abstract class EventlogAttribute {
     @jsonMember(String)
     key: string = '';
     abstract value: any;
+
+    abstract clone(): EventlogAttribute;
 }
 
 @jsonObject
@@ -16,6 +18,10 @@ export class StringAttribute extends EventlogAttribute {
         super();
         this.value = value;
         this.key = key;
+    }
+
+    override clone(): StringAttribute {
+        return new StringAttribute(this.value, this.key);
     }
 }
 
@@ -29,6 +35,10 @@ export class DateAttribute extends EventlogAttribute {
         this.value = value;
         this.key = key;
     }
+
+    override clone(): DateAttribute {
+        return new DateAttribute(this.value, this.key);
+    }
 }
 
 @jsonObject
@@ -40,6 +50,10 @@ export class IntAttribute extends EventlogAttribute {
         super();
         this.value = Math.round(value);
         this.key = key;
+    }
+
+    override clone(): IntAttribute {
+        return new IntAttribute(this.value, this.key);
     }
 }
 
@@ -53,6 +67,10 @@ export class FloatAttribute extends EventlogAttribute {
         this.value = value;
         this.key = key;
     }
+
+    override clone(): FloatAttribute {
+        return new FloatAttribute(this.value, this.key);
+    }
 }
 
 @jsonObject
@@ -64,5 +82,9 @@ export class BooleanAttribute extends EventlogAttribute {
         super();
         this.value = value;
         this.key = key;
+    }
+
+    override clone(): BooleanAttribute {
+        return new BooleanAttribute(this.value, this.key);
     }
 }

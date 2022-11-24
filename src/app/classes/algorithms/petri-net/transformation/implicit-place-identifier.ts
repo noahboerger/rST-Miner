@@ -16,9 +16,7 @@ export class ImplicitPlaceIdentifier {
     constructor(
         private _transitions: Array<string>,
         private _uniqueTraces: Array<EventlogTrace>
-    ) {
-        // TODO -> Use partial orders instead?!
-    }
+    ) {}
 
     public calculateImplicitPlacesFor(
         currentPlace: Place,
@@ -40,13 +38,12 @@ export class ImplicitPlaceIdentifier {
                 // Neuer Platz eine Subregion vom relatedPlace
                 case -1:
                     implicitPlaces.push(
-                        new ImplicitResult(
-                            relatedPlace,
+                        new ImplicitResult(relatedPlace, [
                             ImplicitPlaceIdentifier.buildCombinedPlace(
                                 relatedPlace,
                                 currentPlace
-                            )
-                        )
+                            ),
+                        ])
                     );
                     break;
                 // Keine Beziehung zwischen den Plätzen
@@ -54,22 +51,25 @@ export class ImplicitPlaceIdentifier {
                     break;
                 // Neuer Platz eine Superregion vom relatedPlace
                 case 1:
-                    if (
-                        !implicitPlaces
-                            .map(value => value.implicitPlace)
-                            .includes(currentPlace)
-                    ) {
+                    const correspondingImplicitResult = implicitPlaces.find(
+                        value => value.implicitPlace === currentPlace
+                    );
+                    if (correspondingImplicitResult == null) {
                         implicitPlaces.push(
-                            new ImplicitResult(
-                                currentPlace,
+                            new ImplicitResult(currentPlace, [
                                 ImplicitPlaceIdentifier.buildCombinedPlace(
                                     currentPlace,
                                     relatedPlace
-                                )
-                            )
+                                ),
+                            ])
                         );
                     } else {
-                        // TODO build other combined places
+                        correspondingImplicitResult.substitutePlaces.push(
+                            ImplicitPlaceIdentifier.buildCombinedPlace(
+                                currentPlace,
+                                relatedPlace
+                            )
+                        );
                     }
                     break;
                 default:
@@ -245,7 +245,6 @@ export class ImplicitPlaceIdentifier {
 
     // Build the place resulting from p1 - p2
     private static buildCombinedPlace(p1: Place, p2: Place): TemplatePlace {
-        // TODO --> Funktioniert nicht bei short loops (evtl. generell)
         const resultingMarking = p1.marking - p2.marking;
         const p1Ingoing = reduceArcsToMapActivityKeyArcValue(p1.ingoingArcs);
         const p2Ingoing = reduceArcsToMapActivityKeyArcValue(p2.ingoingArcs);
@@ -263,7 +262,6 @@ export class ImplicitPlaceIdentifier {
         const unconnectedOutgoingArcs: Array<TemplateArc> = [];
 
         for (const activity of relevantActivities) {
-            // TODO cleanup
             let transition: Transition | undefined = undefined;
             let weight = 0;
             // Ingoing (positive)

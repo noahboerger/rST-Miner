@@ -77,8 +77,8 @@ export class EventlogTrace implements EditableStringSequence {
 
     clone() {
         return new EventlogTrace(
-            [...this.attributes],
-            [...this.events],
+            this.attributes.map(attribute => attribute.clone()),
+            this.events.map(event => event.clone()),
             this.caseId
         );
     }

@@ -81,4 +81,12 @@ export class EventlogEvent {
     public getPairEvent(): EventlogEvent | undefined {
         return this._pair;
     }
+
+    clone() {
+        return new EventlogEvent(
+            this.attributes.map(attribute => attribute.clone()),
+            this.activity,
+            this.lifecycle
+        );
+    }
 }

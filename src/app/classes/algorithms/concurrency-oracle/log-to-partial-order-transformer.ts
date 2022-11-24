@@ -78,6 +78,10 @@ export class LogToPartialOrderTransformer extends LogCleaner {
             )
         );
 
+        concurrencyRelation.relabeler.undoSequencesLabeling(
+            result.flatMap(po => po.containedTraces)
+        );
+
         return result;
     }
 

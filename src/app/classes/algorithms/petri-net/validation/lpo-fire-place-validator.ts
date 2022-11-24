@@ -1,5 +1,5 @@
 import { ValidationPhase, ValidationResult } from './classes/validation-result';
-import { LpoFlowValidator } from './lpo-flow-validator';
+import { LpoFlowPlaceValidator } from './lpo-flow-place-validator';
 import { Transition } from '../../../models/petri-net/transition';
 import { Arc } from '../../../models/petri-net/arc';
 import { Place } from '../../../models/petri-net/place';
@@ -7,12 +7,12 @@ import { PartialOrderEvent } from '../../../models/partial-order/partial-order-e
 import { PetriNet } from '../../../models/petri-net/petri-net';
 import { PartialOrder } from '../../../models/partial-order/partial-order';
 
-export class LpoFireValidator extends LpoFlowValidator {
-    private readonly _places: Array<Place>;
+export class LpoFirePlaceValidator extends LpoFlowPlaceValidator {
+    private readonly _totalOrder: Array<PartialOrderEvent>;
 
-    constructor(petriNet: PetriNet, lpo: PartialOrder) {
-        super(petriNet, lpo);
-        this._places = this._petriNet.getPlaces();
+    constructor(lpo: PartialOrder) {
+        super(lpo);
+        this._totalOrder = this.buildTotalOrdering();
     }
 
     protected override modifyLPO() {
@@ -20,77 +20,85 @@ export class LpoFireValidator extends LpoFlowValidator {
         this._lpo.determineInitialAndFinalEvents();
     }
 
-    override validate(): Array<ValidationResult> {
-        const totalOrder = this.buildTotalOrdering();
-        totalOrder.forEach(e => e.initializeLocalMarking(this._places.length));
+    override validate(
+        toBeCheckedNet: PetriNet,
+        toBeValidatedPlaceId: string
+    ): ValidationResult {
+        this.postUpdateModifiedLPO(toBeCheckedNet);
+        const places = toBeCheckedNet.getPlaces();
+
+        this._totalOrder.forEach(e => e.initializeLocalMarking(places.length));
+
+        const toBeValidatedPlaceIndex = places.findIndex(
+            value => value.id === toBeValidatedPlaceId
+        );
 
         // build start event
-        const initialEvent = totalOrder[0];
-        for (let i = 0; i < this._places.length; i++) {
-            initialEvent.localMarking![i] = this._places[i].marking;
+        const initialEvent = this._totalOrder[0];
+        for (let i = 0; i < places.length; i++) {
+            initialEvent.localMarking![i] = places[i].marking;
         }
 
-        const validPlaces = this.newBoolArray(true);
-        const complexPlaces = this.newBoolArray(false);
-        const notValidPlaces = this.newBoolArray(false);
+        const validPlaces = this.newBoolArray(places, true);
+        const complexPlaces = this.newBoolArray(places, false);
 
-        let queue = [...totalOrder];
-        this.fireForwards(queue, validPlaces, complexPlaces);
+        let queue = [...this._totalOrder];
+        this.fireForwards(places, queue, validPlaces, complexPlaces);
 
-        // not valid places
+        // valid place
+        if (validPlaces[toBeValidatedPlaceIndex]) {
+            return new ValidationResult(true, ValidationPhase.FORWARDS);
+        }
+
+        // not valid place
         const finalEvent = [...this._lpo.finalEvents][0];
-        for (let i = 0; i < this._places.length; i++) {
-            notValidPlaces[i] = finalEvent.localMarking![i] < 0;
+        if (finalEvent.localMarking![toBeValidatedPlaceIndex] < 0) {
+            return new ValidationResult(false, ValidationPhase.FORWARDS);
         }
 
         // Don't fire all backwards!
         queue = [finalEvent];
-        for (let i = totalOrder.length - 2; i >= 0; i--) {
-            totalOrder[i].initializeLocalMarking(this._places.length);
-            queue.push(totalOrder[i]);
+        for (let i = this._totalOrder.length - 2; i >= 0; i--) {
+            this._totalOrder[i].initializeLocalMarking(places.length);
+            queue.push(this._totalOrder[i]);
         }
 
-        const backwardsValidPlaces = this.newBoolArray(true);
-        const backwardsComplexPlaces = this.newBoolArray(false);
+        const backwardsValidPlaces = this.newBoolArray(places, true);
+        const backwardsComplexPlaces = this.newBoolArray(places, false);
 
         // Is the final marking > 0 ?
-        for (let i = 0; i < this._places.length; i++) {
+        for (let i = 0; i < places.length; i++) {
             if (finalEvent.localMarking![i] < 0) {
                 backwardsValidPlaces[i] = false;
             }
         }
 
-        this.fireBackwards(queue, backwardsValidPlaces, backwardsComplexPlaces);
+        this.fireBackwards(
+            places,
+            queue,
+            backwardsValidPlaces,
+            backwardsComplexPlaces
+        );
 
-        // Rest with flow
-        const flow = this.newBoolArray(false);
-        for (let i = 0; i < this._places.length; i++) {
-            if (
-                !validPlaces[i] &&
-                complexPlaces[i] &&
-                !notValidPlaces[i] &&
-                !backwardsValidPlaces[i]
-            ) {
-                flow[i] = this.checkFlowForPlace(
-                    this._places[i],
-                    this._lpo.events
-                );
-            }
+        // Backwards valid place
+        if (backwardsValidPlaces[toBeValidatedPlaceIndex]) {
+            return new ValidationResult(true, ValidationPhase.BACKWARDS);
         }
 
-        return this._places.map((p, i) => {
-            if (validPlaces[i]) {
-                return new ValidationResult(true, ValidationPhase.FORWARDS);
-            } else if (backwardsValidPlaces[i]) {
-                return new ValidationResult(true, ValidationPhase.BACKWARDS);
-            } else if (flow[i]) {
-                return new ValidationResult(true, ValidationPhase.FLOW);
-            } else if (notValidPlaces[i]) {
-                return new ValidationResult(false, ValidationPhase.FORWARDS);
-            } else {
-                return new ValidationResult(false, ValidationPhase.FLOW);
-            }
-        });
+        // backwards not valid place
+        const finalBackwardsEvent = [...this._lpo.initialEvents][0];
+        if (finalBackwardsEvent.localMarking![toBeValidatedPlaceIndex] < 0) {
+            return new ValidationResult(false, ValidationPhase.FORWARDS);
+        }
+
+        // otherwise with flow
+        return new ValidationResult(
+            this.checkFlowForPlace(
+                places[toBeValidatedPlaceIndex],
+                this._lpo.events
+            ),
+            ValidationPhase.FLOW
+        );
     }
 
     private buildTotalOrdering(): Array<PartialOrderEvent> {
@@ -125,11 +133,13 @@ export class LpoFireValidator extends LpoFlowValidator {
     }
 
     private fireForwards(
+        places: Array<Place>,
         queue: Array<PartialOrderEvent>,
         validPlaces: Array<boolean>,
         complexPlaces: Array<boolean>
     ) {
         this.fire(
+            places,
             queue,
             validPlaces,
             complexPlaces,
@@ -142,11 +152,13 @@ export class LpoFireValidator extends LpoFlowValidator {
     }
 
     private fireBackwards(
+        places: Array<Place>,
         queue: Array<PartialOrderEvent>,
         validPlaces: Array<boolean>,
         complexPlaces: Array<boolean>
     ) {
         this.fire(
+            places,
             queue,
             validPlaces,
             complexPlaces,
@@ -159,6 +171,7 @@ export class LpoFireValidator extends LpoFlowValidator {
     }
 
     private fire(
+        places: Array<Place>,
         firingOrder: Array<PartialOrderEvent>,
         validPlaces: Array<boolean>,
         complexPlaces: Array<boolean>,
@@ -175,7 +188,7 @@ export class LpoFireValidator extends LpoFlowValidator {
             if (e.transition !== undefined) {
                 // fire
                 for (const arc of preArcs(e.transition)) {
-                    const pIndex = this.getPIndex(prePlace(arc));
+                    const pIndex = this.getPIndex(places, prePlace(arc));
                     e.localMarking![pIndex] =
                         e.localMarking![pIndex] - arc.weight;
                     if (e.localMarking![pIndex] < 0) {
@@ -184,7 +197,7 @@ export class LpoFireValidator extends LpoFlowValidator {
                 }
 
                 for (const arc of postArcs(e.transition)) {
-                    const pIndex = this.getPIndex(postPlace(arc));
+                    const pIndex = this.getPIndex(places, postPlace(arc));
                     e.localMarking![pIndex] =
                         e.localMarking![pIndex] + arc.weight;
                 }
@@ -192,7 +205,7 @@ export class LpoFireValidator extends LpoFlowValidator {
 
             // push to first later and check for complex places
             if (nextEvents(e).size > 0) {
-                for (let i = 0; i < this._places.length; i++) {
+                for (let i = 0; i < places.length; i++) {
                     if (nextEvents(e).size > 1 && e.localMarking![i] > 0) {
                         complexPlaces[i] = true;
                     }
@@ -204,11 +217,11 @@ export class LpoFireValidator extends LpoFlowValidator {
         }
     }
 
-    private getPIndex(p: Place) {
-        return this._places.findIndex(pp => pp === p);
+    private getPIndex(places: Array<Place>, p: Place) {
+        return places.findIndex(pp => pp === p);
     }
 
-    private newBoolArray(fill: boolean): Array<boolean> {
-        return new Array<boolean>(this._places.length).fill(fill);
+    private newBoolArray(places: Array<Place>, fill: boolean): Array<boolean> {
+        return new Array<boolean>(places.length).fill(fill);
     }
 }

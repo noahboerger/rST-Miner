@@ -1,5 +1,5 @@
 import { MaxFlowPreflowN3 } from '../../flow-network/max-flow-preflow-n3';
-import { LpoValidator } from './classes/lpo-validator';
+import { LpoPlaceValidator } from './classes/lpo-place-validator';
 import { ValidationPhase, ValidationResult } from './classes/validation-result';
 import { PetriNet } from '../../../models/petri-net/petri-net';
 import { PartialOrder } from '../../../models/partial-order/partial-order';
@@ -7,26 +7,29 @@ import { PartialOrderEvent } from '../../../models/partial-order/partial-order-e
 import { Place } from '../../../models/petri-net/place';
 import { Transition } from '../../../models/petri-net/transition';
 
-export class LpoFlowValidator extends LpoValidator {
-    constructor(petriNet: PetriNet, lpo: PartialOrder) {
-        super(petriNet, lpo);
+export class LpoFlowPlaceValidator extends LpoPlaceValidator {
+    constructor(lpo: PartialOrder) {
+        super(lpo);
     }
 
-    validate(): Array<ValidationResult> {
-        const flow: Array<ValidationResult> = [];
+    override validate(
+        toBeCheckedNet: PetriNet,
+        toBeValidatedPlaceId: string
+    ): ValidationResult {
+        this.postUpdateModifiedLPO(toBeCheckedNet);
 
-        const places = this._petriNet.getPlaces();
+        const toBeEvaluatedPlaceIndex = toBeCheckedNet
+            .getPlaces()
+            .findIndex(value => value.id === toBeValidatedPlaceId);
+        const toBeEvaluatedPlace =
+            toBeCheckedNet.getPlaces()[toBeEvaluatedPlaceIndex];
+
         const events = this._lpo.events;
 
-        for (let i = 0; i < places.length; i++) {
-            const place = places[i];
-            flow[i] = new ValidationResult(
-                this.checkFlowForPlace(place, events),
-                ValidationPhase.FLOW
-            );
-        }
-
-        return flow;
+        return new ValidationResult(
+            this.checkFlowForPlace(toBeEvaluatedPlace, events),
+            ValidationPhase.FLOW
+        );
     }
 
     protected checkFlowForPlace(
@@ -41,8 +44,8 @@ export class LpoFlowValidator extends LpoValidator {
 
         for (let eIndex = 0; eIndex < events.length; eIndex++) {
             network.setUnbounded(
-                LpoFlowValidator.eventStart(eIndex),
-                LpoFlowValidator.eventEnd(eIndex)
+                LpoFlowPlaceValidator.eventStart(eIndex),
+                LpoFlowPlaceValidator.eventEnd(eIndex)
             );
 
             const event = events[eIndex];
@@ -50,7 +53,7 @@ export class LpoFlowValidator extends LpoValidator {
                 if (place.marking > 0) {
                     network.setCap(
                         SOURCE,
-                        LpoFlowValidator.eventEnd(eIndex),
+                        LpoFlowPlaceValidator.eventEnd(eIndex),
                         place.marking
                     );
                 }
@@ -61,7 +64,7 @@ export class LpoFlowValidator extends LpoValidator {
                     if (postPlace === place) {
                         network.setCap(
                             SOURCE,
-                            LpoFlowValidator.eventEnd(eIndex),
+                            LpoFlowPlaceValidator.eventEnd(eIndex),
                             outArc.weight
                         );
                     }
@@ -71,7 +74,7 @@ export class LpoFlowValidator extends LpoValidator {
                     const prePlace = inArc.source as Place;
                     if (prePlace === place) {
                         network.setCap(
-                            LpoFlowValidator.eventStart(eIndex),
+                            LpoFlowPlaceValidator.eventStart(eIndex),
                             SINK,
                             inArc.weight
                         );
@@ -80,8 +83,8 @@ export class LpoFlowValidator extends LpoValidator {
             }
             for (const postEvent of event.nextEvents) {
                 network.setUnbounded(
-                    LpoFlowValidator.eventEnd(eIndex),
-                    LpoFlowValidator.eventStart(
+                    LpoFlowPlaceValidator.eventEnd(eIndex),
+                    LpoFlowPlaceValidator.eventStart(
                         events.findIndex(e => e === postEvent)
                     )
                 );

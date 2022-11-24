@@ -167,9 +167,18 @@ export class RstMinerComponent {
             this.rstMinerDataService.minerSettings.isDebugModusEnabled
         ) {
             try {
-                const resultingPetriNet = new RstMiner(
+                const rstMiner = new RstMiner(
                     this.rstMinerDataService.minerSettings
-                ).mine(this.rstMinerDataService.eventLog);
+                );
+                const resultingPetriNet = rstMiner.mine(
+                    this.rstMinerDataService.eventLog
+                );
+                console.log(
+                    'rST-Miner: Evaluated ' +
+                        rstMiner.counterTestedPlacesLastRun +
+                        ' places'
+                );
+
                 const result = serialisePetriNet(resultingPetriNet);
                 saveAs(
                     new Blob([result], { type: 'text/plain;charset=utf-8' }),

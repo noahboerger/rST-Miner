@@ -13,6 +13,13 @@ onmessage = function (data) {
         throw RstMiner.MINING_ERROR;
     }
 
-    const resultingPetriNet = new RstMiner(minerSettings).mine(eventlog);
+    const rstMiner = new RstMiner(minerSettings);
+    const resultingPetriNet = rstMiner.mine(eventlog);
+    console.log(
+        'rST-Miner: Evaluated ' +
+            rstMiner.counterTestedPlacesLastRun +
+            ' places'
+    );
+
     postMessage(serialisePetriNet(resultingPetriNet));
 };

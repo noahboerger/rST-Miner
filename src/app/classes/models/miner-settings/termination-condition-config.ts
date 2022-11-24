@@ -15,7 +15,7 @@ export abstract class TerminationConditionConfig {
 @jsonObject
 export class LoopBasedTerminationConfig extends TerminationConditionConfig {
     public static readonly SIMPLE_NAME = 'Loop Iterations';
-    public static readonly DEFAULT_ITERATIONS = 1_000_000;
+    public static readonly DEFAULT_ITERATIONS = 100_000;
 
     @jsonMember(Number)
     private _loopAmount: number;
@@ -141,4 +141,4 @@ export class TimeBasedTerminationConfig extends TerminationConditionConfig {
     }
 }
 
-// TODO Quality Based
+// TODO Quality Based (Time Quality & Iteration Quality --> No change since)
