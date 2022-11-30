@@ -15,23 +15,19 @@ export class PrimitivePlaceGenerator implements RandomPlaceGenerator {
         const newPlace = new Place(Math.random() < 0.5 ? 0 : 1, id); // TODO generate marking
         petriNet.addPlace(newPlace);
 
-        // Array.from(petriNet.getTransitions())
-        //     .filter(transition => Math.random() < this._probability)
-        //     .map(transition => new Arc("i" + id + transition.label, transition, newPlace))
-        //     .forEach(arc => petriNet.addArc(arc));
-        //
-        //
-        // Array.from(petriNet.getTransitions())
-        //     .filter(transition => Math.random() < this._probability)
-        //     .map(transition => new Arc("o" + id + transition.label, newPlace, transition))
-        //     .forEach(arc => petriNet.addArc(arc));
-
-        Array.from(petriNet.getTransitions()) // TODO generiert erstmal keine short loops
+        Array.from(petriNet.getTransitions())
             .filter(transition => Math.random() < this._probability)
-            .map(transition =>
-                Math.random() > 0.5
-                    ? new Arc('i' + id + transition.label, transition, newPlace)
-                    : new Arc('o' + id + transition.label, newPlace, transition)
+            .map(
+                transition =>
+                    new Arc('i' + id + transition.label, transition, newPlace)
+            )
+            .forEach(arc => petriNet.addArc(arc));
+
+        Array.from(petriNet.getTransitions())
+            .filter(transition => Math.random() < this._probability)
+            .map(
+                transition =>
+                    new Arc('o' + id + transition.label, newPlace, transition)
             )
             .forEach(arc => petriNet.addArc(arc));
 

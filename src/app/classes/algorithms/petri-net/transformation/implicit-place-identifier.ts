@@ -74,7 +74,12 @@ export class ImplicitPlaceIdentifier {
                     break;
                 default:
                     // Places are behaving same related to the given eventlog
-                    if (this.arePlaceEquals(currentPlace, relatedPlace)) {
+                    if (
+                        ImplicitPlaceIdentifier.arePlaceEquals(
+                            currentPlace,
+                            relatedPlace
+                        )
+                    ) {
                         implicitPlaces.push(new ImplicitResult(currentPlace));
                     } else {
                         throw new Error(
@@ -118,15 +123,23 @@ export class ImplicitPlaceIdentifier {
         return false;
     }
 
-    private arePlaceEquals(p1: Place, p2: Place) {
+    private static arePlaceEquals(p1: Place, p2: Place) {
         return (
             p1.marking === p2.marking &&
-            this.isTransitionsEquals(p1, p2, ArcType.INGOING) &&
-            this.isTransitionsEquals(p1, p2, ArcType.OUTGOING)
+            ImplicitPlaceIdentifier.isTransitionsEquals(
+                p1,
+                p2,
+                ArcType.INGOING
+            ) &&
+            ImplicitPlaceIdentifier.isTransitionsEquals(
+                p1,
+                p2,
+                ArcType.OUTGOING
+            )
         );
     }
 
-    private isTransitionsEquals(p1: Place, p2: Place, arcType: ArcType) {
+    private static isTransitionsEquals(p1: Place, p2: Place, arcType: ArcType) {
         function reduceArcsToMapTransitionKeyArcValue(arcs: Array<Arc>) {
             return arcs.reduce(function (map, arc) {
                 const transition =
@@ -149,7 +162,7 @@ export class ImplicitPlaceIdentifier {
             getArcs(arcType, p1)
         );
         const p2TransToArcs = reduceArcsToMapTransitionKeyArcValue(
-            getArcs(arcType, p1)
+            getArcs(arcType, p2)
         );
 
         for (let p1Trans of p1TransToArcs.keys()) {
@@ -263,40 +276,57 @@ export class ImplicitPlaceIdentifier {
 
         for (const activity of relevantActivities) {
             let transition: Transition | undefined = undefined;
-            let weight = 0;
-            // Ingoing (positive)
+            // Weight of ingoing pseudo transition
+            let weightIn = 0;
             if (p1Ingoing.has(activity)) {
                 transition = p1Ingoing.get(activity)!.source as Transition;
-                weight = weight + p1Ingoing.get(activity)!.weight;
+                weightIn = weightIn + p1Ingoing.get(activity)!.weight;
             }
             if (p2Ingoing.has(activity)) {
                 transition = p2Ingoing.get(activity)!.source as Transition;
-                weight = weight - p2Ingoing.get(activity)!.weight;
+                weightIn = weightIn - p2Ingoing.get(activity)!.weight;
             }
-            // Outgoing (negative)
+            // Weight of outgoing pseudo transition
+            let weightOut = 0;
             if (p1Outgoing.has(activity)) {
                 transition = p1Outgoing.get(activity)!
                     .destination as Transition;
-                weight = weight - p1Outgoing.get(activity)!.weight;
+                weightOut = weightOut + p1Outgoing.get(activity)!.weight;
             }
             if (p2Outgoing.has(activity)) {
                 transition = p2Outgoing.get(activity)!
                     .destination as Transition;
-                weight = weight + p2Outgoing.get(activity)!.weight;
+                weightOut = weightOut - p2Outgoing.get(activity)!.weight;
             }
 
             if (transition == null) {
                 throw new Error('Invalid state');
             }
 
-            if (weight > 0) {
+            // Keep self loops when both are positive (actIn & actOut)
+            if (weightIn > 0 && weightOut > 0) {
                 unconnectedIngoingArcs.push(
-                    new TemplateArc(transition, undefined, weight)
+                    new TemplateArc(transition, undefined, weightIn)
                 );
-            } else if (weight < 0) {
                 unconnectedOutgoingArcs.push(
-                    new TemplateArc(undefined, transition, Math.abs(weight))
+                    new TemplateArc(undefined, transition, weightOut)
                 );
+                // otherwise no self loops and the weight of only one resulting arc can be calculated
+            } else {
+                const totalWeight = weightIn - weightOut;
+                if (totalWeight > 0) {
+                    unconnectedIngoingArcs.push(
+                        new TemplateArc(transition, undefined, totalWeight)
+                    );
+                } else if (totalWeight < 0) {
+                    unconnectedOutgoingArcs.push(
+                        new TemplateArc(
+                            undefined,
+                            transition,
+                            Math.abs(totalWeight)
+                        )
+                    );
+                }
             }
         }
         return new TemplatePlace(
