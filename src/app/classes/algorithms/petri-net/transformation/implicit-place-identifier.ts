@@ -1,19 +1,22 @@
-import {PetriNet} from '../../../models/petri-net/petri-net';
-import {EventlogTrace} from '../../../models/eventlog/eventlog-trace';
-import {Place} from '../../../models/petri-net/place';
-import {Arc} from '../../../models/petri-net/arc';
-import {Transition} from '../../../models/petri-net/transition';
-import {ArcType, getArcs, reduceArcsToMapActivityKeyArcValue,} from './classes/arc-type';
-import {ImplicitResult} from './classes/implicit-result';
-import {TemplatePlace} from './classes/template-place';
-import {TemplateArc} from './classes/template-arc';
+import { PetriNet } from '../../../models/petri-net/petri-net';
+import { EventlogTrace } from '../../../models/eventlog/eventlog-trace';
+import { Place } from '../../../models/petri-net/place';
+import { Arc } from '../../../models/petri-net/arc';
+import { Transition } from '../../../models/petri-net/transition';
+import {
+    ArcType,
+    getArcs,
+    reduceArcsToMapActivityKeyArcValue,
+} from './classes/arc-type';
+import { ImplicitResult } from './classes/implicit-result';
+import { TemplatePlace } from './classes/template-place';
+import { TemplateArc } from './classes/template-arc';
 
 export class ImplicitPlaceIdentifier {
     constructor(
         private _transitions: Array<string>,
         private _uniqueTraces: Array<EventlogTrace>
-    ) {
-    }
+    ) {}
 
     public calculateImplicitPlacesFor(
         currentPlace: Place,
@@ -71,7 +74,12 @@ export class ImplicitPlaceIdentifier {
                     break;
                 default:
                     // Places are behaving same related to the given eventlog
-                    if (ImplicitPlaceIdentifier.arePlaceEquals(currentPlace, relatedPlace)) {
+                    if (
+                        ImplicitPlaceIdentifier.arePlaceEquals(
+                            currentPlace,
+                            relatedPlace
+                        )
+                    ) {
                         implicitPlaces.push(new ImplicitResult(currentPlace));
                     } else {
                         throw new Error(
@@ -118,8 +126,16 @@ export class ImplicitPlaceIdentifier {
     private static arePlaceEquals(p1: Place, p2: Place) {
         return (
             p1.marking === p2.marking &&
-            ImplicitPlaceIdentifier.isTransitionsEquals(p1, p2, ArcType.INGOING) &&
-            ImplicitPlaceIdentifier.isTransitionsEquals(p1, p2, ArcType.OUTGOING)
+            ImplicitPlaceIdentifier.isTransitionsEquals(
+                p1,
+                p2,
+                ArcType.INGOING
+            ) &&
+            ImplicitPlaceIdentifier.isTransitionsEquals(
+                p1,
+                p2,
+                ArcType.OUTGOING
+            )
         );
     }
 
@@ -295,7 +311,7 @@ export class ImplicitPlaceIdentifier {
                 unconnectedOutgoingArcs.push(
                     new TemplateArc(undefined, transition, weightOut)
                 );
-            // otherwise no self loops and the weight of only one resulting arc can be calculated
+                // otherwise no self loops and the weight of only one resulting arc can be calculated
             } else {
                 const totalWeight = weightIn - weightOut;
                 if (totalWeight > 0) {
@@ -304,7 +320,11 @@ export class ImplicitPlaceIdentifier {
                     );
                 } else if (totalWeight < 0) {
                     unconnectedOutgoingArcs.push(
-                        new TemplateArc(undefined, transition, Math.abs(totalWeight))
+                        new TemplateArc(
+                            undefined,
+                            transition,
+                            Math.abs(totalWeight)
+                        )
                     );
                 }
             }

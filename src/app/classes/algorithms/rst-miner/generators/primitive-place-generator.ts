@@ -17,13 +17,18 @@ export class PrimitivePlaceGenerator implements RandomPlaceGenerator {
 
         Array.from(petriNet.getTransitions())
             .filter(transition => Math.random() < this._probability)
-            .map(transition => new Arc("i" + id + transition.label, transition, newPlace))
+            .map(
+                transition =>
+                    new Arc('i' + id + transition.label, transition, newPlace)
+            )
             .forEach(arc => petriNet.addArc(arc));
-
 
         Array.from(petriNet.getTransitions())
             .filter(transition => Math.random() < this._probability)
-            .map(transition => new Arc("o" + id + transition.label, newPlace, transition))
+            .map(
+                transition =>
+                    new Arc('o' + id + transition.label, newPlace, transition)
+            )
             .forEach(arc => petriNet.addArc(arc));
 
         return newPlace;

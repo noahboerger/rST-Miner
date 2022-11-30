@@ -72,9 +72,9 @@ p4 t4`)!;
         expect(substitutePlaces.length).toEqual(3);
         const substitutePlace0 = substitutePlaces[0];
         expect(substitutePlace0.marking).toEqual(0);
-        expect(
-            substitutePlace0.unconnectedIngoingTemplateArcs?.length
-        ).toEqual(1);
+        expect(substitutePlace0.unconnectedIngoingTemplateArcs?.length).toEqual(
+            1
+        );
         expect(
             substitutePlace0.unconnectedIngoingTemplateArcs[0].weight
         ).toEqual(2);
@@ -147,7 +147,10 @@ t4 p5`)!;
 
         expect(result.length).toEqual(1);
         expect(result.map(result => result.implicitPlace)[0]).toEqual(p2);
-        expect(result.find(result => result.implicitPlace === p2)!.substitutePlaces.length).toEqual(3)
+        expect(
+            result.find(result => result.implicitPlace === p2)!.substitutePlaces
+                .length
+        ).toEqual(3);
     });
 
     it('should identify implicit places when net needs to keep self loops', () => {
@@ -174,10 +177,7 @@ t2 p2`)!;
         const traces = [
             new EventlogTrace(
                 [],
-                [
-                    new EventlogEvent([], 't1'),
-                    new EventlogEvent([], 't2'),
-                ],
+                [new EventlogEvent([], 't1'), new EventlogEvent([], 't2')],
                 0
             ),
             new EventlogTrace(
@@ -206,6 +206,9 @@ t2 p2`)!;
         expect(result.length).toEqual(1);
         const p1 = net.getPlaces().filter(place => place.id === 'p1')[0];
         expect(result.map(result => result.implicitPlace)[0]).toEqual(p1);
-        expect(result.find(result => result.implicitPlace === p1)!.substitutePlaces.length).toEqual(1)
+        expect(
+            result.find(result => result.implicitPlace === p1)!.substitutePlaces
+                .length
+        ).toEqual(1);
     });
 });
