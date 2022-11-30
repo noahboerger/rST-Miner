@@ -4,15 +4,15 @@ import { TemplateArc } from './template-arc';
 // Generated Place which is not yet connected with its arcs, so changing the component names is stil possible
 export class TemplatePlace {
     constructor(
-        readonly _marking: number,
-        readonly _unconnectedIngoingTemplateArcs: Array<TemplateArc> = [],
-        readonly _unconnectedOutgoingTemplateArcs: Array<TemplateArc> = []
+        readonly marking: number,
+        readonly unconnectedIngoingTemplateArcs: Array<TemplateArc> = [],
+        readonly unconnectedOutgoingTemplateArcs: Array<TemplateArc> = []
     ) {}
 
     public buildPlaceWithId(id: string): Place {
-        const place = new Place(this._marking, id);
+        const place = new Place(this.marking, id);
 
-        this._unconnectedIngoingTemplateArcs.forEach(
+        this.unconnectedIngoingTemplateArcs.forEach(
             unconnectedIngoingTemplateArc => {
                 place.addIngoingArc(
                     unconnectedIngoingTemplateArc.buildArcForPlace(place)
@@ -20,7 +20,7 @@ export class TemplatePlace {
             }
         );
 
-        this._unconnectedOutgoingTemplateArcs.forEach(
+        this.unconnectedOutgoingTemplateArcs.forEach(
             unconnectedOutgoingTemplateArc => {
                 place.addOutgoingArc(
                     unconnectedOutgoingTemplateArc.buildArcForPlace(place)
