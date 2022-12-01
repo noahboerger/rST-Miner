@@ -176,20 +176,92 @@
                                         *ngSwitchCase="
                                             PrimitiveGenerator.SIMPLE_NAME
                                         ">
+
+                                        <p><b>Maximum initial Marking</b></p>
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
-                                            <mat-label>Probability</mat-label>
+                                            <mat-label>Tokens up to</mat-label>
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_MAXIMAL_INITIAL_MARKING
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorMaximalInitialMarking
+                                                " />
+                                        </mat-form-field>
+
+                                        <p><b>Connection Probability</b></p>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Ingoing Arcs</mat-label>
                                             <input
                                                 matInput
                                                 min="0"
                                                 max="1"
                                                 placeholder="Default {{
-                                                    PrimitiveGenerator.DEFAULT_PROBABILITY
+                                                    PrimitiveGenerator.DEFAULT_INGOING_CONNECTION_PROBABILITY
                                                 }}"
                                                 type="number"
                                                 [(ngModel)]="
-                                                    primitiveGeneratorProbability
+                                                    primitiveGeneratorIngoingProbability
+                                                " />
+                                        </mat-form-field>
+                                        <br/>
+                                        <mat-form-field
+                                                appearance="fill"
+                                                class="full-width">
+                                            <mat-label>Outgoing Arcs</mat-label>
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="1"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_OUTGOING_CONNECTION_PROBABILITY
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorOutgoingProbability
+                                                " />
+                                        </mat-form-field>
+
+                                        <p><b>Maximum Arc Weights</b></p>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Ingoing Arc Weights</mat-label>
+                                            <input
+                                                matInput
+                                                min="1"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_MAXIMAL_INGOING_ARC_WEIGHTS
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorMaximalIngoingArcWeights
+                                                " />
+                                        </mat-form-field>
+                                        <br/>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Outgoing Arc Weights</mat-label>
+                                            <input
+                                                matInput
+                                                min="1"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_MAXIMAL_OUTGOING_ARC_WEIGHTS
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorMaximalOutgoingArcWeights
                                                 " />
                                         </mat-form-field>
                                     </span>

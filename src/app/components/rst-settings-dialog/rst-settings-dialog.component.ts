@@ -154,18 +154,74 @@ export class RstSettingsDialogComponent {
         }
     }
 
-    get primitiveGeneratorProbability(): number {
+    get primitiveGeneratorMaximalInitialMarking(): number {
         return (
             this.rstMinerDataService.minerSettings
                 .randomPlaceGenerator as PrimitiveGeneratorConfig
-        ).probability;
+        ).maximalInitialMarking;
     }
 
-    set primitiveGeneratorProbability(value: number) {
+    set primitiveGeneratorMaximalInitialMarking(value: number) {
         (
             this.rstMinerDataService.minerSettings
                 .randomPlaceGenerator as PrimitiveGeneratorConfig
-        ).probability = value;
+        ).maximalInitialMarking = value;
+    }
+
+    get primitiveGeneratorIngoingProbability(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).ingoingConnectionProbability;
+    }
+
+    set primitiveGeneratorIngoingProbability(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).ingoingConnectionProbability = value;
+    }
+
+    get primitiveGeneratorOutgoingProbability(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).outgoingConnectionProbability;
+    }
+
+    set primitiveGeneratorOutgoingProbability(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).outgoingConnectionProbability = value;
+    }
+
+    get primitiveGeneratorMaximalIngoingArcWeights(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalIngoingArcWeights;
+    }
+
+    set primitiveGeneratorMaximalIngoingArcWeights(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalIngoingArcWeights = value;
+    }
+
+    get primitiveGeneratorMaximalOutgoingArcWeights(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalOutgoingArcWeights;
+    }
+
+    set primitiveGeneratorMaximalOutgoingArcWeights(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalOutgoingArcWeights = value;
     }
 
     downloadMinerSettingsJsonFile() {

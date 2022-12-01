@@ -1,18 +1,18 @@
-import { PetriNet } from '../../models/petri-net/petri-net';
-import { RstMinerSettings } from '../../models/miner-settings/rst-miner-settings';
-import { Eventlog } from '../../models/eventlog/eventlog';
-import { LogToPartialOrderTransformer } from '../concurrency-oracle/log-to-partial-order-transformer';
-import { PetriNetIsomorphismTester } from '../petri-net/isomorphism/petri-net-isomorphism-tester';
-import { PetriNetToPartialOrderTransformer } from '../transformation/petri-net-to-partial-order-transformer';
-import { PartialOrderIsomorphismTester } from '../partial-order/isomorphism/partial-order-isomorphism-tester';
-import { ConcurrencyOracle } from '../concurrency-oracle/concurrency-oracle';
-import { PartialOrderNetWithContainedTraces } from '../../models/petri-net/partial-order-net-with-contained-traces';
-import { Transition } from '../../models/petri-net/transition';
-import { RandomPlaceGenerator } from './generators/random-place-generator';
-import { ImplicitPlaceIdentifier } from '../petri-net/transformation/implicit-place-identifier';
-import { Place } from '../../models/petri-net/place';
-import { TemplatePlace } from '../petri-net/transformation/classes/template-place';
-import { LpoFirePlaceValidator } from '../petri-net/validation/lpo-fire-place-validator';
+import {PetriNet} from '../../models/petri-net/petri-net';
+import {RstMinerSettings} from '../../models/miner-settings/rst-miner-settings';
+import {Eventlog} from '../../models/eventlog/eventlog';
+import {LogToPartialOrderTransformer} from '../concurrency-oracle/log-to-partial-order-transformer';
+import {PetriNetIsomorphismTester} from '../petri-net/isomorphism/petri-net-isomorphism-tester';
+import {PetriNetToPartialOrderTransformer} from '../transformation/petri-net-to-partial-order-transformer';
+import {PartialOrderIsomorphismTester} from '../partial-order/isomorphism/partial-order-isomorphism-tester';
+import {ConcurrencyOracle} from '../concurrency-oracle/concurrency-oracle';
+import {PartialOrderNetWithContainedTraces} from '../../models/petri-net/partial-order-net-with-contained-traces';
+import {Transition} from '../../models/petri-net/transition';
+import {RandomPlaceGenerator} from './generators/random-place-generator';
+import {ImplicitPlaceIdentifier} from '../petri-net/transformation/implicit-place-identifier';
+import {Place} from '../../models/petri-net/place';
+import {TemplatePlace} from '../petri-net/transformation/classes/template-place';
+import {LpoFirePlaceValidator} from '../petri-net/validation/lpo-fire-place-validator';
 
 export class RstMiner {
     private _counterTestedPlacesLastRun = 0;
@@ -20,6 +20,8 @@ export class RstMiner {
     public static MINING_ERROR = new Error(
         'given .type log string can not be parsed'
     );
+
+    private static readonly maxDeptImplicitSearch: number = 1; // TODO config property oder ähnliches
 
     private _concurrencyOracle: ConcurrencyOracle;
     private _logToPartialOrderTransformer: LogToPartialOrderTransformer;
@@ -110,7 +112,8 @@ export class RstMiner {
                     implicitPlaceIdentifier,
                     addedPlace,
                     petriNet,
-                    this._counterTestedPlacesLastRun
+                    this._counterTestedPlacesLastRun,
+                    RstMiner.maxDeptImplicitSearch
                 );
         }
 
@@ -148,40 +151,55 @@ export class RstMiner {
         implicitPlaceIdentifier: ImplicitPlaceIdentifier,
         addedPlace: Place,
         petriNet: PetriNet,
-        counter: number
+        counter: number,
+        maxRemainingDept: number
     ): number {
-        implicitPlaceIdentifier
+        const implicitPlaces = implicitPlaceIdentifier
             .calculateImplicitPlacesFor(addedPlace, petriNet)
             .filter(implicitResult =>
                 RstMiner.checkSubstitutePlacesAreValidOrUndefined(
                     implicitResult.substitutePlaces
                 )
-            )
-            .forEach(implicitResult => {
-                petriNet.removePlace(implicitResult.implicitPlace); // TODO --> Nur removen, wenn (einer) aus replacement recursiver Chain valide
-                for (const substTemplatePlace of implicitResult.substitutePlaces) {
-                    const substPlace = substTemplatePlace.buildPlaceWithId(
-                        'p' + counter++
-                    );
-                    petriNet.addPlace(substPlace);
-                    substPlace.ingoingArcs.forEach(arc => petriNet.addArc(arc));
-                    substPlace.outgoingArcs.forEach(arc =>
-                        petriNet.addArc(arc)
-                    );
-                    counter = this.removeImplicitPlacesForAndIncreaseCounter(
-                        implicitPlaceIdentifier,
-                        substPlace,
-                        petriNet,
-                        counter
-                    );
-                }
-            });
+            );
+
+        // remove all implicit places
+        implicitPlaces
+            .forEach(implicitResult => petriNet.removePlace(implicitResult.implicitPlace)); // TODO --> Nur removen, wenn (einer) aus replacement recursiver Chain valide)
+
+        //if (maxRemainingDept > 0) { // TODO remove this? Keep track of implicit places?
+            let allSubstitutePlaces = implicitPlaces
+                .flatMap(implicitResult => implicitResult.substitutePlaces) // TODO distinct for performance issues ()
+
+            allSubstitutePlaces = RstMiner.unique(allSubstitutePlaces, (t1, t2) => t1.equals(t2));
+
+                allSubstitutePlaces
+                .forEach(substTemplatePlace => {
+                        const substPlace = substTemplatePlace.buildPlaceWithId(
+                            'p' + counter++
+                        );
+                        petriNet.addPlace(substPlace);
+                        substPlace.ingoingArcs.forEach(arc => petriNet.addArc(arc));
+                        substPlace.outgoingArcs.forEach(arc =>
+                            petriNet.addArc(arc)
+                        );
+                        counter = this.removeImplicitPlacesForAndIncreaseCounter(
+                            implicitPlaceIdentifier,
+                            substPlace,
+                            petriNet,
+                            counter,
+                            maxRemainingDept - 1
+                        );
+                    }
+                );
+       // }
         return counter;
     }
 
     private static checkSubstitutePlacesAreValidOrUndefined(
         // TODO ggf direkt im rST-Miner zur teilevaluation
-        substitutePlaces: Array<TemplatePlace>
+        substitutePlaces
+            :
+            Array<TemplatePlace>
     ) {
         if (substitutePlaces.length == 0) {
             return true;
@@ -209,5 +227,20 @@ export class RstMiner {
 
     get counterTestedPlacesLastRun(): number {
         return this._counterTestedPlacesLastRun;
+    }
+
+    private static unique<Type>(array : Array<Type>, equalsFunction: (t1 : Type, t2: Type) => boolean) {
+        if (array.length === 0 || array.length === 1) {
+            return array;
+        }
+
+        for (let i = 0; i < array.length; i++) {
+            for (let j = i + 1; j < array.length; j++) {
+                if (equalsFunction(array[i], array[j])) {
+                    array.splice(i, 1);
+                }
+            }
+        }
+        return array;
     }
 }
