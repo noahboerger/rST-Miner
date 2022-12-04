@@ -140,5 +140,3 @@ export class TimeBasedTerminationConfig extends TerminationConditionConfig {
         };
     }
 }
-
-// TODO Quality Based (Time Quality & Iteration Quality --> No change since)

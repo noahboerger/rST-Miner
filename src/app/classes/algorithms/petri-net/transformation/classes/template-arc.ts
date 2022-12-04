@@ -27,4 +27,28 @@ export class TemplateArc {
         }
         throw new Error('Only one of source or destination must be null!');
     }
+
+    static toSameUniqueString(arc: Arc) {
+        return (
+            'a{' +
+            arc.weight +
+            ',' +
+            (arc.source as Transition).label +
+            ',' +
+            (arc.destination as Transition).label +
+            '}'
+        );
+    }
+
+    toUniqueString() {
+        return (
+            'a{' +
+            this.weight +
+            ',' +
+            this.source?.label +
+            ',' +
+            this.destination?.label +
+            '}'
+        );
+    }
 }

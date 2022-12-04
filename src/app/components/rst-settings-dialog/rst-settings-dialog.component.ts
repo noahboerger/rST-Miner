@@ -16,6 +16,7 @@ import {
     TimestampOracleConfig,
 } from '../../classes/models/miner-settings/concurrency-oracle-config';
 import { PrimitiveGeneratorConfig } from '../../classes/models/miner-settings/random-place-generator-config';
+import { ImplicitPlaceIdentificationConfig } from '../../classes/models/miner-settings/implicit-place-identification-config';
 
 @Component({
     selector: 'app-rst-settings-dialog',
@@ -34,6 +35,9 @@ export class RstSettingsDialogComponent {
 
     LoopBasedTermination = LoopBasedTerminationConfig;
     TimeBasedTermination = TimeBasedTerminationConfig;
+
+    ImplicitPlaceIdentificationConfig = ImplicitPlaceIdentificationConfig;
+
     durationTimeUnit: string;
 
     constructor(public rstMinerDataService: RstMinerDataService) {

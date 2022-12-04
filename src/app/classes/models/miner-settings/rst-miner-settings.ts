@@ -16,6 +16,7 @@ import {
     PrimitiveGeneratorConfig,
     RandomPlaceGeneratorConfig,
 } from './random-place-generator-config';
+import { ImplicitPlaceIdentificationConfig } from './implicit-place-identification-config';
 
 @jsonObject({
     knownTypes: [
@@ -28,6 +29,8 @@ import {
     ],
 })
 export class RstMinerSettings {
+    public static readonly DEFAULT_DEBUG_MODUS_ENABLED = false;
+
     public static readonly concurrencyOracleTypesSimpleNames = [
         NoneOracleConfig.SIMPLE_NAME,
         AlphaOracleConfig.SIMPLE_NAME,
@@ -55,7 +58,10 @@ export class RstMinerSettings {
     @jsonMember(TerminationConditionConfig)
     public terminationCondition: TerminationConditionConfig;
 
-    // u.a. keine Nutzung von WebWorkers, um Exceptions einsehen zu können
+    @jsonMember(ImplicitPlaceIdentificationConfig)
+    public implicitPlaceIdentification: ImplicitPlaceIdentificationConfig;
+
+    // u.a. no usage of webworkers for better exception debuging
     @jsonMember(Boolean)
     public isDebugModusEnabled: boolean;
 
@@ -64,12 +70,14 @@ export class RstMinerSettings {
         partialOrderTransformationConfig: PartialOrderTransformationConfig = new PartialOrderTransformationConfig(),
         randomPlaceGenerator: RandomPlaceGeneratorConfig = new PrimitiveGeneratorConfig(),
         terminationCondition: TerminationConditionConfig = new TimeBasedTerminationConfig(),
-        isDebugModusEnabled: boolean = false
+        implicitPlaceIdentification: ImplicitPlaceIdentificationConfig = new ImplicitPlaceIdentificationConfig(),
+        isDebugModusEnabled: boolean = RstMinerSettings.DEFAULT_DEBUG_MODUS_ENABLED
     ) {
         this.concurrencyOracle = concurrencyOracle;
         this.partialOrderTransformation = partialOrderTransformationConfig;
         this.randomPlaceGenerator = randomPlaceGenerator;
         this.terminationCondition = terminationCondition;
+        this.implicitPlaceIdentification = implicitPlaceIdentification;
         this.isDebugModusEnabled = isDebugModusEnabled;
     }
 }

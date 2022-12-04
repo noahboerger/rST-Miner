@@ -1,13 +1,17 @@
 import 'reflect-metadata';
-import {jsonMember, jsonObject} from 'typedjson';
-import {PrimitivePlaceGenerator} from '../../algorithms/rst-miner/generators/primitive-place-generator';
-import {RandomPlaceGenerator} from '../../algorithms/rst-miner/generators/random-place-generator';
+import { jsonMember, jsonObject } from 'typedjson';
+import { PrimitivePlaceGenerator } from '../../algorithms/rst-miner/generators/primitive-place-generator';
+import { RandomPlaceGenerator } from '../../algorithms/rst-miner/generators/random-place-generator';
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class RandomPlaceGeneratorConfig {
     abstract getSimpleName(): string;
 
     abstract buildRandomPlaceGenerator(): RandomPlaceGenerator;
+
+    abstract get maximalIngoingArcWeights(): number;
+
+    abstract get maximalOutgoingArcWeights(): number;
 }
 
 @jsonObject
@@ -62,7 +66,8 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
 
     set ingoingConnectionProbability(value: number) {
         if (value == null || value < 0 || value > 1) {
-            this._ingoingConnectionProbability = PrimitiveGeneratorConfig.DEFAULT_INGOING_CONNECTION_PROBABILITY;
+            this._ingoingConnectionProbability =
+                PrimitiveGeneratorConfig.DEFAULT_INGOING_CONNECTION_PROBABILITY;
         } else {
             this._ingoingConnectionProbability = value;
         }
@@ -73,8 +78,9 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
     }
 
     set outgoingConnectionProbability(value: number) {
-        if (value == null || value < 0 || value > 1) { // TODO
-            this._outgoingConnectionProbability = PrimitiveGeneratorConfig.DEFAULT_OUTGOING_CONNECTION_PROBABILITY;
+        if (value == null || value < 0 || value > 1) {
+            this._outgoingConnectionProbability =
+                PrimitiveGeneratorConfig.DEFAULT_OUTGOING_CONNECTION_PROBABILITY;
         } else {
             this._outgoingConnectionProbability = value;
         }
@@ -86,7 +92,8 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
 
     set maximalInitialMarking(value: number) {
         if (value == null || value < 0 || value > 100) {
-            this._maximalInitialMarking = PrimitiveGeneratorConfig.DEFAULT_MAXIMAL_INITIAL_MARKING;
+            this._maximalInitialMarking =
+                PrimitiveGeneratorConfig.DEFAULT_MAXIMAL_INITIAL_MARKING;
         } else {
             this._maximalInitialMarking = value;
         }
@@ -98,7 +105,8 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
 
     set maximalIngoingArcWeights(value: number) {
         if (value == null || value < 1 || value > 100) {
-            this._maximalIngoingArcWeights = PrimitiveGeneratorConfig.DEFAULT_MAXIMAL_INGOING_ARC_WEIGHTS;
+            this._maximalIngoingArcWeights =
+                PrimitiveGeneratorConfig.DEFAULT_MAXIMAL_INGOING_ARC_WEIGHTS;
         } else {
             this._maximalIngoingArcWeights = value;
         }
@@ -110,15 +118,20 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
 
     set maximalOutgoingArcWeights(value: number) {
         if (value == null || value < 1 || value > 100) {
-            this._maximalOutgoingArcWeights = PrimitiveGeneratorConfig.DEFAULT_MAXIMAL_OUTGOING_ARC_WEIGHTS;
+            this._maximalOutgoingArcWeights =
+                PrimitiveGeneratorConfig.DEFAULT_MAXIMAL_OUTGOING_ARC_WEIGHTS;
         } else {
             this._maximalOutgoingArcWeights = value;
         }
     }
 
     buildRandomPlaceGenerator(): PrimitivePlaceGenerator {
-        return new PrimitivePlaceGenerator(this._maximalInitialMarking, this._ingoingConnectionProbability, this._outgoingConnectionProbability, this._maximalIngoingArcWeights, this._maximalOutgoingArcWeights);
+        return new PrimitivePlaceGenerator(
+            this._maximalInitialMarking,
+            this._ingoingConnectionProbability,
+            this._outgoingConnectionProbability,
+            this._maximalIngoingArcWeights,
+            this._maximalOutgoingArcWeights
+        );
     }
 }
-
-// TODO implement real generators

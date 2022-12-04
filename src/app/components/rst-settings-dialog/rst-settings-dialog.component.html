@@ -35,8 +35,85 @@
                             Process Model Optimizations
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <p>Noise Reduction</p>
-                    <p>Implicit Place Removal</p>
+                    <p><b>Noise Reduction</b></p>
+                    <p><b>Implicit Place Removal</b></p>
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .implicitPlaceIdentification
+                                .isPlaceRemovalEnabled
+                        ">
+                        Implicit Place Removal Enabled
+                    </mat-checkbox>
+
+                    <div
+                        *ngIf="
+                            rstMinerDataService.minerSettings
+                                .implicitPlaceIdentification
+                                .isPlaceRemovalEnabled
+                        ">
+                        <mat-checkbox
+                            [(ngModel)]="
+                                rstMinerDataService.minerSettings
+                                    .implicitPlaceIdentification
+                                    .isCalculateSubstitutePlacesEnabled
+                            "
+                            >Calculate Substitute Places Enabled
+                        </mat-checkbox>
+
+                        <div
+                            *ngIf="
+                                rstMinerDataService.minerSettings
+                                    .implicitPlaceIdentification
+                                    .isCalculateSubstitutePlacesEnabled
+                            ">
+                            <mat-checkbox
+                                [(ngModel)]="
+                                    rstMinerDataService.minerSettings
+                                        .implicitPlaceIdentification
+                                        .isValidateSubstituteArcWeightsEnabled
+                                "
+                                >Substitute Weight Validation Enabled
+                            </mat-checkbox>
+                            <br />
+                            <mat-checkbox
+                                [(ngModel)]="
+                                    rstMinerDataService.minerSettings
+                                        .implicitPlaceIdentification
+                                        .isMaxDeepnessEnabled
+                                "
+                                >Substitute Deepness Limit Enabled
+                            </mat-checkbox>
+
+                            <div
+                                *ngIf="
+                                    rstMinerDataService.minerSettings
+                                        .implicitPlaceIdentification
+                                        .isMaxDeepnessEnabled
+                                ">
+                                <mat-form-field
+                                    appearance="fill"
+                                    class="full-width">
+                                    <mat-label
+                                        >Substitute Place Calculation Deepness
+                                        Limit</mat-label
+                                    >
+                                    <input
+                                        [(ngModel)]="
+                                            rstMinerDataService.minerSettings
+                                                .implicitPlaceIdentification
+                                                .maxDeepness
+                                        "
+                                        matInput
+                                        min="1"
+                                        placeholder="Default {{
+                                            ImplicitPlaceIdentificationConfig.DEFAULT_MAX_DEEPNESS
+                                        }}"
+                                        type="number" />
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
@@ -176,7 +253,6 @@
                                         *ngSwitchCase="
                                             PrimitiveGenerator.SIMPLE_NAME
                                         ">
-
                                         <p><b>Maximum initial Marking</b></p>
                                         <mat-form-field
                                             appearance="fill"
@@ -212,10 +288,10 @@
                                                     primitiveGeneratorIngoingProbability
                                                 " />
                                         </mat-form-field>
-                                        <br/>
+                                        <br />
                                         <mat-form-field
-                                                appearance="fill"
-                                                class="full-width">
+                                            appearance="fill"
+                                            class="full-width">
                                             <mat-label>Outgoing Arcs</mat-label>
                                             <input
                                                 matInput
@@ -234,7 +310,9 @@
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
-                                            <mat-label>Ingoing Arc Weights</mat-label>
+                                            <mat-label
+                                                >Ingoing Arc Weights</mat-label
+                                            >
                                             <input
                                                 matInput
                                                 min="1"
@@ -247,11 +325,13 @@
                                                     primitiveGeneratorMaximalIngoingArcWeights
                                                 " />
                                         </mat-form-field>
-                                        <br/>
+                                        <br />
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
-                                            <mat-label>Outgoing Arc Weights</mat-label>
+                                            <mat-label
+                                                >Outgoing Arc Weights</mat-label
+                                            >
                                             <input
                                                 matInput
                                                 min="1"
