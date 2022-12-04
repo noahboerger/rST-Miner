@@ -17,6 +17,11 @@ import {
 } from '../../classes/models/miner-settings/concurrency-oracle-config';
 import { PrimitiveGeneratorConfig } from '../../classes/models/miner-settings/random-place-generator-config';
 import { ImplicitPlaceIdentificationConfig } from '../../classes/models/miner-settings/implicit-place-identification-config';
+import {
+    NoNoiseReductionConfig,
+    PlaceEvaluationNoiseReductionConfig,
+    PreprocessingNoiseReductionConfig,
+} from '../../classes/models/miner-settings/noise-reduction-config';
 
 @Component({
     selector: 'app-rst-settings-dialog',
@@ -26,6 +31,10 @@ import { ImplicitPlaceIdentificationConfig } from '../../classes/models/miner-se
 export class RstSettingsDialogComponent {
     // Zugriff auf statische Felder aus HTML ermöglichen
     MinerSettings = RstMinerSettings;
+
+    NoNoiseReductionConfig = NoNoiseReductionConfig;
+    PreprocessingNoiseReductionConfig = PreprocessingNoiseReductionConfig;
+    PlaceEvaluationNoiseReductionConfig = PlaceEvaluationNoiseReductionConfig;
 
     NoneOracle = NoneOracleConfig;
     AlphaOracle = AlphaOracleConfig;
@@ -42,6 +51,55 @@ export class RstSettingsDialogComponent {
 
     constructor(public rstMinerDataService: RstMinerDataService) {
         this.durationTimeUnit = TimeBasedTerminationConfig.SECONDS;
+    }
+
+    get actNoiseReductionSimpleName(): string {
+        return this.rstMinerDataService.minerSettings.noiseReduction.getSimpleName();
+    }
+
+    set actNoiseReductionSimpleName(value: string) {
+        switch (value) {
+            case NoNoiseReductionConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.noiseReduction =
+                    new NoNoiseReductionConfig();
+                break;
+            case PreprocessingNoiseReductionConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.noiseReduction =
+                    new PreprocessingNoiseReductionConfig();
+                break;
+            case PlaceEvaluationNoiseReductionConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.noiseReduction =
+                    new PlaceEvaluationNoiseReductionConfig();
+                break;
+        }
+    }
+
+    set preprocessingNoiseReductionFittingProportion(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .noiseReduction as PreprocessingNoiseReductionConfig
+        ).fittingProportion = value;
+    }
+
+    get preprocessingNoiseReductionFittingProportion(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .noiseReduction as PreprocessingNoiseReductionConfig
+        ).fittingProportion;
+    }
+
+    set placeEvaluationNoiseReductionFittingProportion(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .noiseReduction as PlaceEvaluationNoiseReductionConfig
+        ).fittingProportion = value;
+    }
+
+    get placeEvaluationNoiseReductionFittingProportion(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .noiseReduction as PlaceEvaluationNoiseReductionConfig
+        ).fittingProportion;
     }
 
     get actTerminationConditionSimpleName(): string {

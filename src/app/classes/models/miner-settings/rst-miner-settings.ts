@@ -17,9 +17,18 @@ import {
     RandomPlaceGeneratorConfig,
 } from './random-place-generator-config';
 import { ImplicitPlaceIdentificationConfig } from './implicit-place-identification-config';
+import {
+    NoiseReductionConfig,
+    NoNoiseReductionConfig,
+    PlaceEvaluationNoiseReductionConfig,
+    PreprocessingNoiseReductionConfig,
+} from './noise-reduction-config';
 
 @jsonObject({
     knownTypes: [
+        NoNoiseReductionConfig,
+        PreprocessingNoiseReductionConfig,
+        PlaceEvaluationNoiseReductionConfig,
         NoneOracleConfig,
         AlphaOracleConfig,
         TimestampOracleConfig,
@@ -30,6 +39,12 @@ import { ImplicitPlaceIdentificationConfig } from './implicit-place-identificati
 })
 export class RstMinerSettings {
     public static readonly DEFAULT_DEBUG_MODUS_ENABLED = false;
+
+    public static readonly noiseReductionTypesSimpleNames = [
+        NoNoiseReductionConfig.SIMPLE_NAME,
+        PreprocessingNoiseReductionConfig.SIMPLE_NAME,
+        PlaceEvaluationNoiseReductionConfig.SIMPLE_NAME,
+    ];
 
     public static readonly concurrencyOracleTypesSimpleNames = [
         NoneOracleConfig.SIMPLE_NAME,
@@ -45,6 +60,9 @@ export class RstMinerSettings {
     public static readonly randomPlaceGeneratorTypesSimpleNames = [
         PrimitiveGeneratorConfig.SIMPLE_NAME,
     ];
+
+    @jsonMember(NoiseReductionConfig)
+    public noiseReduction: NoiseReductionConfig;
 
     @jsonMember(ConcurrencyOracleConfig)
     public concurrencyOracle: ConcurrencyOracleConfig;
@@ -66,6 +84,7 @@ export class RstMinerSettings {
     public isDebugModusEnabled: boolean;
 
     constructor(
+        noiseReduction: NoiseReductionConfig = new NoNoiseReductionConfig(),
         concurrencyOracle: ConcurrencyOracleConfig = new NoneOracleConfig(),
         partialOrderTransformationConfig: PartialOrderTransformationConfig = new PartialOrderTransformationConfig(),
         randomPlaceGenerator: RandomPlaceGeneratorConfig = new PrimitiveGeneratorConfig(),
@@ -73,6 +92,7 @@ export class RstMinerSettings {
         implicitPlaceIdentification: ImplicitPlaceIdentificationConfig = new ImplicitPlaceIdentificationConfig(),
         isDebugModusEnabled: boolean = RstMinerSettings.DEFAULT_DEBUG_MODUS_ENABLED
     ) {
+        this.noiseReduction = noiseReduction;
         this.concurrencyOracle = concurrencyOracle;
         this.partialOrderTransformation = partialOrderTransformationConfig;
         this.randomPlaceGenerator = randomPlaceGenerator;

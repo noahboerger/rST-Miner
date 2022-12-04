@@ -20,8 +20,6 @@ export class RstMiner {
         'given .type log string can not be parsed'
     );
 
-    private static readonly maxDeptImplicitSearch: number = 100; // TODO config property oder ähnliches
-
     private _concurrencyOracle: ConcurrencyOracle;
     private _logToPartialOrderTransformer: LogToPartialOrderTransformer;
     private _petriNetToPartialOrderTransformer: PetriNetToPartialOrderTransformer;
@@ -45,6 +43,8 @@ export class RstMiner {
 
     public mine(eventlog: Eventlog): PetriNet {
         this._counterTestedPlacesLastRun = 0;
+
+        eventlog = this._minerSettings.noiseReduction.preFilterNoise(eventlog);
 
         const concurrencyRelation =
             this._concurrencyOracle.determineConcurrency(eventlog);
