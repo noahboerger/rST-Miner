@@ -34,7 +34,7 @@ export class PetriNetToPartialOrderTransformer {
             );
         }
 
-        const result = new PartialOrder();
+        const result = new PartialOrder(net.frequency);
         for (const t of net.getTransitions()) {
             result.addEvent(new PartialOrderEvent(t.id!, t.label));
         }

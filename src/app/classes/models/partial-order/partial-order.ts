@@ -5,7 +5,7 @@ export class PartialOrder {
     private readonly _initialEvents: Set<PartialOrderEvent>;
     private readonly _finalEvents: Set<PartialOrderEvent>;
 
-    constructor() {
+    constructor(public frequency: number | undefined = 0) {
         this._events = new Map<string, PartialOrderEvent>();
         this._initialEvents = new Set<PartialOrderEvent>();
         this._finalEvents = new Set<PartialOrderEvent>();
@@ -50,7 +50,7 @@ export class PartialOrder {
     }
 
     public clone(): PartialOrder {
-        const result = new PartialOrder();
+        const result = new PartialOrder(this.frequency);
         for (const e of this._events.values()) {
             result.addEvent(new PartialOrderEvent(e.id, e.label));
         }

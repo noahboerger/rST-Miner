@@ -57,4 +57,8 @@ export abstract class LpoPlaceValidator {
         toBeCheckedNet: PetriNet,
         toBeValidatedPlaceId: string
     ): ValidationResult;
+
+    public get lpoFrequency(): number | undefined {
+        return this._lpo.frequency;
+    }
 }

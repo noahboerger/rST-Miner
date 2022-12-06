@@ -5,7 +5,7 @@ import { PetriNet } from '../petri-net/petri-net';
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class TerminationConditionConfig {
-    abstract getSimpleName(): string;
+    abstract get simpleName(): string;
 
     abstract toIsTerminationConditionReachedFunction(): (
         actState: PetriNet
@@ -15,7 +15,7 @@ export abstract class TerminationConditionConfig {
 @jsonObject
 export class LoopBasedTerminationConfig extends TerminationConditionConfig {
     public static readonly SIMPLE_NAME = 'Loop Iterations';
-    public static readonly DEFAULT_ITERATIONS = 100_000;
+    public static readonly DEFAULT_ITERATIONS = 10_000;
 
     @jsonMember(Number)
     private _loopAmount: number;
@@ -27,7 +27,7 @@ export class LoopBasedTerminationConfig extends TerminationConditionConfig {
         this._loopAmount = loopAmount;
     }
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return LoopBasedTerminationConfig.SIMPLE_NAME;
     }
 
@@ -80,7 +80,7 @@ export class TimeBasedTerminationConfig extends TerminationConditionConfig {
         this._durationInMs = duration.milliseconds;
     }
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return TimeBasedTerminationConfig.SIMPLE_NAME;
     }
 

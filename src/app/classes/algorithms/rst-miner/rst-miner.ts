@@ -15,6 +15,7 @@ import { ImplicitPlaceIdentifierConfigWrapper } from './implicit/implicit-place-
 
 export class RstMiner {
     private _counterTestedPlacesLastRun = 0;
+    private readonly _maxPlaceFailingPercentage;
 
     public static MINING_ERROR = new Error(
         'given .type log string can not be parsed'
@@ -39,12 +40,15 @@ export class RstMiner {
         );
         this._randomPlaceGenerator =
             _minerSettings.randomPlaceGenerator.buildRandomPlaceGenerator();
+        this._maxPlaceFailingPercentage =
+            _minerSettings.noiseReduction.maxPlaceFailingPercentage;
     }
 
     public mine(eventlog: Eventlog): PetriNet {
         this._counterTestedPlacesLastRun = 0;
 
         eventlog = this._minerSettings.noiseReduction.preFilterNoise(eventlog);
+        const totalTraces = eventlog.traces.length;
 
         const concurrencyRelation =
             this._concurrencyOracle.determineConcurrency(eventlog);
@@ -88,9 +92,10 @@ export class RstMiner {
 
         let petriNet = this.createFlowerModel(allTransitionActivities);
 
-        const lpoFirePlaceValidators = partialOrders.map(
-            partialOrder => new LpoFirePlaceValidator(partialOrder)
-        );
+        const lpoFirePlaceValidators = partialOrders
+            .map(partialOrder => new LpoFirePlaceValidator(partialOrder))
+            // Sort desc, to fire less validators for reaching failed state for place
+            .sort((a, b) => b.lpoFrequency! - a.lpoFrequency!);
 
         const terminationConditionReachedFct =
             this._minerSettings.terminationCondition.toIsTerminationConditionReachedFunction();
@@ -108,10 +113,11 @@ export class RstMiner {
             );
 
             if (
-                !RstMiner.isGeneratedPlaceValid(
+                !this.isGeneratedPlaceValid(
                     addedPlace,
                     clonedPetriNet,
-                    lpoFirePlaceValidators
+                    lpoFirePlaceValidators,
+                    totalTraces
                 )
             ) {
                 continue;
@@ -157,11 +163,13 @@ export class RstMiner {
         return petriNet;
     }
 
-    private static isGeneratedPlaceValid(
+    private isGeneratedPlaceValid(
         addedPlace: Place,
         clonedPetriNet: PetriNet,
-        lpoFirePlaceValidators: LpoFirePlaceValidator[]
+        lpoFirePlaceValidators: LpoFirePlaceValidator[],
+        totalTraces: number
     ) {
+        let alreadyFailedTraces = 0;
         for (const lpoFirePlaceValidator of lpoFirePlaceValidators) {
             const validationResultForPlaceAndOrder =
                 lpoFirePlaceValidator.validate(
@@ -169,7 +177,13 @@ export class RstMiner {
                     addedPlace.id!
                 );
             if (!validationResultForPlaceAndOrder.valid) {
-                return false;
+                alreadyFailedTraces += lpoFirePlaceValidator.lpoFrequency!;
+                if (
+                    alreadyFailedTraces / totalTraces >
+                    this._maxPlaceFailingPercentage
+                ) {
+                    return false;
+                }
             }
         }
         return true;

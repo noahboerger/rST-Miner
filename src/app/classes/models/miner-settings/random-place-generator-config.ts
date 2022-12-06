@@ -5,7 +5,7 @@ import { RandomPlaceGenerator } from '../../algorithms/rst-miner/generators/rand
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class RandomPlaceGeneratorConfig {
-    abstract getSimpleName(): string;
+    abstract get simpleName(): string;
 
     abstract buildRandomPlaceGenerator(): RandomPlaceGenerator;
 
@@ -56,7 +56,7 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
         this._maximalOutgoingArcWeights = maximalOutgoingArcWeights;
     }
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return PrimitiveGeneratorConfig.SIMPLE_NAME;
     }
 

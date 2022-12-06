@@ -54,7 +54,7 @@ export class RstSettingsDialogComponent {
     }
 
     get actNoiseReductionSimpleName(): string {
-        return this.rstMinerDataService.minerSettings.noiseReduction.getSimpleName();
+        return this.rstMinerDataService.minerSettings.noiseReduction.simpleName;
     }
 
     set actNoiseReductionSimpleName(value: string) {
@@ -103,7 +103,8 @@ export class RstSettingsDialogComponent {
     }
 
     get actTerminationConditionSimpleName(): string {
-        return this.rstMinerDataService.minerSettings.terminationCondition.getSimpleName();
+        return this.rstMinerDataService.minerSettings.terminationCondition
+            .simpleName;
     }
 
     set actTerminationConditionSimpleName(value: string) {
@@ -148,7 +149,8 @@ export class RstSettingsDialogComponent {
     }
 
     get actConcurrencyOracleSimpleName(): string {
-        return this.rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName();
+        return this.rstMinerDataService.minerSettings.concurrencyOracle
+            .simpleName;
     }
 
     set actConcurrencyOracleSimpleName(value: string) {
@@ -204,7 +206,8 @@ export class RstSettingsDialogComponent {
     }
 
     get actRandomPlaceGeneratorSimpleName(): string {
-        return this.rstMinerDataService.minerSettings.randomPlaceGenerator.getSimpleName();
+        return this.rstMinerDataService.minerSettings.randomPlaceGenerator
+            .simpleName;
     }
 
     set actRandomPlaceGeneratorSimpleName(value: string) {

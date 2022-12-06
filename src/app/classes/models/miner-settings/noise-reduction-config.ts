@@ -4,23 +4,27 @@ import { Eventlog } from '../eventlog/eventlog';
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class NoiseReductionConfig {
-    abstract getSimpleName(): string;
+    abstract get simpleName(): string;
 
     abstract preFilterNoise(unfiltered: Eventlog): Eventlog;
 
-    // TODO return place evaluation percentage and assign
+    abstract get maxPlaceFailingPercentage(): number;
 }
 
 @jsonObject
 export class NoNoiseReductionConfig extends NoiseReductionConfig {
     public static readonly SIMPLE_NAME = 'None ';
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return NoNoiseReductionConfig.SIMPLE_NAME;
     }
 
     preFilterNoise(toBeFiltered: Eventlog): Eventlog {
         return toBeFiltered;
+    }
+
+    get maxPlaceFailingPercentage(): number {
+        return 0;
     }
 }
 
@@ -40,7 +44,7 @@ export class PreprocessingNoiseReductionConfig extends NoiseReductionConfig {
         this._fittingProportion = fittingProportion;
     }
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return PreprocessingNoiseReductionConfig.SIMPLE_NAME;
     }
 
@@ -81,6 +85,10 @@ export class PreprocessingNoiseReductionConfig extends NoiseReductionConfig {
         toBeFiltered.traces = relevantTraces;
         return toBeFiltered;
     }
+
+    get maxPlaceFailingPercentage(): number {
+        return 0;
+    }
 }
 
 @jsonObject
@@ -99,7 +107,7 @@ export class PlaceEvaluationNoiseReductionConfig extends NoiseReductionConfig {
         this._fittingProportion = fittingProportion;
     }
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return PlaceEvaluationNoiseReductionConfig.SIMPLE_NAME;
     }
 
@@ -118,5 +126,9 @@ export class PlaceEvaluationNoiseReductionConfig extends NoiseReductionConfig {
 
     preFilterNoise(toBeFiltered: Eventlog): Eventlog {
         return toBeFiltered;
+    }
+
+    get maxPlaceFailingPercentage(): number {
+        return 1 - this._fittingProportion;
     }
 }

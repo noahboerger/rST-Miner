@@ -7,7 +7,7 @@ import { TimestampOracle } from '../../algorithms/concurrency-oracle/timestamp-o
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class ConcurrencyOracleConfig {
-    abstract getSimpleName(): string;
+    abstract get simpleName(): string;
 
     abstract generateConcurrencyOracle(): ConcurrencyOracle;
 }
@@ -16,7 +16,7 @@ export abstract class ConcurrencyOracleConfig {
 export class NoneOracleConfig extends ConcurrencyOracleConfig {
     public static readonly SIMPLE_NAME = 'None';
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return NoneOracleConfig.SIMPLE_NAME;
     }
 
@@ -47,7 +47,7 @@ export class AlphaOracleConfig extends ConcurrencyOracleConfig {
         this.distinguishSameEvents = distinguishSameEvents;
     }
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return AlphaOracleConfig.SIMPLE_NAME;
     }
 
@@ -87,7 +87,7 @@ export class TimestampOracleConfig extends ConcurrencyOracleConfig {
         this.distinguishSameEvents = distinguishSameEvents;
     }
 
-    getSimpleName(): string {
+    get simpleName(): string {
         return TimestampOracleConfig.SIMPLE_NAME;
     }
 
