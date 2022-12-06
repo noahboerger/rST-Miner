@@ -73,8 +73,14 @@ export class LpoFirePlaceValidator extends LpoFlowPlaceValidator {
             queue.push(this._totalOrder[i]);
         }
 
-        const backwardsValidPlaces = LpoFirePlaceValidator.newBoolArray(places, true);
-        const backwardsComplexPlaces = LpoFirePlaceValidator.newBoolArray(places, false);
+        const backwardsValidPlaces = LpoFirePlaceValidator.newBoolArray(
+            places,
+            true
+        );
+        const backwardsComplexPlaces = LpoFirePlaceValidator.newBoolArray(
+            places,
+            false
+        );
 
         // Is the final marking > 0 ?
         for (let i = 0; i < places.length; i++) {
@@ -231,7 +237,10 @@ export class LpoFirePlaceValidator extends LpoFlowPlaceValidator {
         return places.findIndex(pp => pp === p);
     }
 
-    private static newBoolArray(places: Array<Place>, fill: boolean): Array<boolean> {
+    private static newBoolArray(
+        places: Array<Place>,
+        fill: boolean
+    ): Array<boolean> {
         return new Array<boolean>(places.length).fill(fill);
     }
 }
