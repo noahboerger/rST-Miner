@@ -9,13 +9,13 @@ import { ConcurrencyOracle } from '../concurrency-oracle/concurrency-oracle';
 import { PartialOrderNetWithContainedTraces } from '../../models/petri-net/partial-order-net-with-contained-traces';
 import { Transition } from '../../models/petri-net/transition';
 import { RandomPlaceGenerator } from './generators/random-place-generator';
-import { ImplicitPlaceIdentifier } from '../petri-net/transformation/implicit-place-identifier';
 import { Place } from '../../models/petri-net/place';
-import { TemplatePlace } from '../petri-net/transformation/classes/template-place';
 import { LpoFirePlaceValidator } from '../petri-net/validation/lpo-fire-place-validator';
+import { ImplicitPlaceIdentifierConfigWrapper } from './implicit/implicit-place-identifier-config-wrapper';
 
 export class RstMiner {
     private _counterTestedPlacesLastRun = 0;
+    private readonly _maxPlaceFailingPercentage;
 
     public static MINING_ERROR = new Error(
         'given .type log string can not be parsed'
@@ -40,10 +40,16 @@ export class RstMiner {
         );
         this._randomPlaceGenerator =
             _minerSettings.randomPlaceGenerator.buildRandomPlaceGenerator();
+        this._maxPlaceFailingPercentage =
+            _minerSettings.noiseReduction.maxPlaceFailingPercentage;
     }
 
     public mine(eventlog: Eventlog): PetriNet {
         this._counterTestedPlacesLastRun = 0;
+
+        eventlog = this._minerSettings.noiseReduction.preFilterNoise(eventlog);
+        const totalTraces = eventlog.traces.length;
+
         const concurrencyRelation =
             this._concurrencyOracle.determineConcurrency(eventlog);
         const partialOrderNetsWithContainedTraces =
@@ -65,19 +71,31 @@ export class RstMiner {
         const allTransitionActivities = RstMiner.calculateTransitionActivities(
             partialOrderNetsWithContainedTraces
         );
-        const implicitPlaceIdentifier = new ImplicitPlaceIdentifier(
-            [...allTransitionActivities],
-            partialOrderNetsWithContainedTraces.flatMap(
-                partialOrderNetsWithContainedTraces =>
-                    partialOrderNetsWithContainedTraces.containedTraces
-            )
+        const allContainedTraces = partialOrderNetsWithContainedTraces.flatMap(
+            partialOrderNetsWithContainedTraces =>
+                partialOrderNetsWithContainedTraces.containedTraces
         );
+
+        let implicitPlaceIdentifier;
+        if (
+            this._minerSettings.implicitPlaceIdentification
+                .isPlaceRemovalEnabled
+        ) {
+            implicitPlaceIdentifier = new ImplicitPlaceIdentifierConfigWrapper(
+                [...allTransitionActivities],
+                allContainedTraces,
+                this._minerSettings
+            );
+        } else {
+            implicitPlaceIdentifier = undefined;
+        }
 
         let petriNet = this.createFlowerModel(allTransitionActivities);
 
-        const lpoFirePlaceValidators = partialOrders.map(
-            partialOrder => new LpoFirePlaceValidator(partialOrder)
-        );
+        const lpoFirePlaceValidators = partialOrders
+            .map(partialOrder => new LpoFirePlaceValidator(partialOrder))
+            // Sort desc, to fire less validators for reaching failed state for place
+            .sort((a, b) => b.lpoFrequency! - a.lpoFrequency!);
 
         const terminationConditionReachedFct =
             this._minerSettings.terminationCondition.toIsTerminationConditionReachedFunction();
@@ -95,26 +113,27 @@ export class RstMiner {
             );
 
             if (
-                !RstMiner.isGeneratedPlaceValid(
+                !this.isGeneratedPlaceValid(
                     addedPlace,
                     clonedPetriNet,
-                    lpoFirePlaceValidators
+                    lpoFirePlaceValidators,
+                    totalTraces
                 )
             ) {
                 continue;
             }
 
             petriNet = clonedPetriNet;
-            this._counterTestedPlacesLastRun =
-                this.removeImplicitPlacesForAndIncreaseCounter(
-                    implicitPlaceIdentifier,
-                    addedPlace,
-                    petriNet,
-                    this._counterTestedPlacesLastRun
-                );
-        }
 
-        // TODO anders initialisieren und nutzen in der loop
+            if (implicitPlaceIdentifier != null) {
+                this._counterTestedPlacesLastRun =
+                    implicitPlaceIdentifier.removeImplicitPlacesForAndIncreaseCounter(
+                        addedPlace,
+                        petriNet,
+                        this._counterTestedPlacesLastRun
+                    );
+            }
+        }
         return petriNet;
     }
 
@@ -144,64 +163,29 @@ export class RstMiner {
         return petriNet;
     }
 
-    private removeImplicitPlacesForAndIncreaseCounter(
-        implicitPlaceIdentifier: ImplicitPlaceIdentifier,
-        addedPlace: Place,
-        petriNet: PetriNet,
-        counter: number
-    ): number {
-        implicitPlaceIdentifier
-            .calculateImplicitPlacesFor(addedPlace, petriNet)
-            .filter(implicitResult =>
-                RstMiner.checkSubstitutePlacesAreValidOrUndefined(
-                    implicitResult.substitutePlaces
-                )
-            )
-            .forEach(implicitResult => {
-                petriNet.removePlace(implicitResult.implicitPlace); // TODO --> Nur removen, wenn (einer) aus replacement recursiver Chain valide
-                for (const substTemplatePlace of implicitResult.substitutePlaces) {
-                    const substPlace = substTemplatePlace.buildPlaceWithId(
-                        'p' + counter++
-                    );
-                    petriNet.addPlace(substPlace);
-                    substPlace.ingoingArcs.forEach(arc => petriNet.addArc(arc));
-                    substPlace.outgoingArcs.forEach(arc =>
-                        petriNet.addArc(arc)
-                    );
-                    counter = this.removeImplicitPlacesForAndIncreaseCounter(
-                        implicitPlaceIdentifier,
-                        substPlace,
-                        petriNet,
-                        counter
-                    );
-                }
-            });
-        return counter;
-    }
-
-    private static checkSubstitutePlacesAreValidOrUndefined(
-        // TODO ggf direkt im rST-Miner zur teilevaluation
-        substitutePlaces: Array<TemplatePlace>
-    ) {
-        if (substitutePlaces.length == 0) {
-            return true;
-        }
-        return true; // TODO (combined places auf max tokens, max weight, etc. validieren)
-    }
-
-    private static isGeneratedPlaceValid(
+    private isGeneratedPlaceValid(
         addedPlace: Place,
         clonedPetriNet: PetriNet,
-        lpoFirePlaceValidators: LpoFirePlaceValidator[]
+        lpoFirePlaceValidators: LpoFirePlaceValidator[],
+        totalTraces: number
     ) {
+        let alreadyFailedTraces = 0;
         for (const lpoFirePlaceValidator of lpoFirePlaceValidators) {
             const validationResultForPlaceAndOrder =
                 lpoFirePlaceValidator.validate(
                     clonedPetriNet.clone(),
-                    addedPlace.id!
+                    addedPlace.id!,
+                    this._minerSettings.processModelCharacteristics
+                        .placesEmptyAtEnd
                 );
             if (!validationResultForPlaceAndOrder.valid) {
-                return false;
+                alreadyFailedTraces += lpoFirePlaceValidator.lpoFrequency!;
+                if (
+                    alreadyFailedTraces / totalTraces >
+                    this._maxPlaceFailingPercentage
+                ) {
+                    return false;
+                }
             }
         }
         return true;

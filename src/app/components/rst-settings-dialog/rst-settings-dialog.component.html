@@ -25,8 +25,22 @@
                             Process Model Characteristics
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <p>Workflow Net</p>
-                    <p>Edge Weights</p>
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .processModelCharacteristics.placesEmptyAtEnd
+                        ">
+                        Places empty after replay
+                    </mat-checkbox>
+                    <br />
+                    <mat-checkbox
+                        [disabled]="true"
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .processModelCharacteristics.workflowNet
+                        ">
+                        Workflow net
+                    </mat-checkbox>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
@@ -35,8 +49,164 @@
                             Process Model Optimizations
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <p>Noise Reduction</p>
-                    <p>Implicit Place Removal</p>
+                    <p><b>Noise Reduction</b></p>
+                    <mat-radio-group [(ngModel)]="actNoiseReductionSimpleName">
+                        <div class="full-width" style="float: left">
+                            <span
+                                *ngFor="
+                                    let noiseReductionTypeSimpleName of MinerSettings.noiseReductionTypesSimpleNames
+                                ">
+                                <mat-radio-button
+                                    value="{{ noiseReductionTypeSimpleName }}"
+                                    >{{
+                                        noiseReductionTypeSimpleName
+                                    }}</mat-radio-button
+                                >
+
+                                <div
+                                    *ngIf="
+                                        rstMinerDataService.minerSettings
+                                            .noiseReduction.simpleName ===
+                                            noiseReductionTypeSimpleName &&
+                                        rstMinerDataService.minerSettings
+                                            .noiseReduction.simpleName !==
+                                            NoNoiseReductionConfig.SIMPLE_NAME
+                                    "
+                                    [ngSwitch]="noiseReductionTypeSimpleName">
+                                    <span
+                                        *ngSwitchCase="
+                                            PreprocessingNoiseReductionConfig.SIMPLE_NAME
+                                        ">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                                >Minimal fitting
+                                                Proportion</mat-label
+                                            >
+                                            <input
+                                                [(ngModel)]="
+                                                    preprocessingNoiseReductionFittingProportion
+                                                "
+                                                matInput
+                                                min="0"
+                                                max="1"
+                                                step="0.01"
+                                                placeholder="Default {{
+                                                    PreprocessingNoiseReductionConfig.DEFAULT_FITTING_PROPORTION
+                                                }}"
+                                                type="number" />
+                                        </mat-form-field>
+                                    </span>
+
+                                    <span
+                                        *ngSwitchCase="
+                                            PlaceEvaluationNoiseReductionConfig.SIMPLE_NAME
+                                        ">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                                >Minimal fitting
+                                                Proportion</mat-label
+                                            >
+                                            <input
+                                                [(ngModel)]="
+                                                    placeEvaluationNoiseReductionFittingProportion
+                                                "
+                                                matInput
+                                                min="0"
+                                                max="1"
+                                                step="0.01"
+                                                placeholder="Default {{
+                                                    PlaceEvaluationNoiseReductionConfig.DEFAULT_FITTING_PROPORTION
+                                                }}"
+                                                type="number" />
+                                        </mat-form-field>
+                                    </span>
+                                </div>
+                                <br />
+                            </span>
+                        </div>
+                    </mat-radio-group>
+                    <p><b>Implicit Place Removal</b></p>
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .implicitPlaceIdentification
+                                .isPlaceRemovalEnabled
+                        ">
+                        Implicit Place Removal
+                    </mat-checkbox>
+
+                    <div
+                        *ngIf="
+                            rstMinerDataService.minerSettings
+                                .implicitPlaceIdentification
+                                .isPlaceRemovalEnabled
+                        ">
+                        <mat-checkbox
+                            [(ngModel)]="
+                                rstMinerDataService.minerSettings
+                                    .implicitPlaceIdentification
+                                    .isCalculateSubstitutePlacesEnabled
+                            "
+                            >Calculate Substitute Places
+                        </mat-checkbox>
+
+                        <div
+                            *ngIf="
+                                rstMinerDataService.minerSettings
+                                    .implicitPlaceIdentification
+                                    .isCalculateSubstitutePlacesEnabled
+                            ">
+                            <mat-checkbox
+                                [(ngModel)]="
+                                    rstMinerDataService.minerSettings
+                                        .implicitPlaceIdentification
+                                        .isValidateSubstituteArcWeightsEnabled
+                                "
+                                >Substitute Places Weight Validation
+                            </mat-checkbox>
+                            <br />
+                            <mat-checkbox
+                                [(ngModel)]="
+                                    rstMinerDataService.minerSettings
+                                        .implicitPlaceIdentification
+                                        .isMaxDeepnessEnabled
+                                "
+                                >Max Substitute Calculation Deepness
+                            </mat-checkbox>
+
+                            <div
+                                *ngIf="
+                                    rstMinerDataService.minerSettings
+                                        .implicitPlaceIdentification
+                                        .isMaxDeepnessEnabled
+                                ">
+                                <mat-form-field
+                                    appearance="fill"
+                                    class="full-width">
+                                    <mat-label
+                                        >Substitute Place Calculation Deepness
+                                        Limit</mat-label
+                                    >
+                                    <input
+                                        [(ngModel)]="
+                                            rstMinerDataService.minerSettings
+                                                .implicitPlaceIdentification
+                                                .maxDeepness
+                                        "
+                                        matInput
+                                        min="1"
+                                        placeholder="Default {{
+                                            ImplicitPlaceIdentificationConfig.DEFAULT_MAX_DEEPNESS
+                                        }}"
+                                        type="number" />
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
@@ -64,9 +234,11 @@
 
                                 <div
                                     *ngIf="
-                                        rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() ===
+                                        rstMinerDataService.minerSettings
+                                            .concurrencyOracle.simpleName ===
                                             concurrencyOracleTypeSimpleName &&
-                                        rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName() !==
+                                        rstMinerDataService.minerSettings
+                                            .concurrencyOracle.simpleName !==
                                             NoneOracle.SIMPLE_NAME
                                     "
                                     [ngSwitch]="
@@ -166,7 +338,8 @@
 
                                 <div
                                     *ngIf="
-                                        rstMinerDataService.minerSettings.randomPlaceGenerator.getSimpleName() ===
+                                        rstMinerDataService.minerSettings
+                                            .randomPlaceGenerator.simpleName ===
                                         randomPlaceGeneratorTypeSimpleName
                                     "
                                     [ngSwitch]="
@@ -176,20 +349,97 @@
                                         *ngSwitchCase="
                                             PrimitiveGenerator.SIMPLE_NAME
                                         ">
+                                        <p><b>Maximum initial Marking</b></p>
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
-                                            <mat-label>Probability</mat-label>
+                                            <mat-label>Tokens up to</mat-label>
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_MAXIMAL_INITIAL_MARKING
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorMaximalInitialMarking
+                                                " />
+                                        </mat-form-field>
+
+                                        <p><b>Connection Probability</b></p>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Ingoing Arcs</mat-label>
                                             <input
                                                 matInput
                                                 min="0"
                                                 max="1"
+                                                step="0.01"
                                                 placeholder="Default {{
-                                                    PrimitiveGenerator.DEFAULT_PROBABILITY
+                                                    PrimitiveGenerator.DEFAULT_INGOING_CONNECTION_PROBABILITY
                                                 }}"
                                                 type="number"
                                                 [(ngModel)]="
-                                                    primitiveGeneratorProbability
+                                                    primitiveGeneratorIngoingProbability
+                                                " />
+                                        </mat-form-field>
+                                        <br />
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Outgoing Arcs</mat-label>
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="1"
+                                                step="0.01"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_OUTGOING_CONNECTION_PROBABILITY
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorOutgoingProbability
+                                                " />
+                                        </mat-form-field>
+
+                                        <p><b>Maximum Arc Weights</b></p>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                                >Ingoing Arc Weights</mat-label
+                                            >
+                                            <input
+                                                matInput
+                                                min="1"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_MAXIMAL_INGOING_ARC_WEIGHTS
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorMaximalIngoingArcWeights
+                                                " />
+                                        </mat-form-field>
+                                        <br />
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                                >Outgoing Arc Weights</mat-label
+                                            >
+                                            <input
+                                                matInput
+                                                min="1"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    PrimitiveGenerator.DEFAULT_MAXIMAL_OUTGOING_ARC_WEIGHTS
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    primitiveGeneratorMaximalOutgoingArcWeights
                                                 " />
                                         </mat-form-field>
                                     </span>
@@ -222,7 +472,8 @@
 
                                 <div
                                     *ngIf="
-                                        rstMinerDataService.minerSettings.terminationCondition.getSimpleName() ===
+                                        rstMinerDataService.minerSettings
+                                            .terminationCondition.simpleName ===
                                         terminationTypeSimpleName
                                     "
                                     [ngSwitch]="terminationTypeSimpleName">

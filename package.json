@@ -26,6 +26,7 @@
     "@angular/platform-browser-dynamic": "~14.2.7",
     "@angular/router": "~14.2.7",
     "@types/xml2js": "^0.4.11",
+    "collections": "^5.1.13",
     "crypto": "^1.0.1",
     "file-saver": "^2.0.5",
     "reflect-metadata": "^0.1.13",

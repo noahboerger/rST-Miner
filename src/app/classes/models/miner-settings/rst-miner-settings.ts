@@ -16,9 +16,20 @@ import {
     PrimitiveGeneratorConfig,
     RandomPlaceGeneratorConfig,
 } from './random-place-generator-config';
+import { ImplicitPlaceIdentificationConfig } from './implicit-place-identification-config';
+import {
+    NoiseReductionConfig,
+    NoNoiseReductionConfig,
+    PlaceEvaluationNoiseReductionConfig,
+    PreprocessingNoiseReductionConfig,
+} from './noise-reduction-config';
+import { ProcessModelCharacteristicsConfig } from './process-model-characteristics-config';
 
 @jsonObject({
     knownTypes: [
+        NoNoiseReductionConfig,
+        PreprocessingNoiseReductionConfig,
+        PlaceEvaluationNoiseReductionConfig,
         NoneOracleConfig,
         AlphaOracleConfig,
         TimestampOracleConfig,
@@ -28,6 +39,14 @@ import {
     ],
 })
 export class RstMinerSettings {
+    public static readonly DEFAULT_DEBUG_MODUS_ENABLED = false;
+
+    public static readonly noiseReductionTypesSimpleNames = [
+        NoNoiseReductionConfig.SIMPLE_NAME,
+        PreprocessingNoiseReductionConfig.SIMPLE_NAME,
+        PlaceEvaluationNoiseReductionConfig.SIMPLE_NAME,
+    ];
+
     public static readonly concurrencyOracleTypesSimpleNames = [
         NoneOracleConfig.SIMPLE_NAME,
         AlphaOracleConfig.SIMPLE_NAME,
@@ -43,6 +62,12 @@ export class RstMinerSettings {
         PrimitiveGeneratorConfig.SIMPLE_NAME,
     ];
 
+    @jsonMember(ProcessModelCharacteristicsConfig)
+    public processModelCharacteristics: ProcessModelCharacteristicsConfig;
+
+    @jsonMember(NoiseReductionConfig)
+    public noiseReduction: NoiseReductionConfig;
+
     @jsonMember(ConcurrencyOracleConfig)
     public concurrencyOracle: ConcurrencyOracleConfig;
 
@@ -55,21 +80,30 @@ export class RstMinerSettings {
     @jsonMember(TerminationConditionConfig)
     public terminationCondition: TerminationConditionConfig;
 
-    // u.a. keine Nutzung von WebWorkers, um Exceptions einsehen zu können
+    @jsonMember(ImplicitPlaceIdentificationConfig)
+    public implicitPlaceIdentification: ImplicitPlaceIdentificationConfig;
+
+    // u.a. no usage of webworkers for better exception debuging
     @jsonMember(Boolean)
     public isDebugModusEnabled: boolean;
 
     constructor(
+        processModelCharacteristics: ProcessModelCharacteristicsConfig = new ProcessModelCharacteristicsConfig(),
+        noiseReduction: NoiseReductionConfig = new NoNoiseReductionConfig(),
         concurrencyOracle: ConcurrencyOracleConfig = new NoneOracleConfig(),
         partialOrderTransformationConfig: PartialOrderTransformationConfig = new PartialOrderTransformationConfig(),
         randomPlaceGenerator: RandomPlaceGeneratorConfig = new PrimitiveGeneratorConfig(),
         terminationCondition: TerminationConditionConfig = new TimeBasedTerminationConfig(),
-        isDebugModusEnabled: boolean = false
+        implicitPlaceIdentification: ImplicitPlaceIdentificationConfig = new ImplicitPlaceIdentificationConfig(),
+        isDebugModusEnabled: boolean = RstMinerSettings.DEFAULT_DEBUG_MODUS_ENABLED
     ) {
+        this.processModelCharacteristics = processModelCharacteristics;
+        this.noiseReduction = noiseReduction;
         this.concurrencyOracle = concurrencyOracle;
         this.partialOrderTransformation = partialOrderTransformationConfig;
         this.randomPlaceGenerator = randomPlaceGenerator;
         this.terminationCondition = terminationCondition;
+        this.implicitPlaceIdentification = implicitPlaceIdentification;
         this.isDebugModusEnabled = isDebugModusEnabled;
     }
 }

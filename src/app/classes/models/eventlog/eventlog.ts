@@ -68,7 +68,7 @@ export class Eventlog {
         this._traces = value;
     }
 
-    public get sortedTraces(): Array<Array<EventlogTrace>> {
+    public get sortedTraceVariants(): Array<Array<EventlogTrace>> {
         let result = new Array<Array<EventlogTrace>>();
 
         this._traces.forEach(trace => {

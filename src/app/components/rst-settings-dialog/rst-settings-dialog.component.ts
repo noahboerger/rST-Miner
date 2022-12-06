@@ -16,6 +16,12 @@ import {
     TimestampOracleConfig,
 } from '../../classes/models/miner-settings/concurrency-oracle-config';
 import { PrimitiveGeneratorConfig } from '../../classes/models/miner-settings/random-place-generator-config';
+import { ImplicitPlaceIdentificationConfig } from '../../classes/models/miner-settings/implicit-place-identification-config';
+import {
+    NoNoiseReductionConfig,
+    PlaceEvaluationNoiseReductionConfig,
+    PreprocessingNoiseReductionConfig,
+} from '../../classes/models/miner-settings/noise-reduction-config';
 
 @Component({
     selector: 'app-rst-settings-dialog',
@@ -26,6 +32,10 @@ export class RstSettingsDialogComponent {
     // Zugriff auf statische Felder aus HTML ermöglichen
     MinerSettings = RstMinerSettings;
 
+    NoNoiseReductionConfig = NoNoiseReductionConfig;
+    PreprocessingNoiseReductionConfig = PreprocessingNoiseReductionConfig;
+    PlaceEvaluationNoiseReductionConfig = PlaceEvaluationNoiseReductionConfig;
+
     NoneOracle = NoneOracleConfig;
     AlphaOracle = AlphaOracleConfig;
     TimestampOracle = TimestampOracleConfig;
@@ -34,14 +44,67 @@ export class RstSettingsDialogComponent {
 
     LoopBasedTermination = LoopBasedTerminationConfig;
     TimeBasedTermination = TimeBasedTerminationConfig;
+
+    ImplicitPlaceIdentificationConfig = ImplicitPlaceIdentificationConfig;
+
     durationTimeUnit: string;
 
     constructor(public rstMinerDataService: RstMinerDataService) {
         this.durationTimeUnit = TimeBasedTerminationConfig.SECONDS;
     }
 
+    get actNoiseReductionSimpleName(): string {
+        return this.rstMinerDataService.minerSettings.noiseReduction.simpleName;
+    }
+
+    set actNoiseReductionSimpleName(value: string) {
+        switch (value) {
+            case NoNoiseReductionConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.noiseReduction =
+                    new NoNoiseReductionConfig();
+                break;
+            case PreprocessingNoiseReductionConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.noiseReduction =
+                    new PreprocessingNoiseReductionConfig();
+                break;
+            case PlaceEvaluationNoiseReductionConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.noiseReduction =
+                    new PlaceEvaluationNoiseReductionConfig();
+                break;
+        }
+    }
+
+    set preprocessingNoiseReductionFittingProportion(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .noiseReduction as PreprocessingNoiseReductionConfig
+        ).fittingProportion = value;
+    }
+
+    get preprocessingNoiseReductionFittingProportion(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .noiseReduction as PreprocessingNoiseReductionConfig
+        ).fittingProportion;
+    }
+
+    set placeEvaluationNoiseReductionFittingProportion(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .noiseReduction as PlaceEvaluationNoiseReductionConfig
+        ).fittingProportion = value;
+    }
+
+    get placeEvaluationNoiseReductionFittingProportion(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .noiseReduction as PlaceEvaluationNoiseReductionConfig
+        ).fittingProportion;
+    }
+
     get actTerminationConditionSimpleName(): string {
-        return this.rstMinerDataService.minerSettings.terminationCondition.getSimpleName();
+        return this.rstMinerDataService.minerSettings.terminationCondition
+            .simpleName;
     }
 
     set actTerminationConditionSimpleName(value: string) {
@@ -86,7 +149,8 @@ export class RstSettingsDialogComponent {
     }
 
     get actConcurrencyOracleSimpleName(): string {
-        return this.rstMinerDataService.minerSettings.concurrencyOracle.getSimpleName();
+        return this.rstMinerDataService.minerSettings.concurrencyOracle
+            .simpleName;
     }
 
     set actConcurrencyOracleSimpleName(value: string) {
@@ -142,7 +206,8 @@ export class RstSettingsDialogComponent {
     }
 
     get actRandomPlaceGeneratorSimpleName(): string {
-        return this.rstMinerDataService.minerSettings.randomPlaceGenerator.getSimpleName();
+        return this.rstMinerDataService.minerSettings.randomPlaceGenerator
+            .simpleName;
     }
 
     set actRandomPlaceGeneratorSimpleName(value: string) {
@@ -154,18 +219,74 @@ export class RstSettingsDialogComponent {
         }
     }
 
-    get primitiveGeneratorProbability(): number {
+    get primitiveGeneratorMaximalInitialMarking(): number {
         return (
             this.rstMinerDataService.minerSettings
                 .randomPlaceGenerator as PrimitiveGeneratorConfig
-        ).probability;
+        ).maximalInitialMarking;
     }
 
-    set primitiveGeneratorProbability(value: number) {
+    set primitiveGeneratorMaximalInitialMarking(value: number) {
         (
             this.rstMinerDataService.minerSettings
                 .randomPlaceGenerator as PrimitiveGeneratorConfig
-        ).probability = value;
+        ).maximalInitialMarking = value;
+    }
+
+    get primitiveGeneratorIngoingProbability(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).ingoingConnectionProbability;
+    }
+
+    set primitiveGeneratorIngoingProbability(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).ingoingConnectionProbability = value;
+    }
+
+    get primitiveGeneratorOutgoingProbability(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).outgoingConnectionProbability;
+    }
+
+    set primitiveGeneratorOutgoingProbability(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).outgoingConnectionProbability = value;
+    }
+
+    get primitiveGeneratorMaximalIngoingArcWeights(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalIngoingArcWeights;
+    }
+
+    set primitiveGeneratorMaximalIngoingArcWeights(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalIngoingArcWeights = value;
+    }
+
+    get primitiveGeneratorMaximalOutgoingArcWeights(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalOutgoingArcWeights;
+    }
+
+    set primitiveGeneratorMaximalOutgoingArcWeights(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalOutgoingArcWeights = value;
     }
 
     downloadMinerSettingsJsonFile() {
