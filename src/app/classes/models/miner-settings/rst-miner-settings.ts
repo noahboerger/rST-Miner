@@ -23,6 +23,7 @@ import {
     PlaceEvaluationNoiseReductionConfig,
     PreprocessingNoiseReductionConfig,
 } from './noise-reduction-config';
+import { ProcessModelCharacteristicsConfig } from './process-model-characteristics-config';
 
 @jsonObject({
     knownTypes: [
@@ -61,6 +62,9 @@ export class RstMinerSettings {
         PrimitiveGeneratorConfig.SIMPLE_NAME,
     ];
 
+    @jsonMember(ProcessModelCharacteristicsConfig)
+    public processModelCharacteristics: ProcessModelCharacteristicsConfig;
+
     @jsonMember(NoiseReductionConfig)
     public noiseReduction: NoiseReductionConfig;
 
@@ -84,6 +88,7 @@ export class RstMinerSettings {
     public isDebugModusEnabled: boolean;
 
     constructor(
+        processModelCharacteristics: ProcessModelCharacteristicsConfig = new ProcessModelCharacteristicsConfig(),
         noiseReduction: NoiseReductionConfig = new NoNoiseReductionConfig(),
         concurrencyOracle: ConcurrencyOracleConfig = new NoneOracleConfig(),
         partialOrderTransformationConfig: PartialOrderTransformationConfig = new PartialOrderTransformationConfig(),
@@ -92,6 +97,7 @@ export class RstMinerSettings {
         implicitPlaceIdentification: ImplicitPlaceIdentificationConfig = new ImplicitPlaceIdentificationConfig(),
         isDebugModusEnabled: boolean = RstMinerSettings.DEFAULT_DEBUG_MODUS_ENABLED
     ) {
+        this.processModelCharacteristics = processModelCharacteristics;
         this.noiseReduction = noiseReduction;
         this.concurrencyOracle = concurrencyOracle;
         this.partialOrderTransformation = partialOrderTransformationConfig;

@@ -174,7 +174,9 @@ export class RstMiner {
             const validationResultForPlaceAndOrder =
                 lpoFirePlaceValidator.validate(
                     clonedPetriNet.clone(),
-                    addedPlace.id!
+                    addedPlace.id!,
+                    this._minerSettings.processModelCharacteristics
+                        .placesEmptyAtEnd
                 );
             if (!validationResultForPlaceAndOrder.valid) {
                 alreadyFailedTraces += lpoFirePlaceValidator.lpoFrequency!;

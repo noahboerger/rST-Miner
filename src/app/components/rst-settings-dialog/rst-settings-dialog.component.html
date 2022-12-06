@@ -25,8 +25,22 @@
                             Process Model Characteristics
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <p>Workflow Net</p>
-                    <p>Empty at end</p>
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .processModelCharacteristics.placesEmptyAtEnd
+                        ">
+                        Places empty after replay
+                    </mat-checkbox>
+                    <br />
+                    <mat-checkbox
+                        [disabled]="true"
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .processModelCharacteristics.workflowNet
+                        ">
+                        Workflow net
+                    </mat-checkbox>
                 </mat-expansion-panel>
 
                 <mat-expansion-panel>
@@ -122,7 +136,7 @@
                                 .implicitPlaceIdentification
                                 .isPlaceRemovalEnabled
                         ">
-                        Implicit Place Removal Enabled
+                        Implicit Place Removal
                     </mat-checkbox>
 
                     <div
@@ -137,7 +151,7 @@
                                     .implicitPlaceIdentification
                                     .isCalculateSubstitutePlacesEnabled
                             "
-                            >Calculate Substitute Places Enabled
+                            >Calculate Substitute Places
                         </mat-checkbox>
 
                         <div
@@ -152,7 +166,7 @@
                                         .implicitPlaceIdentification
                                         .isValidateSubstituteArcWeightsEnabled
                                 "
-                                >Substitute Weight Validation Enabled
+                                >Substitute Places Weight Validation
                             </mat-checkbox>
                             <br />
                             <mat-checkbox
@@ -161,7 +175,7 @@
                                         .implicitPlaceIdentification
                                         .isMaxDeepnessEnabled
                                 "
-                                >Substitute Deepness Limit Enabled
+                                >Max Substitute Calculation Deepness
                             </mat-checkbox>
 
                             <div

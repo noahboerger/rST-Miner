@@ -22,7 +22,8 @@ export class LpoFirePlaceValidator extends LpoFlowPlaceValidator {
 
     override validate(
         toBeCheckedNet: PetriNet,
-        toBeValidatedPlaceId: string
+        toBeValidatedPlaceId: string,
+        hasToBeEmptyAtEnd: boolean = false
     ): ValidationResult {
         this.postUpdateModifiedLPO(toBeCheckedNet);
         const places = toBeCheckedNet.getPlaces();
@@ -39,20 +40,29 @@ export class LpoFirePlaceValidator extends LpoFlowPlaceValidator {
             initialEvent.localMarking![i] = places[i].marking;
         }
 
-        const validPlaces = this.newBoolArray(places, true);
-        const complexPlaces = this.newBoolArray(places, false);
+        const validPlaces = LpoFirePlaceValidator.newBoolArray(places, true);
+        const complexPlaces = LpoFirePlaceValidator.newBoolArray(places, false);
 
         let queue = [...this._totalOrder];
         this.fireForwards(places, queue, validPlaces, complexPlaces);
 
+        const finalEvent = [...this._lpo.finalEvents][0];
+
         // valid place
-        if (validPlaces[toBeValidatedPlaceIndex]) {
+        if (
+            validPlaces[toBeValidatedPlaceIndex] &&
+            (!hasToBeEmptyAtEnd ||
+                finalEvent.localMarking![toBeValidatedPlaceIndex] === 0)
+        ) {
             return new ValidationResult(true, ValidationPhase.FORWARDS);
         }
 
         // not valid place
-        const finalEvent = [...this._lpo.finalEvents][0];
-        if (finalEvent.localMarking![toBeValidatedPlaceIndex] < 0) {
+        if (
+            finalEvent.localMarking![toBeValidatedPlaceIndex] < 0 ||
+            (hasToBeEmptyAtEnd &&
+                finalEvent.localMarking![toBeValidatedPlaceIndex] !== 0)
+        ) {
             return new ValidationResult(false, ValidationPhase.FORWARDS);
         }
 
@@ -63,8 +73,8 @@ export class LpoFirePlaceValidator extends LpoFlowPlaceValidator {
             queue.push(this._totalOrder[i]);
         }
 
-        const backwardsValidPlaces = this.newBoolArray(places, true);
-        const backwardsComplexPlaces = this.newBoolArray(places, false);
+        const backwardsValidPlaces = LpoFirePlaceValidator.newBoolArray(places, true);
+        const backwardsComplexPlaces = LpoFirePlaceValidator.newBoolArray(places, false);
 
         // Is the final marking > 0 ?
         for (let i = 0; i < places.length; i++) {
@@ -91,7 +101,7 @@ export class LpoFirePlaceValidator extends LpoFlowPlaceValidator {
             return new ValidationResult(false, ValidationPhase.FORWARDS);
         }
 
-        // otherwise with flow
+        // otherwise with flow (already validated via forward multi-token-flow for hasToBeEmptyAtEnd=true if set)
         return new ValidationResult(
             this.checkFlowForPlace(
                 places[toBeValidatedPlaceIndex],
@@ -221,7 +231,7 @@ export class LpoFirePlaceValidator extends LpoFlowPlaceValidator {
         return places.findIndex(pp => pp === p);
     }
 
-    private newBoolArray(places: Array<Place>, fill: boolean): Array<boolean> {
+    private static newBoolArray(places: Array<Place>, fill: boolean): Array<boolean> {
         return new Array<boolean>(places.length).fill(fill);
     }
 }
