@@ -6,7 +6,7 @@ import { LogToPartialOrderTransformerConfiguration } from '../../algorithms/conc
 export class PartialOrderTransformationConfig {
     public static readonly DEFAULT_CLEAN_LIFECYCLE = true;
     public static readonly DEFAULT_ADD_START_STOP_EVENT = false;
-    public static readonly DEFAULT_DISCARD_PREFIXES = false;
+    public static readonly DEFAULT_DISCARD_PREFIXES = true;
 
     @jsonMember(Boolean)
     public cleanLifecycle: boolean;
