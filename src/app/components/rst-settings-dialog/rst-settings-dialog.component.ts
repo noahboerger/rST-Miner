@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
 import { RstMinerSettings } from '../../classes/models/miner-settings/rst-miner-settings';
 import {
+    EvaluatedPlacesTerminationConfig,
     LoopBasedTerminationConfig,
     TimeBasedTerminationConfig,
 } from '../../classes/models/miner-settings/termination-condition-config';
@@ -43,6 +44,7 @@ export class RstSettingsDialogComponent {
     PrimitiveGenerator = PrimitiveGeneratorConfig;
 
     LoopBasedTermination = LoopBasedTerminationConfig;
+    EvaluatedPlacesTerminationConfig = EvaluatedPlacesTerminationConfig;
     TimeBasedTermination = TimeBasedTerminationConfig;
 
     ImplicitPlaceIdentificationConfig = ImplicitPlaceIdentificationConfig;
@@ -113,6 +115,10 @@ export class RstSettingsDialogComponent {
                 this.rstMinerDataService.minerSettings.terminationCondition =
                     new LoopBasedTerminationConfig();
                 break;
+            case EvaluatedPlacesTerminationConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.terminationCondition =
+                    new EvaluatedPlacesTerminationConfig();
+                break;
             case TimeBasedTerminationConfig.SIMPLE_NAME:
                 this.rstMinerDataService.minerSettings.terminationCondition =
                     new TimeBasedTerminationConfig();
@@ -134,14 +140,28 @@ export class RstSettingsDialogComponent {
         ).loopAmount = value;
     }
 
-    get durationAmount(): number {
+    get placeEvaluationTerminationAmount(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .terminationCondition as EvaluatedPlacesTerminationConfig
+        ).amountOfEvaluatedPlaces;
+    }
+
+    set placeEvaluationTerminationAmount(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .terminationCondition as EvaluatedPlacesTerminationConfig
+        ).amountOfEvaluatedPlaces = value;
+    }
+
+    get timeTerminationDuration(): number {
         return (
             this.rstMinerDataService.minerSettings
                 .terminationCondition as TimeBasedTerminationConfig
         ).getDurationIn(this.durationTimeUnit);
     }
 
-    set durationAmount(value: number) {
+    set timeTerminationDuration(value: number) {
         (
             this.rstMinerDataService.minerSettings
                 .terminationCondition as TimeBasedTerminationConfig

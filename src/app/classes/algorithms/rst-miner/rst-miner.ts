@@ -14,7 +14,7 @@ import { LpoFirePlaceValidator } from '../petri-net/validation/lpo-fire-place-va
 import { ImplicitPlaceIdentifierConfigWrapper } from './implicit/implicit-place-identifier-config-wrapper';
 
 export class RstMiner {
-    private _counterTestedPlacesLastRun = 0;
+    private _counterTestedPlaces = 0;
     private readonly _maxPlaceFailingPercentage;
 
     public static MINING_ERROR = new Error(
@@ -45,7 +45,7 @@ export class RstMiner {
     }
 
     public mine(eventlog: Eventlog): PetriNet {
-        this._counterTestedPlacesLastRun = 0;
+        this._counterTestedPlaces = 0;
 
         eventlog = this._minerSettings.noiseReduction.preFilterNoise(eventlog);
         const totalTraces = eventlog.traces.length;
@@ -98,17 +98,20 @@ export class RstMiner {
             .sort((a, b) => b.lpoFrequency! - a.lpoFrequency!);
 
         const terminationConditionReachedFct =
-            this._minerSettings.terminationCondition.toIsTerminationConditionReachedFunction();
+            this._minerSettings.terminationCondition.buildIsTerminationConditionReachedFunction();
 
-        this._counterTestedPlacesLastRun = this._randomPlaceGenerator.init(
+        this._counterTestedPlaces = this._randomPlaceGenerator.init(
             petriNet,
             partialOrders
         );
-        while (!terminationConditionReachedFct(petriNet)) {
+
+        while (
+            !terminationConditionReachedFct(petriNet, this.counterTestedPlaces)
+        ) {
             const clonedPetriNet = petriNet.clone();
 
             const addedPlace = this._randomPlaceGenerator.insertRandomPlace(
-                'p' + this._counterTestedPlacesLastRun++,
+                'p' + this._counterTestedPlaces++,
                 clonedPetriNet
             );
 
@@ -126,11 +129,11 @@ export class RstMiner {
             petriNet = clonedPetriNet;
 
             if (implicitPlaceIdentifier != null) {
-                this._counterTestedPlacesLastRun =
+                this._counterTestedPlaces =
                     implicitPlaceIdentifier.removeImplicitPlacesForAndIncreaseCounter(
                         addedPlace,
                         petriNet,
-                        this._counterTestedPlacesLastRun
+                        this._counterTestedPlaces
                     );
             }
         }
@@ -191,7 +194,7 @@ export class RstMiner {
         return true;
     }
 
-    get counterTestedPlacesLastRun(): number {
-        return this._counterTestedPlacesLastRun;
+    get counterTestedPlaces(): number {
+        return this._counterTestedPlaces;
     }
 }

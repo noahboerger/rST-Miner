@@ -456,6 +456,15 @@
                             Termination Condition
                         </mat-panel-title>
                     </mat-expansion-panel-header>
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .terminationCondition.noChangeSinceEnabled
+                        ">
+                        Reset on new discoverd Place
+                    </mat-checkbox>
+                    <br />
+                    <br />
                     <mat-radio-group
                         [(ngModel)]="actTerminationConditionSimpleName">
                         <div class="full-width" style="float: left">
@@ -502,6 +511,30 @@
 
                                     <span
                                         *ngSwitchCase="
+                                            EvaluatedPlacesTerminationConfig.SIMPLE_NAME
+                                        ">
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                                >Amount of evaluated
+                                                Places</mat-label
+                                            >
+                                            <input
+                                                matInput
+                                                min="1"
+                                                placeholder="Default {{
+                                                    EvaluatedPlacesTerminationConfig.DEFAULT_AMOUNT_EVALUATED_OF_PLACES
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    placeEvaluationTerminationAmount
+                                                " />
+                                        </mat-form-field>
+                                    </span>
+
+                                    <span
+                                        *ngSwitchCase="
                                             TimeBasedTermination.SIMPLE_NAME
                                         ">
                                         <mat-form-field
@@ -515,7 +548,9 @@
                                                     TimeBasedTermination.DEFAULT_DURATION
                                                 }}"
                                                 type="number"
-                                                [(ngModel)]="durationAmount" />
+                                                [(ngModel)]="
+                                                    timeTerminationDuration
+                                                " />
                                         </mat-form-field>
                                         <br />
                                         <mat-form-field
