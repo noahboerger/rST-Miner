@@ -14,7 +14,7 @@ export class PrimitivePlaceGenerator implements RandomPlaceGenerator {
     ) {}
 
     init(petriNet: PetriNet, partialOrders: PartialOrder[]): number {
-        return 0; // TODO
+        return 0;
     }
 
     insertRandomPlace(id: string, petriNet: PetriNet): Place {

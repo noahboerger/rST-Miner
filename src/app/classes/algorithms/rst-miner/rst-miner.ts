@@ -12,9 +12,10 @@ import { RandomPlaceGenerator } from './generators/random-place-generator';
 import { Place } from '../../models/petri-net/place';
 import { LpoFirePlaceValidator } from '../petri-net/validation/lpo-fire-place-validator';
 import { ImplicitPlaceIdentifierConfigWrapper } from './implicit/implicit-place-identifier-config-wrapper';
+import { RstMinerResult } from './rst-miner-result';
+import { Duration } from 'ts-duration';
 
 export class RstMiner {
-    private _counterTestedPlaces = 0;
     private readonly _maxPlaceFailingPercentage;
 
     public static MINING_ERROR = new Error(
@@ -44,8 +45,8 @@ export class RstMiner {
             _minerSettings.noiseReduction.maxPlaceFailingPercentage;
     }
 
-    public mine(eventlog: Eventlog): PetriNet {
-        this._counterTestedPlaces = 0;
+    public mine(eventlog: Eventlog): RstMinerResult {
+        let counterTestedPlaces: number;
 
         eventlog = this._minerSettings.noiseReduction.preFilterNoise(eventlog);
         const totalTraces = eventlog.traces.length;
@@ -100,18 +101,17 @@ export class RstMiner {
         const terminationConditionReachedFct =
             this._minerSettings.terminationCondition.buildIsTerminationConditionReachedFunction();
 
-        this._counterTestedPlaces = this._randomPlaceGenerator.init(
+        counterTestedPlaces = this._randomPlaceGenerator.init(
             petriNet,
             partialOrders
         );
 
-        while (
-            !terminationConditionReachedFct(petriNet, this.counterTestedPlaces)
-        ) {
+        const miningBeginTime = new Date();
+        while (!terminationConditionReachedFct(petriNet, counterTestedPlaces)) {
             const clonedPetriNet = petriNet.clone();
 
             const addedPlace = this._randomPlaceGenerator.insertRandomPlace(
-                'p' + this._counterTestedPlaces++,
+                'p' + counterTestedPlaces++,
                 clonedPetriNet
             );
 
@@ -129,15 +129,21 @@ export class RstMiner {
             petriNet = clonedPetriNet;
 
             if (implicitPlaceIdentifier != null) {
-                this._counterTestedPlaces =
+                counterTestedPlaces =
                     implicitPlaceIdentifier.removeImplicitPlacesForAndIncreaseCounter(
                         addedPlace,
                         petriNet,
-                        this._counterTestedPlaces
+                        counterTestedPlaces
                     );
             }
         }
-        return petriNet;
+        return new RstMinerResult(
+            petriNet,
+            Duration.since(miningBeginTime),
+            totalTraces,
+            partialOrders.length,
+            counterTestedPlaces
+        );
     }
 
     private static calculateTransitionActivities(
@@ -192,9 +198,5 @@ export class RstMiner {
             }
         }
         return true;
-    }
-
-    get counterTestedPlaces(): number {
-        return this._counterTestedPlaces;
     }
 }
