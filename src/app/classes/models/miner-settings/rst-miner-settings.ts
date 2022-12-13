@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { jsonMember, jsonObject } from 'typedjson';
 import {
     LoopBasedTerminationConfig,
+    EvaluatedPlacesTerminationConfig,
     TerminationConditionConfig,
     TimeBasedTerminationConfig,
 } from './termination-condition-config';
@@ -35,6 +36,7 @@ import { ProcessModelCharacteristicsConfig } from './process-model-characteristi
         TimestampOracleConfig,
         PrimitiveGeneratorConfig,
         LoopBasedTerminationConfig,
+        EvaluatedPlacesTerminationConfig,
         TimeBasedTerminationConfig,
     ],
 })
@@ -55,6 +57,7 @@ export class RstMinerSettings {
 
     public static readonly terminationTypesSimpleNames = [
         LoopBasedTerminationConfig.SIMPLE_NAME,
+        EvaluatedPlacesTerminationConfig.SIMPLE_NAME,
         TimeBasedTerminationConfig.SIMPLE_NAME,
     ];
 

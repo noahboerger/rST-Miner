@@ -16,9 +16,7 @@ onmessage = function (data) {
     const rstMiner = new RstMiner(minerSettings);
     const resultingPetriNet = rstMiner.mine(eventlog);
     console.log(
-        'rST-Miner: Evaluated ' +
-            rstMiner.counterTestedPlacesLastRun +
-            ' places'
+        'rST-Miner: Evaluated ' + rstMiner.counterTestedPlaces + ' places'
     );
 
     postMessage(serialisePetriNet(resultingPetriNet));

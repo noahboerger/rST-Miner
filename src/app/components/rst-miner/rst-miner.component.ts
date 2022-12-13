@@ -175,7 +175,7 @@ export class RstMinerComponent {
                 );
                 console.log(
                     'rST-Miner: Evaluated ' +
-                        rstMiner.counterTestedPlacesLastRun +
+                        rstMiner.counterTestedPlaces +
                         ' places'
                 );
 

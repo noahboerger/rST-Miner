@@ -3,13 +3,74 @@ import { jsonMember, jsonObject } from 'typedjson';
 import { Duration } from 'ts-duration';
 import { PetriNet } from '../petri-net/petri-net';
 
-// Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class TerminationConditionConfig {
+    private static DEFAULT_NO_CHANGE_SINCE_ENABLED = false;
+
+    private _noChangeSinceEnabled: boolean;
+
+    constructor(
+        noChangeSinceEnabled = TerminationConditionConfig.DEFAULT_NO_CHANGE_SINCE_ENABLED
+    ) {
+        this._noChangeSinceEnabled = noChangeSinceEnabled;
+    }
+
     abstract get simpleName(): string;
 
-    abstract toIsTerminationConditionReachedFunction(): (
-        actState: PetriNet
+    public buildIsTerminationConditionReachedFunction(): (
+        actState: PetriNet,
+        numPlacesEvaluated: number
+    ) => boolean {
+        if (!this._noChangeSinceEnabled) {
+            return this.toIsTerminationConditionReachedFunction();
+        } else {
+            function calculateLastChangedPlace(petriNet: PetriNet): number {
+                const placeNumbers = petriNet
+                    .getPlaces()
+                    .map(place => Number.parseInt(place.id!.substring(1))); // remove p-prefix
+                if (placeNumbers.length > 0) {
+                    return placeNumbers.sort((a, b) => b - a)[0];
+                }
+                return -1;
+            }
+
+            const subCondition = this;
+            let prevLastChangedPlace = -1;
+            let subConditionReachedFct =
+                subCondition.toIsTerminationConditionReachedFunction();
+
+            return function (actState: PetriNet, numPlacesEvaluated: number) {
+                let lastChangedPlace = calculateLastChangedPlace(actState);
+                const changed = prevLastChangedPlace !== lastChangedPlace;
+
+                // reset of terminationReachedFct
+                if (changed) {
+                    prevLastChangedPlace = lastChangedPlace;
+                    subConditionReachedFct =
+                        subCondition.toIsTerminationConditionReachedFunction();
+                }
+                // also need to calculate places evaluated since last change
+                const numPlacesEvaluatedSinceLastChange =
+                    numPlacesEvaluated - prevLastChangedPlace;
+                return subConditionReachedFct(
+                    actState,
+                    numPlacesEvaluatedSinceLastChange
+                );
+            };
+        }
+    }
+
+    protected abstract toIsTerminationConditionReachedFunction(): (
+        actState: PetriNet,
+        numPlacesEvaluated: number
     ) => boolean;
+
+    get noChangeSinceEnabled(): boolean {
+        return this._noChangeSinceEnabled;
+    }
+
+    set noChangeSinceEnabled(value: boolean) {
+        this._noChangeSinceEnabled = value;
+    }
 }
 
 @jsonObject
@@ -43,12 +104,58 @@ export class LoopBasedTerminationConfig extends TerminationConditionConfig {
         }
     }
 
-    toIsTerminationConditionReachedFunction(): (actState: PetriNet) => boolean {
+    protected toIsTerminationConditionReachedFunction(): (
+        actState: PetriNet,
+        numPlacesEvaluated: number
+    ) => boolean {
         const loopAmount = this._loopAmount;
         let actLoop = 0;
-        return function (actState: PetriNet) {
+        return function (actState: PetriNet, numPlacesEvaluated: number) {
             actLoop++;
             return actLoop >= loopAmount;
+        };
+    }
+}
+
+@jsonObject
+export class EvaluatedPlacesTerminationConfig extends TerminationConditionConfig {
+    public static readonly SIMPLE_NAME = 'Evaluated Places';
+    public static readonly DEFAULT_AMOUNT_EVALUATED_OF_PLACES = 500_000;
+
+    @jsonMember(Number)
+    private _amountOfEvaluatedPlaces: number;
+
+    constructor(
+        amountOfPlaces: number = EvaluatedPlacesTerminationConfig.DEFAULT_AMOUNT_EVALUATED_OF_PLACES
+    ) {
+        super();
+        this._amountOfEvaluatedPlaces = amountOfPlaces;
+    }
+
+    get simpleName(): string {
+        return EvaluatedPlacesTerminationConfig.SIMPLE_NAME;
+    }
+
+    get amountOfEvaluatedPlaces(): number {
+        return this._amountOfEvaluatedPlaces;
+    }
+
+    set amountOfEvaluatedPlaces(value: number) {
+        if (value == null || value <= 0) {
+            this._amountOfEvaluatedPlaces =
+                EvaluatedPlacesTerminationConfig.DEFAULT_AMOUNT_EVALUATED_OF_PLACES;
+        } else {
+            this._amountOfEvaluatedPlaces = value;
+        }
+    }
+
+    protected toIsTerminationConditionReachedFunction(): (
+        actState: PetriNet,
+        numPlacesEvaluated: number
+    ) => boolean {
+        const amountOfPlaces = this._amountOfEvaluatedPlaces;
+        return function (actState: PetriNet, numPlacesEvaluated: number) {
+            return numPlacesEvaluated >= amountOfPlaces;
         };
     }
 }
@@ -132,10 +239,13 @@ export class TimeBasedTerminationConfig extends TerminationConditionConfig {
         }
     }
 
-    toIsTerminationConditionReachedFunction(): (actState: PetriNet) => boolean {
+    protected toIsTerminationConditionReachedFunction(): (
+        actState: PetriNet,
+        numPlacesEvaluated: number
+    ) => boolean {
         const durationInMs = this._durationInMs;
         const startTime = new Date();
-        return function (actState: PetriNet) {
+        return function (actState: PetriNet, numPlacesEvaluated: number) {
             return Duration.since(startTime).milliseconds >= durationInMs;
         };
     }
