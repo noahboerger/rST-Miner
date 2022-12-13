@@ -578,7 +578,28 @@
 
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title> Debug Mode </mat-panel-title>
+                        <mat-panel-title>Download Results</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .isDownloadPetriNetEnabled
+                        ">
+                        Download PetriNet
+                    </mat-checkbox>
+                    <br />
+                    <mat-checkbox
+                        [(ngModel)]="
+                            rstMinerDataService.minerSettings
+                                .isDownloadReportEnabled
+                        ">
+                        Download Report
+                    </mat-checkbox>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Debug Mode</mat-panel-title>
                     </mat-expansion-panel-header>
                     <mat-checkbox
                         [(ngModel)]="

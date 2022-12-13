@@ -16,6 +16,7 @@ import {
 import { RstMiner } from '../../classes/algorithms/rst-miner/rst-miner';
 import { saveAs } from 'file-saver';
 import { serialisePetriNet } from '../../classes/serde/petri-net-serialisation';
+import { SerializableStringPair } from '../../classes/models/utils/serializable-string-pair';
 
 @Component({
     selector: 'app-rst-miner',
@@ -170,33 +171,68 @@ export class RstMinerComponent {
                 const rstMiner = new RstMiner(
                     this.rstMinerDataService.minerSettings
                 );
-                const resultingPetriNet = rstMiner.mine(
+                const rstMinerResult = rstMiner.mine(
                     this.rstMinerDataService.eventLog
                 );
-                console.log(
-                    'rST-Miner: Evaluated ' +
-                        rstMiner.counterTestedPlaces +
-                        ' places'
-                );
 
-                const result = serialisePetriNet(resultingPetriNet);
-                saveAs(
-                    new Blob([result], { type: 'text/plain;charset=utf-8' }),
-                    'model_' + new Date().toLocaleString() + '.pn'
-                );
+                const downloadTimeString = new Date().toLocaleString();
+                if (
+                    this.rstMinerDataService.minerSettings
+                        .isDownloadPetriNetEnabled
+                ) {
+                    const petriNetResult = serialisePetriNet(
+                        rstMinerResult.petriNet
+                    );
+                    saveAs(
+                        new Blob([petriNetResult], {
+                            type: 'text/plain;charset=utf-8',
+                        }),
+                        'model_' + downloadTimeString + '.pn'
+                    );
+                }
+                if (
+                    this.rstMinerDataService.minerSettings
+                        .isDownloadReportEnabled
+                ) {
+                    const reportResult =
+                        rstMinerResult.rstMinerReport.toFormattedString();
+                    saveAs(
+                        new Blob([reportResult], {
+                            type: 'text/plain;charset=utf-8',
+                        }),
+                        'report_' + downloadTimeString + '.txt'
+                    );
+                }
             } catch (e) {
                 RstMinerComponent.handleRstMiningException(e);
             }
         } else {
             this.loadingSpinner.show();
             this.executeRstMiningAndGetResult()
-                .then(result => {
-                    saveAs(
-                        new Blob([result], {
-                            type: 'text/plain;charset=utf-8',
-                        }),
-                        'model_' + new Date().toLocaleString() + '.pn'
-                    );
+                .then(petriNetReportStringPair => {
+                    const downloadTimeString = new Date().toLocaleString();
+                    if (
+                        this.rstMinerDataService.minerSettings
+                            .isDownloadPetriNetEnabled
+                    ) {
+                        saveAs(
+                            new Blob([petriNetReportStringPair.left], {
+                                type: 'text/plain;charset=utf-8',
+                            }),
+                            'model_' + downloadTimeString + '.pn'
+                        );
+                    }
+                    if (
+                        this.rstMinerDataService.minerSettings
+                            .isDownloadReportEnabled
+                    ) {
+                        saveAs(
+                            new Blob([petriNetReportStringPair.right], {
+                                type: 'text/plain;charset=utf-8',
+                            }),
+                            'report_' + downloadTimeString + '.txt'
+                        );
+                    }
                 })
                 .catch(reason => {
                     RstMinerComponent.handleRstMiningException(reason);
@@ -206,7 +242,7 @@ export class RstMinerComponent {
     }
 
     private executeRstMiningAndGetResult() {
-        return new Promise<string>((resolve, reject) => {
+        return new Promise<SerializableStringPair>((resolve, reject) => {
             const worker = new Worker(
                 new URL('../../workers/rst-miner.worker', import.meta.url)
             );
@@ -214,7 +250,14 @@ export class RstMinerComponent {
                 if (data == null) {
                     reject(RstMiner.MINING_ERROR);
                 }
-                resolve(data);
+                const resultStringPair = new TypedJSON(
+                    SerializableStringPair
+                ).parse(data);
+                if (resultStringPair != null) {
+                    resolve(resultStringPair);
+                } else {
+                    reject(RstMiner.MINING_ERROR);
+                }
             };
             worker.onerror = event => {
                 event.preventDefault();

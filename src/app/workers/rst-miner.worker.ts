@@ -4,6 +4,7 @@ import { Eventlog } from '../classes/models/eventlog/eventlog';
 import { RstMinerSettings } from '../classes/models/miner-settings/rst-miner-settings';
 import { RstMiner } from '../classes/algorithms/rst-miner/rst-miner';
 import { serialisePetriNet } from '../classes/serde/petri-net-serialisation';
+import { SerializableStringPair } from '../classes/models/utils/serializable-string-pair';
 
 onmessage = function (data) {
     const minerSettings = new TypedJSON(RstMinerSettings).parse(data.data[0]);
@@ -14,10 +15,14 @@ onmessage = function (data) {
     }
 
     const rstMiner = new RstMiner(minerSettings);
-    const resultingPetriNet = rstMiner.mine(eventlog);
-    console.log(
-        'rST-Miner: Evaluated ' + rstMiner.counterTestedPlaces + ' places'
-    );
+    const rstMinerResult = rstMiner.mine(eventlog);
 
-    postMessage(serialisePetriNet(resultingPetriNet));
+    const petriNetString = serialisePetriNet(rstMinerResult.petriNet);
+    const reportString = rstMinerResult.rstMinerReport.toFormattedString();
+
+    const serialisedResultPair = new TypedJSON(
+        SerializableStringPair
+    ).stringify(new SerializableStringPair(petriNetString, reportString));
+
+    postMessage(serialisedResultPair);
 };

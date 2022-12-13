@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { jsonMember, jsonObject } from 'typedjson';
 import {
-    LoopBasedTerminationConfig,
     EvaluatedPlacesTerminationConfig,
+    LoopBasedTerminationConfig,
     TerminationConditionConfig,
     TimeBasedTerminationConfig,
 } from './termination-condition-config';
@@ -42,6 +42,8 @@ import { ProcessModelCharacteristicsConfig } from './process-model-characteristi
 })
 export class RstMinerSettings {
     public static readonly DEFAULT_DEBUG_MODUS_ENABLED = false;
+    public static readonly DEFAULT_DOWNLOAD_PETRI_NET_ENABLED = true;
+    public static readonly DEFAULT_DOWNLOAD_REPORT_ENABLED = false;
 
     public static readonly noiseReductionTypesSimpleNames = [
         NoNoiseReductionConfig.SIMPLE_NAME,
@@ -90,6 +92,12 @@ export class RstMinerSettings {
     @jsonMember(Boolean)
     public isDebugModusEnabled: boolean;
 
+    @jsonMember(Boolean)
+    public isDownloadPetriNetEnabled: boolean;
+
+    @jsonMember(Boolean)
+    public isDownloadReportEnabled: boolean;
+
     constructor(
         processModelCharacteristics: ProcessModelCharacteristicsConfig = new ProcessModelCharacteristicsConfig(),
         noiseReduction: NoiseReductionConfig = new NoNoiseReductionConfig(),
@@ -98,7 +106,9 @@ export class RstMinerSettings {
         randomPlaceGenerator: RandomPlaceGeneratorConfig = new PrimitiveGeneratorConfig(),
         terminationCondition: TerminationConditionConfig = new TimeBasedTerminationConfig(),
         implicitPlaceIdentification: ImplicitPlaceIdentificationConfig = new ImplicitPlaceIdentificationConfig(),
-        isDebugModusEnabled: boolean = RstMinerSettings.DEFAULT_DEBUG_MODUS_ENABLED
+        isDebugModusEnabled: boolean = RstMinerSettings.DEFAULT_DEBUG_MODUS_ENABLED,
+        isDownloadPetriNetEnabled: boolean = RstMinerSettings.DEFAULT_DOWNLOAD_PETRI_NET_ENABLED,
+        isDownloadReportEnabled: boolean = RstMinerSettings.DEFAULT_DOWNLOAD_REPORT_ENABLED
     ) {
         this.processModelCharacteristics = processModelCharacteristics;
         this.noiseReduction = noiseReduction;
@@ -108,5 +118,7 @@ export class RstMinerSettings {
         this.terminationCondition = terminationCondition;
         this.implicitPlaceIdentification = implicitPlaceIdentification;
         this.isDebugModusEnabled = isDebugModusEnabled;
+        this.isDownloadPetriNetEnabled = isDownloadPetriNetEnabled;
+        this.isDownloadReportEnabled = isDownloadReportEnabled;
     }
 }
