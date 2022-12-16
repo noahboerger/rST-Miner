@@ -6,6 +6,7 @@ import { PetriNet } from '../petri-net/petri-net';
 export abstract class TerminationConditionConfig {
     private static DEFAULT_NO_CHANGE_SINCE_ENABLED = false;
 
+    @jsonMember(Boolean)
     private _noChangeSinceEnabled: boolean;
 
     constructor(
