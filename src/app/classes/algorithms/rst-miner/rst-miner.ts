@@ -47,9 +47,10 @@ export class RstMiner {
 
     public mine(eventlog: Eventlog): RstMinerResult {
         let counterTestedPlaces: number;
+        const totalNumberOfTraces = eventlog.traces.length;
 
         eventlog = this._minerSettings.noiseReduction.preFilterNoise(eventlog);
-        const totalTraces = eventlog.traces.length;
+        const numberOfTracesAfterNoiseFilter = eventlog.traces.length;
 
         const concurrencyRelation =
             this._concurrencyOracle.determineConcurrency(eventlog);
@@ -120,7 +121,7 @@ export class RstMiner {
                     addedPlace,
                     clonedPetriNet,
                     lpoFirePlaceValidators,
-                    totalTraces
+                    numberOfTracesAfterNoiseFilter
                 )
             ) {
                 continue;
@@ -140,7 +141,8 @@ export class RstMiner {
         return new RstMinerResult(
             petriNet,
             Duration.since(miningBeginTime),
-            totalTraces,
+            totalNumberOfTraces,
+            numberOfTracesAfterNoiseFilter,
             partialOrders.length,
             counterTestedPlaces
         );

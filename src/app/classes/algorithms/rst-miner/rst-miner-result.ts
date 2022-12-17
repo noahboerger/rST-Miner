@@ -8,13 +8,15 @@ export class RstMinerResult {
     constructor(
         public petriNet: PetriNet,
         runtime: Duration,
-        numTraces: number,
+        totalNumberOfTraces: number,
+        numTracesAfterNoiseFilter: number,
         numPartialOrders: number,
         numPlacesTested: number
     ) {
         this.rstMinerReport = new RstMinerReport(
             runtime,
-            numTraces,
+            totalNumberOfTraces,
+            numTracesAfterNoiseFilter,
             numPartialOrders,
             numPlacesTested
         );
