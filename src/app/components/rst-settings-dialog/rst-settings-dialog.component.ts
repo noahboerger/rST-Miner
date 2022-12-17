@@ -16,7 +16,10 @@ import {
     NoneOracleConfig,
     TimestampOracleConfig,
 } from '../../classes/models/miner-settings/concurrency-oracle-config';
-import { PrimitiveGeneratorConfig } from '../../classes/models/miner-settings/random-place-generator-config';
+import {
+    GeometricDistributionGeneratorConfig,
+    PrimitiveGeneratorConfig,
+} from '../../classes/models/miner-settings/random-place-generator-config';
 import { ImplicitPlaceIdentificationConfig } from '../../classes/models/miner-settings/implicit-place-identification-config';
 import {
     NoNoiseReductionConfig,
@@ -42,6 +45,7 @@ export class RstSettingsDialogComponent {
     TimestampOracle = TimestampOracleConfig;
 
     PrimitiveGenerator = PrimitiveGeneratorConfig;
+    GeometricDistributionGeneratorConfig = GeometricDistributionGeneratorConfig;
 
     LoopBasedTermination = LoopBasedTerminationConfig;
     EvaluatedPlacesTerminationConfig = EvaluatedPlacesTerminationConfig;
@@ -236,6 +240,10 @@ export class RstSettingsDialogComponent {
                 this.rstMinerDataService.minerSettings.randomPlaceGenerator =
                     new PrimitiveGeneratorConfig();
                 break;
+            case GeometricDistributionGeneratorConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.randomPlaceGenerator =
+                    new GeometricDistributionGeneratorConfig();
+                break;
         }
     }
 
@@ -306,6 +314,83 @@ export class RstSettingsDialogComponent {
         (
             this.rstMinerDataService.minerSettings
                 .randomPlaceGenerator as PrimitiveGeneratorConfig
+        ).maximalOutgoingArcWeights = value;
+    }
+
+    get geometricDistributionGeneratorMaximalInitialMarking(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).maximalInitialMarking;
+    }
+
+    set geometricDistributionGeneratorMaximalInitialMarking(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).maximalInitialMarking = value;
+    }
+
+    get geometricDistributionGeneratorGeometricIncreaseInitialMarkingProbability(): number {
+        if (this.geometricDistributionGeneratorMaximalInitialMarking === 0) {
+            return 0;
+        }
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).geometricIncreaseInitialMarkingProbability;
+    }
+
+    set geometricDistributionGeneratorGeometricIncreaseInitialMarkingProbability(
+        value: number
+    ) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).geometricIncreaseInitialMarkingProbability = value;
+    }
+
+    get geometricDistributionGeneratorGeometricIncreaseArcsProbability(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).geometricIncreaseArcsProbability;
+    }
+
+    set geometricDistributionGeneratorGeometricIncreaseArcsProbability(
+        value: number
+    ) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).geometricIncreaseArcsProbability = value;
+    }
+
+    get geometricDistributionGeneratorMaximalIngoingArcWeights(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).maximalIngoingArcWeights;
+    }
+
+    set geometricDistributionGeneratorMaximalIngoingArcWeights(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).maximalIngoingArcWeights = value;
+    }
+
+    get geometricDistributionGeneratorMaximalOutgoingArcWeights(): number {
+        return (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
+        ).maximalOutgoingArcWeights;
+    }
+
+    set geometricDistributionGeneratorMaximalOutgoingArcWeights(value: number) {
+        (
+            this.rstMinerDataService.minerSettings
+                .randomPlaceGenerator as GeometricDistributionGeneratorConfig
         ).maximalOutgoingArcWeights = value;
     }
 

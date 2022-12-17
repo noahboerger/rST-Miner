@@ -37,3 +37,27 @@ export function reduceArcsToMapActivityKeyArcValue(arcs: Array<Arc>) {
         return map;
     }, new Map<string, Arc>());
 }
+
+export function buildArc(
+    arcType: ArcType,
+    relatedPlace: Place,
+    pId: string,
+    transition: Transition,
+    weight: number
+): Arc {
+    if (arcType === ArcType.INGOING) {
+        return new Arc(
+            'i' + pId + transition.label,
+            transition,
+            relatedPlace,
+            weight
+        );
+    } else {
+        return new Arc(
+            'o' + pId + transition.label,
+            relatedPlace,
+            transition,
+            weight
+        );
+    }
+}

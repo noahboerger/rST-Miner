@@ -14,6 +14,7 @@ import {
 } from './concurrency-oracle-config';
 import { PartialOrderTransformationConfig } from './partial-order-transformation-config';
 import {
+    GeometricDistributionGeneratorConfig,
     PrimitiveGeneratorConfig,
     RandomPlaceGeneratorConfig,
 } from './random-place-generator-config';
@@ -34,6 +35,7 @@ import { ProcessModelCharacteristicsConfig } from './process-model-characteristi
         NoneOracleConfig,
         AlphaOracleConfig,
         TimestampOracleConfig,
+        GeometricDistributionGeneratorConfig,
         PrimitiveGeneratorConfig,
         LoopBasedTerminationConfig,
         EvaluatedPlacesTerminationConfig,
@@ -65,6 +67,7 @@ export class RstMinerSettings {
 
     public static readonly randomPlaceGeneratorTypesSimpleNames = [
         PrimitiveGeneratorConfig.SIMPLE_NAME,
+        GeometricDistributionGeneratorConfig.SIMPLE_NAME,
     ];
 
     @jsonMember(ProcessModelCharacteristicsConfig)
@@ -100,10 +103,10 @@ export class RstMinerSettings {
 
     constructor(
         processModelCharacteristics: ProcessModelCharacteristicsConfig = new ProcessModelCharacteristicsConfig(),
-        noiseReduction: NoiseReductionConfig = new NoNoiseReductionConfig(),
-        concurrencyOracle: ConcurrencyOracleConfig = new NoneOracleConfig(),
+        noiseReduction: NoiseReductionConfig = new PreprocessingNoiseReductionConfig(),
+        concurrencyOracle: ConcurrencyOracleConfig = new TimestampOracleConfig(),
         partialOrderTransformationConfig: PartialOrderTransformationConfig = new PartialOrderTransformationConfig(),
-        randomPlaceGenerator: RandomPlaceGeneratorConfig = new PrimitiveGeneratorConfig(),
+        randomPlaceGenerator: RandomPlaceGeneratorConfig = new GeometricDistributionGeneratorConfig(),
         terminationCondition: TerminationConditionConfig = new TimeBasedTerminationConfig(),
         implicitPlaceIdentification: ImplicitPlaceIdentificationConfig = new ImplicitPlaceIdentificationConfig(),
         isDebugModusEnabled: boolean = RstMinerSettings.DEFAULT_DEBUG_MODUS_ENABLED,

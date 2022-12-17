@@ -3,7 +3,7 @@ import { jsonMember, jsonObject } from 'typedjson';
 
 @jsonObject
 export class ProcessModelCharacteristicsConfig {
-    public static readonly DEFAULT_PLACES_EMPTY_AT_END = false;
+    public static readonly DEFAULT_PLACES_EMPTY_AT_END = true;
     public static readonly DEFAULT_WORKFLOW_NET = false;
 
     @jsonMember(Boolean)

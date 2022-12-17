@@ -4,12 +4,12 @@ import { Duration } from 'ts-duration';
 import { PetriNet } from '../petri-net/petri-net';
 
 export abstract class TerminationConditionConfig {
-    private static DEFAULT_NO_CHANGE_SINCE_ENABLED = false;
+    private static DEFAULT_NO_CHANGE_SINCE_ENABLED = true;
 
     @jsonMember(Boolean)
     private _noChangeSinceEnabled: boolean;
 
-    constructor(
+    protected constructor(
         noChangeSinceEnabled = TerminationConditionConfig.DEFAULT_NO_CHANGE_SINCE_ENABLED
     ) {
         this._noChangeSinceEnabled = noChangeSinceEnabled;
@@ -121,7 +121,7 @@ export class LoopBasedTerminationConfig extends TerminationConditionConfig {
 @jsonObject
 export class EvaluatedPlacesTerminationConfig extends TerminationConditionConfig {
     public static readonly SIMPLE_NAME = 'Evaluated Places';
-    public static readonly DEFAULT_AMOUNT_EVALUATED_OF_PLACES = 500_000;
+    public static readonly DEFAULT_AMOUNT_EVALUATED_OF_PLACES = 50_000;
 
     @jsonMember(Number)
     private _amountOfEvaluatedPlaces: number;
@@ -164,7 +164,7 @@ export class EvaluatedPlacesTerminationConfig extends TerminationConditionConfig
 @jsonObject
 export class TimeBasedTerminationConfig extends TerminationConditionConfig {
     public static readonly SIMPLE_NAME = 'Time Duration';
-    public static readonly DEFAULT_DURATION = Duration.second(30);
+    public static readonly DEFAULT_DURATION = Duration.second(1);
 
     public static MILLISECONDS = 'ms';
     public static SECONDS = 's';
