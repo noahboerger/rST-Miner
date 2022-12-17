@@ -345,6 +345,7 @@
                                     [ngSwitch]="
                                         randomPlaceGeneratorTypeSimpleName
                                     ">
+
                                     <span
                                         *ngSwitchCase="
                                             PrimitiveGenerator.SIMPLE_NAME
@@ -366,7 +367,6 @@
                                                     primitiveGeneratorMaximalInitialMarking
                                                 " />
                                         </mat-form-field>
-
                                         <p><b>Connection Probability</b></p>
                                         <mat-form-field
                                             appearance="fill"
@@ -403,14 +403,12 @@
                                                     primitiveGeneratorOutgoingProbability
                                                 " />
                                         </mat-form-field>
-
                                         <p><b>Maximum Arc Weights</b></p>
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
                                             <mat-label
-                                                >Ingoing Arc Weights</mat-label
-                                            >
+                                                >Ingoing Arc Weights</mat-label>
                                             <input
                                                 matInput
                                                 min="1"
@@ -440,6 +438,105 @@
                                                 type="number"
                                                 [(ngModel)]="
                                                     primitiveGeneratorMaximalOutgoingArcWeights
+                                                " />
+                                        </mat-form-field>
+                                    </span>
+
+
+                                    <span
+                                        *ngSwitchCase="
+                                            GeometricDistributionGeneratorConfig.SIMPLE_NAME
+                                        ">
+                                        <p><b>Maximum initial Marking</b></p>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Tokens up to</mat-label>
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    GeometricDistributionGeneratorConfig.DEFAULT_MAXIMAL_INITIAL_MARKING
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    geometricDistributionGeneratorMaximalInitialMarking
+                                                " />
+                                        </mat-form-field>
+                                        <p><b>Geometric Probabilities</b></p>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Increase initial Marking Probability</mat-label>
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="1"
+                                                step="0.01"
+                                                [disabled]="geometricDistributionGeneratorMaximalInitialMarking === 0"
+                                                placeholder="Default {{
+                                                    GeometricDistributionGeneratorConfig.DEFAULT_GEOMETRIC_INCREASE_INITIAL_MARKING_PROBABILITY
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    geometricDistributionGeneratorGeometricIncreaseInitialMarkingProbability
+                                                " />
+                                        </mat-form-field>
+                                        <br/>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label>Increase Arcs Probability</mat-label>
+                                            <input
+                                                matInput
+                                                min="0"
+                                                max="1"
+                                                step="0.01"
+                                                placeholder="Default {{
+                                                    GeometricDistributionGeneratorConfig.DEFAULT_GEOMETRIC_INCREASE_ARCS_PROBABILITY
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    geometricDistributionGeneratorGeometricIncreaseArcsProbability
+                                                " />
+                                        </mat-form-field>
+                                        <p><b>Maximum Arc Weights</b></p>
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                            >Ingoing Arc Weights</mat-label
+                                            >
+                                            <input
+                                                matInput
+                                                min="1"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    GeometricDistributionGeneratorConfig.DEFAULT_MAXIMAL_INGOING_ARC_WEIGHTS
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    geometricDistributionGeneratorMaximalIngoingArcWeights
+                                                " />
+                                        </mat-form-field>
+                                        <br />
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                            >Outgoing Arc Weights</mat-label
+                                            >
+                                            <input
+                                                matInput
+                                                min="1"
+                                                max="100"
+                                                placeholder="Default {{
+                                                    GeometricDistributionGeneratorConfig.DEFAULT_MAXIMAL_OUTGOING_ARC_WEIGHTS
+                                                }}"
+                                                type="number"
+                                                [(ngModel)]="
+                                                    geometricDistributionGeneratorMaximalOutgoingArcWeights
                                                 " />
                                         </mat-form-field>
                                     </span>

@@ -9,7 +9,7 @@ export class ImplicitPlaceIdentificationConfig {
         true;
 
     public static readonly DEFAULT_IS_VALIDATE_SUBSTITUTE_ARC_WEIGHTS_ENABLED =
-        true;
+        false;
 
     public static readonly DEFAULT_IS_MAX_DEEPNESS_ENABLED = false;
 
