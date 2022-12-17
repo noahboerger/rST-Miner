@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {jsonMember, jsonObject} from 'typedjson';
+import { jsonMember, jsonObject } from 'typedjson';
 import {
     EvaluatedPlacesTerminationConfig,
     LoopBasedTerminationConfig,
@@ -12,20 +12,20 @@ import {
     NoneOracleConfig,
     TimestampOracleConfig,
 } from './concurrency-oracle-config';
-import {PartialOrderTransformationConfig} from './partial-order-transformation-config';
+import { PartialOrderTransformationConfig } from './partial-order-transformation-config';
 import {
     GeometricDistributionGeneratorConfig,
     PrimitiveGeneratorConfig,
     RandomPlaceGeneratorConfig,
 } from './random-place-generator-config';
-import {ImplicitPlaceIdentificationConfig} from './implicit-place-identification-config';
+import { ImplicitPlaceIdentificationConfig } from './implicit-place-identification-config';
 import {
     NoiseReductionConfig,
     NoNoiseReductionConfig,
     PlaceEvaluationNoiseReductionConfig,
     PreprocessingNoiseReductionConfig,
 } from './noise-reduction-config';
-import {ProcessModelCharacteristicsConfig} from './process-model-characteristics-config';
+import { ProcessModelCharacteristicsConfig } from './process-model-characteristics-config';
 
 @jsonObject({
     knownTypes: [
@@ -67,7 +67,7 @@ export class RstMinerSettings {
 
     public static readonly randomPlaceGeneratorTypesSimpleNames = [
         PrimitiveGeneratorConfig.SIMPLE_NAME,
-        GeometricDistributionGeneratorConfig.SIMPLE_NAME
+        GeometricDistributionGeneratorConfig.SIMPLE_NAME,
     ];
 
     @jsonMember(ProcessModelCharacteristicsConfig)

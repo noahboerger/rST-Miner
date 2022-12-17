@@ -1,9 +1,12 @@
-import {PetriNet} from '../../../models/petri-net/petri-net';
-import {RandomPlaceGenerator} from './random-place-generator';
-import {Place} from '../../../models/petri-net/place';
-import {PartialOrder} from '../../../models/partial-order/partial-order';
-import {Transition} from "../../../models/petri-net/transition";
-import {ArcType, buildArc} from "../../petri-net/transformation/classes/arc-type";
+import { PetriNet } from '../../../models/petri-net/petri-net';
+import { RandomPlaceGenerator } from './random-place-generator';
+import { Place } from '../../../models/petri-net/place';
+import { PartialOrder } from '../../../models/partial-order/partial-order';
+import { Transition } from '../../../models/petri-net/transition';
+import {
+    ArcType,
+    buildArc,
+} from '../../petri-net/transformation/classes/arc-type';
 
 export class GeometricPlaceGenerator implements RandomPlaceGenerator {
     constructor(
@@ -12,8 +15,7 @@ export class GeometricPlaceGenerator implements RandomPlaceGenerator {
         private _geometricIncreaseArcsProbability: number,
         private _maximalIngoingArcWeight: number,
         private _maximalOutgoingArcWeight: number
-    ) {
-    }
+    ) {}
 
     init(petriNet: PetriNet, partialOrders: PartialOrder[]): number {
         return 0;
@@ -21,14 +23,14 @@ export class GeometricPlaceGenerator implements RandomPlaceGenerator {
 
     insertRandomPlace(id: string, petriNet: PetriNet): Place {
         let initialMarking = 0;
-        while (initialMarking < this._maximalInitialMarking && Math.random() < this._geometricIncreaseInitialMarkingProbability) {
+        while (
+            initialMarking < this._maximalInitialMarking &&
+            Math.random() < this._geometricIncreaseInitialMarkingProbability
+        ) {
             initialMarking += 1;
         }
 
-        const newPlace = new Place(
-            initialMarking,
-            id
-        );
+        const newPlace = new Place(initialMarking, id);
 
         petriNet.addPlace(newPlace);
 
@@ -39,7 +41,7 @@ export class GeometricPlaceGenerator implements RandomPlaceGenerator {
 
     private addGeometricArcs(petriNet: PetriNet, newPlace: Place, pId: string) {
         function addRandomArc(arcType: ArcType) {
-            let remainingTransitions
+            let remainingTransitions;
             let maxWeight;
             let transWeightMap;
             if (arcType === ArcType.INGOING) {
@@ -52,7 +54,10 @@ export class GeometricPlaceGenerator implements RandomPlaceGenerator {
                 transWeightMap = outgoingTransWeightMap;
             }
 
-            const randomTransition = remainingTransitions[Math.floor(Math.random() * remainingTransitions.length)];
+            const randomTransition =
+                remainingTransitions[
+                    Math.floor(Math.random() * remainingTransitions.length)
+                ];
             let newWeight = 1;
             if (transWeightMap.has(randomTransition)) {
                 newWeight += transWeightMap.get(randomTransition)!;
@@ -74,7 +79,11 @@ export class GeometricPlaceGenerator implements RandomPlaceGenerator {
         addRandomArc(ArcType.INGOING);
         addRandomArc(ArcType.OUTGOING);
 
-        while (Math.random() < this._geometricIncreaseArcsProbability && (incomingRemainingTransitions.length !== 0 || outgoingRemainingTransitions.length !== 0)) {
+        while (
+            Math.random() < this._geometricIncreaseArcsProbability &&
+            (incomingRemainingTransitions.length !== 0 ||
+                outgoingRemainingTransitions.length !== 0)
+        ) {
             if (incomingRemainingTransitions.length === 0) {
                 addRandomArc(ArcType.OUTGOING);
             } else if (outgoingRemainingTransitions.length === 0) {
@@ -89,12 +98,24 @@ export class GeometricPlaceGenerator implements RandomPlaceGenerator {
         }
 
         incomingTransWeightMap.forEach((weight, transition) => {
-            const newArc = buildArc(ArcType.INGOING, newPlace, pId, transition, weight)
-            petriNet.addArc(newArc)
-        })
+            const newArc = buildArc(
+                ArcType.INGOING,
+                newPlace,
+                pId,
+                transition,
+                weight
+            );
+            petriNet.addArc(newArc);
+        });
         outgoingTransWeightMap.forEach((weight, transition) => {
-            const newArc = buildArc(ArcType.OUTGOING, newPlace, pId, transition, weight)
-            petriNet.addArc(newArc)
-        })
+            const newArc = buildArc(
+                ArcType.OUTGOING,
+                newPlace,
+                pId,
+                transition,
+                weight
+            );
+            petriNet.addArc(newArc);
+        });
     }
 }

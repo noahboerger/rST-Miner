@@ -1,13 +1,16 @@
-import {Component} from '@angular/core';
-import {RstMinerDataService} from '../../services/data/rst-miner-data.service';
-import {RstMinerSettings} from '../../classes/models/miner-settings/rst-miner-settings';
+import { Component } from '@angular/core';
+import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
+import { RstMinerSettings } from '../../classes/models/miner-settings/rst-miner-settings';
 import {
     EvaluatedPlacesTerminationConfig,
     LoopBasedTerminationConfig,
     TimeBasedTerminationConfig,
 } from '../../classes/models/miner-settings/termination-condition-config';
-import {minerSettingsToJson, readAndUseMinerSettingsFile,} from '../../classes/serde/miner-settings-serde-helper';
-import {saveAs} from 'file-saver';
+import {
+    minerSettingsToJson,
+    readAndUseMinerSettingsFile,
+} from '../../classes/serde/miner-settings-serde-helper';
+import { saveAs } from 'file-saver';
 import {
     AlphaOracleConfig,
     NoneOracleConfig,
@@ -15,11 +18,9 @@ import {
 } from '../../classes/models/miner-settings/concurrency-oracle-config';
 import {
     GeometricDistributionGeneratorConfig,
-    PrimitiveGeneratorConfig
+    PrimitiveGeneratorConfig,
 } from '../../classes/models/miner-settings/random-place-generator-config';
-import {
-    ImplicitPlaceIdentificationConfig
-} from '../../classes/models/miner-settings/implicit-place-identification-config';
+import { ImplicitPlaceIdentificationConfig } from '../../classes/models/miner-settings/implicit-place-identification-config';
 import {
     NoNoiseReductionConfig,
     PlaceEvaluationNoiseReductionConfig,
@@ -316,7 +317,6 @@ export class RstSettingsDialogComponent {
         ).maximalOutgoingArcWeights = value;
     }
 
-
     get geometricDistributionGeneratorMaximalInitialMarking(): number {
         return (
             this.rstMinerDataService.minerSettings
@@ -341,7 +341,9 @@ export class RstSettingsDialogComponent {
         ).geometricIncreaseInitialMarkingProbability;
     }
 
-    set geometricDistributionGeneratorGeometricIncreaseInitialMarkingProbability(value: number) {
+    set geometricDistributionGeneratorGeometricIncreaseInitialMarkingProbability(
+        value: number
+    ) {
         (
             this.rstMinerDataService.minerSettings
                 .randomPlaceGenerator as GeometricDistributionGeneratorConfig
@@ -355,7 +357,9 @@ export class RstSettingsDialogComponent {
         ).geometricIncreaseArcsProbability;
     }
 
-    set geometricDistributionGeneratorGeometricIncreaseArcsProbability(value: number) {
+    set geometricDistributionGeneratorGeometricIncreaseArcsProbability(
+        value: number
+    ) {
         (
             this.rstMinerDataService.minerSettings
                 .randomPlaceGenerator as GeometricDistributionGeneratorConfig
@@ -394,7 +398,7 @@ export class RstSettingsDialogComponent {
         saveAs(
             new Blob(
                 [minerSettingsToJson(this.rstMinerDataService.minerSettings)],
-                {type: 'application/json;charset=utf-8'}
+                { type: 'application/json;charset=utf-8' }
             ),
             'rST-Miner-Settings_' + new Date().toLocaleString() + '.json'
         );

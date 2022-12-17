@@ -345,7 +345,6 @@
                                     [ngSwitch]="
                                         randomPlaceGeneratorTypeSimpleName
                                     ">
-
                                     <span
                                         *ngSwitchCase="
                                             PrimitiveGenerator.SIMPLE_NAME
@@ -408,7 +407,8 @@
                                             appearance="fill"
                                             class="full-width">
                                             <mat-label
-                                                >Ingoing Arc Weights</mat-label>
+                                                >Ingoing Arc Weights</mat-label
+                                            >
                                             <input
                                                 matInput
                                                 min="1"
@@ -442,7 +442,6 @@
                                         </mat-form-field>
                                     </span>
 
-
                                     <span
                                         *ngSwitchCase="
                                             GeometricDistributionGeneratorConfig.SIMPLE_NAME
@@ -468,13 +467,19 @@
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
-                                            <mat-label>Increase initial Marking Probability</mat-label>
+                                            <mat-label
+                                                >Increase initial Marking
+                                                Probability</mat-label
+                                            >
                                             <input
                                                 matInput
                                                 min="0"
                                                 max="1"
                                                 step="0.01"
-                                                [disabled]="geometricDistributionGeneratorMaximalInitialMarking === 0"
+                                                [disabled]="
+                                                    geometricDistributionGeneratorMaximalInitialMarking ===
+                                                    0
+                                                "
                                                 placeholder="Default {{
                                                     GeometricDistributionGeneratorConfig.DEFAULT_GEOMETRIC_INCREASE_INITIAL_MARKING_PROBABILITY
                                                 }}"
@@ -483,11 +488,14 @@
                                                     geometricDistributionGeneratorGeometricIncreaseInitialMarkingProbability
                                                 " />
                                         </mat-form-field>
-                                        <br/>
+                                        <br />
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
-                                            <mat-label>Increase Arcs Probability</mat-label>
+                                            <mat-label
+                                                >Increase Arcs
+                                                Probability</mat-label
+                                            >
                                             <input
                                                 matInput
                                                 min="0"
@@ -506,7 +514,7 @@
                                             appearance="fill"
                                             class="full-width">
                                             <mat-label
-                                            >Ingoing Arc Weights</mat-label
+                                                >Ingoing Arc Weights</mat-label
                                             >
                                             <input
                                                 matInput
@@ -525,7 +533,7 @@
                                             appearance="fill"
                                             class="full-width">
                                             <mat-label
-                                            >Outgoing Arc Weights</mat-label
+                                                >Outgoing Arc Weights</mat-label
                                             >
                                             <input
                                                 matInput

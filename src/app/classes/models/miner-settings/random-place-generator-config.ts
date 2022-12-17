@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { jsonMember, jsonObject } from 'typedjson';
 import { PrimitivePlaceGenerator } from '../../algorithms/rst-miner/generators/primitive-place-generator';
 import { RandomPlaceGenerator } from '../../algorithms/rst-miner/generators/random-place-generator';
-import {GeometricPlaceGenerator} from "../../algorithms/rst-miner/generators/geometric-place-generator";
+import { GeometricPlaceGenerator } from '../../algorithms/rst-miner/generators/geometric-place-generator';
 
 // Interfaces werden von typedjson nicht unterstützt, deshalb wird hier eine abstrakte Klasse genutzt
 export abstract class RandomPlaceGeneratorConfig {
@@ -171,8 +171,10 @@ export class GeometricDistributionGeneratorConfig extends RandomPlaceGeneratorCo
     ) {
         super();
         this._maximalInitialMarking = maximalInitialMarking;
-        this._geometricIncreaseInitialMarkingProbability = geometricIncreaseInitialMarkingProbability;
-        this._geometricIncreaseArcsProbability = geometricIncreaseArcsProbability;
+        this._geometricIncreaseInitialMarkingProbability =
+            geometricIncreaseInitialMarkingProbability;
+        this._geometricIncreaseArcsProbability =
+            geometricIncreaseArcsProbability;
         this._maximalIngoingArcWeights = maximalIngoingArcWeights;
         this._maximalOutgoingArcWeights = maximalOutgoingArcWeights;
     }

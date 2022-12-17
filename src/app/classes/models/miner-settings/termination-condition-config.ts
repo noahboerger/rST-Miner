@@ -4,7 +4,6 @@ import { Duration } from 'ts-duration';
 import { PetriNet } from '../petri-net/petri-net';
 
 export abstract class TerminationConditionConfig {
-
     private static DEFAULT_NO_CHANGE_SINCE_ENABLED = true;
 
     @jsonMember(Boolean)
