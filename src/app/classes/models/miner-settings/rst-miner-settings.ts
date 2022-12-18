@@ -3,6 +3,7 @@ import { jsonMember, jsonObject } from 'typedjson';
 import {
     EvaluatedPlacesTerminationConfig,
     LoopBasedTerminationConfig,
+    PetriNetStateReachedTerminationConfig,
     TerminationConditionConfig,
     TimeBasedTerminationConfig,
 } from './termination-condition-config';
@@ -40,6 +41,7 @@ import { ProcessModelCharacteristicsConfig } from './process-model-characteristi
         LoopBasedTerminationConfig,
         EvaluatedPlacesTerminationConfig,
         TimeBasedTerminationConfig,
+        PetriNetStateReachedTerminationConfig,
     ],
 })
 export class RstMinerSettings {
@@ -63,6 +65,7 @@ export class RstMinerSettings {
         LoopBasedTerminationConfig.SIMPLE_NAME,
         EvaluatedPlacesTerminationConfig.SIMPLE_NAME,
         TimeBasedTerminationConfig.SIMPLE_NAME,
+        PetriNetStateReachedTerminationConfig.SIMPLE_NAME,
     ];
 
     public static readonly randomPlaceGeneratorTypesSimpleNames = [

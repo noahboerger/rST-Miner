@@ -17,6 +17,15 @@ export class TemplateArc {
         }
     }
 
+    public static of(arc: Arc): TemplateArc {
+        if (arc.source instanceof Transition) {
+            return new TemplateArc(arc.source, undefined, arc.weight);
+        } else if (arc.destination instanceof Transition) {
+            return new TemplateArc(undefined, arc.destination, arc.weight);
+        }
+        throw new Error('Unexpected Arc has no Transition to one of its ends!');
+    }
+
     public buildArcForPlace(place: Place): Arc {
         if (this.source != null) {
             const arcId = 'i' + place.id + this.source.label;
