@@ -1,6 +1,6 @@
-import {Place} from '../../../../models/petri-net/place';
-import {Arc} from '../../../../models/petri-net/arc';
-import {Transition} from '../../../../models/petri-net/transition';
+import { Place } from '../../../../models/petri-net/place';
+import { Arc } from '../../../../models/petri-net/arc';
+import { Transition } from '../../../../models/petri-net/transition';
 
 // Generated Place which is not yet connected with its arcs, so changing the component names is stil possible
 export class TemplateArc {
@@ -23,7 +23,7 @@ export class TemplateArc {
         } else if (arc.destination instanceof Transition) {
             return new TemplateArc(undefined, arc.destination, arc.weight);
         }
-        throw new Error("Unexpected Arc has no Transition to one of its ends!")
+        throw new Error('Unexpected Arc has no Transition to one of its ends!');
     }
 
     public buildArcForPlace(place: Place): Arc {

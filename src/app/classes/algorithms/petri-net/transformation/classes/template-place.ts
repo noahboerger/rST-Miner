@@ -11,8 +11,12 @@ export class TemplatePlace {
         readonly unconnectedOutgoingTemplateArcs: Array<TemplateArc> = []
     ) {}
 
-    public static of(place : Place) :TemplatePlace {
-        return new TemplatePlace(place.marking, place.ingoingArcs.map(arc => TemplateArc.of(arc)), place.outgoingArcs.map(arc => TemplateArc.of(arc)));
+    public static of(place: Place): TemplatePlace {
+        return new TemplatePlace(
+            place.marking,
+            place.ingoingArcs.map(arc => TemplateArc.of(arc)),
+            place.outgoingArcs.map(arc => TemplateArc.of(arc))
+        );
     }
 
     public buildPlaceWithId(id: string): Place {
@@ -85,7 +89,9 @@ export class TemplatePlace {
     }
 
     // equals is checking only the label of the transition not its recursive arcs etc.
-    equalsRegardingMarkingAndSameArcTransitionLabels(other: TemplatePlace): boolean {
+    equalsRegardingMarkingAndSameArcTransitionLabels(
+        other: TemplatePlace
+    ): boolean {
         return (
             this.marking === other.marking &&
             this.isTransitionLabelsEquals(other, ArcType.INGOING) &&

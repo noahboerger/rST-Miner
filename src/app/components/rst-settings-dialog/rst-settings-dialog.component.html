@@ -562,10 +562,10 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <mat-checkbox
-                        [(ngModel)]="
-                            terminationNoChangeSinceEnabled
-                        "
-                        [disabled]="terminationNoChangeSinceEnabledCheckboxDisabled">
+                        [(ngModel)]="terminationNoChangeSinceEnabled"
+                        [disabled]="
+                            terminationNoChangeSinceEnabledCheckboxDisabled
+                        ">
                         Reset on new discoverd Place
                     </mat-checkbox>
                     <br />
@@ -682,28 +682,45 @@
                                         <mat-form-field
                                             appearance="fill"
                                             class="full-width">
-                                          <mat-label>Expected Petri Net</mat-label>
-                                          <mat-select
-                                              [(value)]="petriNetStateTerminationStandardProcessModelNetTypeStringValue">
-                                            <mat-option
-                                                *ngFor="let standardProcessModelType of standardProcessModelNetTypeStringValues"
-                                                [value]="standardProcessModelType">
-                                              {{standardProcessModelType}}
-                                            </mat-option>
-                                          </mat-select>
+                                            <mat-label
+                                                >Expected Petri Net</mat-label
+                                            >
+                                            <mat-select
+                                                [(value)]="
+                                                    petriNetStateTerminationStandardProcessModelNetTypeStringValue
+                                                ">
+                                                <mat-option
+                                                    *ngFor="
+                                                        let standardProcessModelType of standardProcessModelNetTypeStringValues
+                                                    "
+                                                    [value]="
+                                                        standardProcessModelType
+                                                    ">
+                                                    {{
+                                                        standardProcessModelType
+                                                    }}
+                                                </mat-option>
+                                            </mat-select>
                                         </mat-form-field>
-                                        <br/>
-                                        <mat-form-field appearance="fill"
-                                                        class="full-width">
-                                          <mat-label>Used Petri Net</mat-label>
-                                          <textarea
-                                              [(ngModel)]="petriNetStateTerminationPetriNetString"
-                                              [disabled]="petriNetStateTerminationPetriNetStringFieldDisabled"
-                                              #autosize="cdkTextareaAutosize"
-                                              cdkAutosizeMaxRows="25"
-                                              cdkAutosizeMinRows="4"
-                                              cdkTextareaAutosize
-                                              matInput></textarea>
+                                        <br />
+                                        <mat-form-field
+                                            appearance="fill"
+                                            class="full-width">
+                                            <mat-label
+                                                >Used Petri Net</mat-label
+                                            >
+                                            <textarea
+                                                [(ngModel)]="
+                                                    petriNetStateTerminationPetriNetString
+                                                "
+                                                [disabled]="
+                                                    petriNetStateTerminationPetriNetStringFieldDisabled
+                                                "
+                                                #autosize="cdkTextareaAutosize"
+                                                cdkAutosizeMaxRows="25"
+                                                cdkAutosizeMinRows="4"
+                                                cdkTextareaAutosize
+                                                matInput></textarea>
                                         </mat-form-field>
                                     </span>
                                 </div>
