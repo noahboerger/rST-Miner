@@ -11,6 +11,10 @@ export class TemplatePlace {
         readonly unconnectedOutgoingTemplateArcs: Array<TemplateArc> = []
     ) {}
 
+    public static of(place : Place) :TemplatePlace {
+        return new TemplatePlace(place.marking, place.ingoingArcs.map(arc => TemplateArc.of(arc)), place.outgoingArcs.map(arc => TemplateArc.of(arc)));
+    }
+
     public buildPlaceWithId(id: string): Place {
         const place = new Place(this.marking, id);
 
@@ -80,26 +84,27 @@ export class TemplatePlace {
         );
     }
 
-    equals(other: TemplatePlace): boolean {
+    // equals is checking only the label of the transition not its recursive arcs etc.
+    equalsRegardingMarkingAndSameArcTransitionLabels(other: TemplatePlace): boolean {
         return (
             this.marking === other.marking &&
-            this.isTransitionsEquals(other, ArcType.INGOING) &&
-            this.isTransitionsEquals(other, ArcType.OUTGOING)
+            this.isTransitionLabelsEquals(other, ArcType.INGOING) &&
+            this.isTransitionLabelsEquals(other, ArcType.OUTGOING)
         );
     }
 
-    private isTransitionsEquals(other: TemplatePlace, arcType: ArcType) {
-        function reduceArcsToMapTransitionKeyArcValue(
+    private isTransitionLabelsEquals(other: TemplatePlace, arcType: ArcType) {
+        function reduceArcsToMapTransitionLabelKeyArcValue(
             arcs: Array<TemplateArc>
         ) {
             return arcs.reduce(function (map, arc) {
-                const transition =
+                const transitionLabel =
                     arc.source instanceof Transition
-                        ? arc.source
-                        : (arc.destination as Transition);
-                map.set(transition, arc);
+                        ? arc.source.label!
+                        : (arc.destination as Transition).label!;
+                map.set(transitionLabel, arc);
                 return map;
-            }, new Map<Transition, TemplateArc>());
+            }, new Map<string, TemplateArc>());
         }
 
         if (
@@ -111,10 +116,10 @@ export class TemplatePlace {
             return false;
         }
 
-        const p1TransToArcs = reduceArcsToMapTransitionKeyArcValue(
+        const p1TransToArcs = reduceArcsToMapTransitionLabelKeyArcValue(
             getTemplateArcs(arcType, this)
         );
-        const p2TransToArcs = reduceArcsToMapTransitionKeyArcValue(
+        const p2TransToArcs = reduceArcsToMapTransitionLabelKeyArcValue(
             getTemplateArcs(arcType, other)
         );
 

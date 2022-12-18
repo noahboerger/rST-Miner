@@ -1,7 +1,15 @@
 import 'reflect-metadata';
-import { jsonMember, jsonObject } from 'typedjson';
-import { Duration } from 'ts-duration';
-import { PetriNet } from '../petri-net/petri-net';
+import {jsonMember, jsonObject} from 'typedjson';
+import {Duration} from 'ts-duration';
+import {PetriNet} from '../petri-net/petri-net';
+import {PetriNetParser} from "../../parser/petri-net/petri-net-parser";
+import {TemplatePlace} from "../../algorithms/petri-net/transformation/classes/template-place";
+import {
+    getKnowPetriNetString,
+    getStandardModelFromNetString,
+    StandardProcessModelNetType
+} from "./standard-pm-nets/standard-process-model-net-type";
+import {RstMiner} from "../../algorithms/rst-miner/rst-miner";
 
 export abstract class TerminationConditionConfig {
     private static DEFAULT_NO_CHANGE_SINCE_ENABLED = true;
@@ -251,3 +259,87 @@ export class TimeBasedTerminationConfig extends TerminationConditionConfig {
         };
     }
 }
+
+@jsonObject
+export class PetriNetStateReachedTerminationConfig extends TerminationConditionConfig {
+
+    public static readonly SIMPLE_NAME = 'PetriNet State Reached';
+
+    public static readonly DEFAULT_PETRI_NET_STRING_REPRESENTATION = getKnowPetriNetString(StandardProcessModelNetType.REPAIR_EXAMPLE);
+
+    @jsonMember(String)
+    private _petriNetStringRepresentation: string;
+
+    private readonly netParser = new PetriNetParser();
+
+    constructor(
+        petriNetStringRepresentation: string = PetriNetStateReachedTerminationConfig.DEFAULT_PETRI_NET_STRING_REPRESENTATION
+    ) {
+        super();
+        this._petriNetStringRepresentation = petriNetStringRepresentation;
+    }
+
+    get simpleName(): string {
+        return PetriNetStateReachedTerminationConfig.SIMPLE_NAME;
+    }
+
+    get petriNetStringRepresentation(): string {
+        return this._petriNetStringRepresentation;
+    }
+
+    set petriNetStringRepresentation(value: string) {
+        this._petriNetStringRepresentation = value;
+    }
+
+    get standardProcessModelNetType(): StandardProcessModelNetType {
+        return getStandardModelFromNetString(this._petriNetStringRepresentation);
+    }
+
+    set standardProcessModelNetType(value: StandardProcessModelNetType) {
+        const actType = getStandardModelFromNetString(this._petriNetStringRepresentation);
+        // keep user input
+        if (value === StandardProcessModelNetType.USER_DEFINED && actType === StandardProcessModelNetType.USER_DEFINED) {
+            return;
+        }
+        this._petriNetStringRepresentation = getKnowPetriNetString(value);
+    }
+
+    protected toIsTerminationConditionReachedFunction(): (
+        actState: PetriNet,
+        numPlacesEvaluated: number
+    ) => boolean {
+
+        const toBeReachedNet = this.netParser.parse(this._petriNetStringRepresentation);
+
+        // parsing failure
+        if (toBeReachedNet == null) {
+            throw RstMiner.MINING_ERROR;
+        }
+
+        const toBeReachedTemplatePlaces = toBeReachedNet.getPlaces().map(place => TemplatePlace.of(place))
+
+        return function (actState: PetriNet, numPlacesEvaluated: number) {
+
+            if (actState.getArcCount() < toBeReachedNet.getArcCount() || actState.getPlaceCount() < toBeReachedNet.getPlaceCount()) {
+                return false;
+            }
+
+            const existingTemplatePlaces = actState.getPlaces().map(place => TemplatePlace.of(place))
+
+            nextToBeReachedPlace:
+                for (const toBeReachedTemplatePlace of toBeReachedTemplatePlaces) {
+                    for (const existingTemplatePlace of existingTemplatePlaces) {
+                        if (toBeReachedTemplatePlace.equalsRegardingMarkingAndSameArcTransitionLabels(existingTemplatePlace)) {
+                            continue nextToBeReachedPlace;
+                        }
+                    }
+                    return false;
+                }
+            return true;
+        };
+    }
+}
+
+
+
+

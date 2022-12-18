@@ -1,16 +1,14 @@
-import { Component } from '@angular/core';
-import { RstMinerDataService } from '../../services/data/rst-miner-data.service';
-import { RstMinerSettings } from '../../classes/models/miner-settings/rst-miner-settings';
+import {Component} from '@angular/core';
+import {RstMinerDataService} from '../../services/data/rst-miner-data.service';
+import {RstMinerSettings} from '../../classes/models/miner-settings/rst-miner-settings';
 import {
     EvaluatedPlacesTerminationConfig,
     LoopBasedTerminationConfig,
+    PetriNetStateReachedTerminationConfig,
     TimeBasedTerminationConfig,
 } from '../../classes/models/miner-settings/termination-condition-config';
-import {
-    minerSettingsToJson,
-    readAndUseMinerSettingsFile,
-} from '../../classes/serde/miner-settings-serde-helper';
-import { saveAs } from 'file-saver';
+import {minerSettingsToJson, readAndUseMinerSettingsFile,} from '../../classes/serde/miner-settings-serde-helper';
+import {saveAs} from 'file-saver';
 import {
     AlphaOracleConfig,
     NoneOracleConfig,
@@ -20,12 +18,20 @@ import {
     GeometricDistributionGeneratorConfig,
     PrimitiveGeneratorConfig,
 } from '../../classes/models/miner-settings/random-place-generator-config';
-import { ImplicitPlaceIdentificationConfig } from '../../classes/models/miner-settings/implicit-place-identification-config';
+import {
+    ImplicitPlaceIdentificationConfig
+} from '../../classes/models/miner-settings/implicit-place-identification-config';
 import {
     NoNoiseReductionConfig,
     PlaceEvaluationNoiseReductionConfig,
     PreprocessingNoiseReductionConfig,
 } from '../../classes/models/miner-settings/noise-reduction-config';
+import {
+    allStandardProcessModelNetTypeEnumValues,
+    fromString,
+    StandardProcessModelNetType,
+    toString
+} from "../../classes/models/miner-settings/standard-pm-nets/standard-process-model-net-type";
 
 @Component({
     selector: 'app-rst-settings-dialog',
@@ -34,24 +40,26 @@ import {
 })
 export class RstSettingsDialogComponent {
     // Zugriff auf statische Felder aus HTML ermöglichen
-    MinerSettings = RstMinerSettings;
+    readonly MinerSettings = RstMinerSettings;
 
-    NoNoiseReductionConfig = NoNoiseReductionConfig;
-    PreprocessingNoiseReductionConfig = PreprocessingNoiseReductionConfig;
-    PlaceEvaluationNoiseReductionConfig = PlaceEvaluationNoiseReductionConfig;
+    readonly NoNoiseReductionConfig = NoNoiseReductionConfig;
+    readonly PreprocessingNoiseReductionConfig = PreprocessingNoiseReductionConfig;
+    readonly PlaceEvaluationNoiseReductionConfig = PlaceEvaluationNoiseReductionConfig;
 
-    NoneOracle = NoneOracleConfig;
-    AlphaOracle = AlphaOracleConfig;
-    TimestampOracle = TimestampOracleConfig;
+    readonly NoneOracle = NoneOracleConfig;
+    readonly AlphaOracle = AlphaOracleConfig;
+    readonly TimestampOracle = TimestampOracleConfig;
 
-    PrimitiveGenerator = PrimitiveGeneratorConfig;
-    GeometricDistributionGeneratorConfig = GeometricDistributionGeneratorConfig;
+    readonly PrimitiveGenerator = PrimitiveGeneratorConfig;
+    readonly GeometricDistributionGeneratorConfig = GeometricDistributionGeneratorConfig;
 
-    LoopBasedTermination = LoopBasedTerminationConfig;
-    EvaluatedPlacesTerminationConfig = EvaluatedPlacesTerminationConfig;
-    TimeBasedTermination = TimeBasedTerminationConfig;
+    readonly LoopBasedTermination = LoopBasedTerminationConfig;
+    readonly EvaluatedPlacesTerminationConfig = EvaluatedPlacesTerminationConfig;
+    readonly TimeBasedTermination = TimeBasedTerminationConfig;
+    readonly PetriNetStateReachedTerminationConfig = PetriNetStateReachedTerminationConfig;
+    readonly standardProcessModelNetTypeStringValues = allStandardProcessModelNetTypeEnumValues().map(enumType => toString(enumType));
 
-    ImplicitPlaceIdentificationConfig = ImplicitPlaceIdentificationConfig;
+    readonly ImplicitPlaceIdentificationConfig = ImplicitPlaceIdentificationConfig;
 
     durationTimeUnit: string;
 
@@ -127,7 +135,28 @@ export class RstSettingsDialogComponent {
                 this.rstMinerDataService.minerSettings.terminationCondition =
                     new TimeBasedTerminationConfig();
                 break;
+            case PetriNetStateReachedTerminationConfig.SIMPLE_NAME:
+                this.rstMinerDataService.minerSettings.terminationCondition =
+                    new PetriNetStateReachedTerminationConfig();
+                break;
         }
+    }
+
+    get terminationNoChangeSinceEnabledCheckboxDisabled() {
+        return this.rstMinerDataService.minerSettings.terminationCondition instanceof PetriNetStateReachedTerminationConfig;
+    }
+
+    get terminationNoChangeSinceEnabled(): boolean {
+        if (this.rstMinerDataService.minerSettings.terminationCondition instanceof PetriNetStateReachedTerminationConfig) {
+            return false;
+        }
+        return this.rstMinerDataService.minerSettings
+            .terminationCondition.noChangeSinceEnabled;
+    }
+
+    set terminationNoChangeSinceEnabled(value: boolean) {
+        this.rstMinerDataService.minerSettings
+            .terminationCondition.noChangeSinceEnabled = value;
     }
 
     get loopTerminationIterations(): number {
@@ -170,6 +199,37 @@ export class RstSettingsDialogComponent {
             this.rstMinerDataService.minerSettings
                 .terminationCondition as TimeBasedTerminationConfig
         ).setDurationIn(this.durationTimeUnit, value);
+    }
+
+    get petriNetStateTerminationStandardProcessModelNetTypeStringValue() {
+        return toString(
+            (this.rstMinerDataService.minerSettings
+                    .terminationCondition as PetriNetStateReachedTerminationConfig
+            ).standardProcessModelNetType);
+    }
+
+    set petriNetStateTerminationStandardProcessModelNetTypeStringValue(value: string) {
+        (this.rstMinerDataService.minerSettings
+                .terminationCondition as PetriNetStateReachedTerminationConfig
+        ).standardProcessModelNetType = fromString(value);
+    }
+
+    get petriNetStateTerminationPetriNetString() {
+        return (this.rstMinerDataService.minerSettings
+                .terminationCondition as PetriNetStateReachedTerminationConfig
+        ).petriNetStringRepresentation;
+    }
+
+    set petriNetStateTerminationPetriNetString(value: string) {
+        (this.rstMinerDataService.minerSettings
+                .terminationCondition as PetriNetStateReachedTerminationConfig
+        ).petriNetStringRepresentation = value;
+    }
+
+    get petriNetStateTerminationPetriNetStringFieldDisabled() {
+        return (this.rstMinerDataService.minerSettings
+                .terminationCondition as PetriNetStateReachedTerminationConfig
+        ).standardProcessModelNetType !== StandardProcessModelNetType.USER_DEFINED;
     }
 
     get actConcurrencyOracleSimpleName(): string {

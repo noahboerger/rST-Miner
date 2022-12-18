@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import { jsonMember, jsonObject } from 'typedjson';
+import {jsonMember, jsonObject} from 'typedjson';
 import {
     EvaluatedPlacesTerminationConfig,
     LoopBasedTerminationConfig,
+    PetriNetStateReachedTerminationConfig,
     TerminationConditionConfig,
     TimeBasedTerminationConfig,
 } from './termination-condition-config';
@@ -12,20 +13,20 @@ import {
     NoneOracleConfig,
     TimestampOracleConfig,
 } from './concurrency-oracle-config';
-import { PartialOrderTransformationConfig } from './partial-order-transformation-config';
+import {PartialOrderTransformationConfig} from './partial-order-transformation-config';
 import {
     GeometricDistributionGeneratorConfig,
     PrimitiveGeneratorConfig,
     RandomPlaceGeneratorConfig,
 } from './random-place-generator-config';
-import { ImplicitPlaceIdentificationConfig } from './implicit-place-identification-config';
+import {ImplicitPlaceIdentificationConfig} from './implicit-place-identification-config';
 import {
     NoiseReductionConfig,
     NoNoiseReductionConfig,
     PlaceEvaluationNoiseReductionConfig,
     PreprocessingNoiseReductionConfig,
 } from './noise-reduction-config';
-import { ProcessModelCharacteristicsConfig } from './process-model-characteristics-config';
+import {ProcessModelCharacteristicsConfig} from './process-model-characteristics-config';
 
 @jsonObject({
     knownTypes: [
@@ -40,6 +41,7 @@ import { ProcessModelCharacteristicsConfig } from './process-model-characteristi
         LoopBasedTerminationConfig,
         EvaluatedPlacesTerminationConfig,
         TimeBasedTerminationConfig,
+        PetriNetStateReachedTerminationConfig,
     ],
 })
 export class RstMinerSettings {
@@ -63,6 +65,7 @@ export class RstMinerSettings {
         LoopBasedTerminationConfig.SIMPLE_NAME,
         EvaluatedPlacesTerminationConfig.SIMPLE_NAME,
         TimeBasedTerminationConfig.SIMPLE_NAME,
+        PetriNetStateReachedTerminationConfig.SIMPLE_NAME
     ];
 
     public static readonly randomPlaceGeneratorTypesSimpleNames = [
