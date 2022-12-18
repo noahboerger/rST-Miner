@@ -16,12 +16,26 @@ export abstract class ConcurrencyOracleConfig {
 export class NoneOracleConfig extends ConcurrencyOracleConfig {
     public static readonly SIMPLE_NAME = 'None';
 
+    private static readonly DEFAULT_DISTINGUISH_SAME_EVENTS = false;
+
+    @jsonMember(Boolean)
+    public distinguishSameEvents: boolean;
+
+    constructor(
+        distinguishSameEvents: boolean = NoneOracleConfig.DEFAULT_DISTINGUISH_SAME_EVENTS
+    ) {
+        super();
+        this.distinguishSameEvents = distinguishSameEvents;
+    }
+
     get simpleName(): string {
         return NoneOracleConfig.SIMPLE_NAME;
     }
 
     generateConcurrencyOracle(): NoneOracle {
-        return new NoneOracle();
+        return new NoneOracle({
+            distinguishSameLabels: this.distinguishSameEvents,
+        });
     }
 }
 

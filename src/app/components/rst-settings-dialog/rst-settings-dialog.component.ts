@@ -301,7 +301,8 @@ export class RstSettingsDialogComponent {
         const oracle = this.rstMinerDataService.minerSettings.concurrencyOracle;
         if (
             oracle instanceof AlphaOracleConfig ||
-            oracle instanceof TimestampOracleConfig
+            oracle instanceof TimestampOracleConfig ||
+            oracle instanceof NoneOracleConfig
         ) {
             return oracle.distinguishSameEvents;
         }
@@ -312,7 +313,8 @@ export class RstSettingsDialogComponent {
         const oracle = this.rstMinerDataService.minerSettings.concurrencyOracle;
         if (
             oracle instanceof AlphaOracleConfig ||
-            oracle instanceof TimestampOracleConfig
+            oracle instanceof TimestampOracleConfig ||
+            oracle instanceof NoneOracleConfig
         ) {
             oracle.distinguishSameEvents = value;
         }

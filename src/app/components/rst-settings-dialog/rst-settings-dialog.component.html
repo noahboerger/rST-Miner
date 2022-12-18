@@ -236,14 +236,21 @@
                                     *ngIf="
                                         rstMinerDataService.minerSettings
                                             .concurrencyOracle.simpleName ===
-                                            concurrencyOracleTypeSimpleName &&
-                                        rstMinerDataService.minerSettings
-                                            .concurrencyOracle.simpleName !==
-                                            NoneOracle.SIMPLE_NAME
+                                        concurrencyOracleTypeSimpleName
                                     "
                                     [ngSwitch]="
                                         concurrencyOracleTypeSimpleName
                                     ">
+                                    <span
+                                        *ngSwitchCase="NoneOracle.SIMPLE_NAME">
+                                        <mat-checkbox
+                                            [(ngModel)]="
+                                                concurrencyOracleDistinguishSameEvents
+                                            ">
+                                            Distinguish same Events
+                                        </mat-checkbox>
+                                    </span>
+
                                     <span
                                         *ngSwitchCase="AlphaOracle.SIMPLE_NAME">
                                         <mat-form-field

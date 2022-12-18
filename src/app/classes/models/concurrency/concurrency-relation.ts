@@ -17,8 +17,10 @@ export class ConcurrencyRelation {
         this._relabeler = relabeler.clone();
     }
 
-    public static noConcurrency(): ConcurrencyRelation {
-        return new ConcurrencyRelation(new Relabeler());
+    public static noConcurrency(
+        relabeler: Relabeler = new Relabeler()
+    ): ConcurrencyRelation {
+        return new ConcurrencyRelation(relabeler);
     }
 
     public static fromOccurrenceMatrix(
