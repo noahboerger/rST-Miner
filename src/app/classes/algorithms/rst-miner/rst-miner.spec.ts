@@ -1,37 +1,43 @@
 import {XesParser} from "../../parser/eventlog/xesParser";
+import {Eventlog} from "../../models/eventlog/eventlog";
+import {RstMinerSettings} from "../../models/miner-settings/rst-miner-settings";
+import {
+    isSameState,
+    PetriNetStateReachedTerminationConfig
+} from "../../models/miner-settings/termination-condition-config";
+import {
+    getKnowPetriNetString,
+    StandardProcessModelNetType
+} from "../../models/miner-settings/standard-pm-nets/standard-process-model-net-type";
+import {TemplatePlace} from "../petri-net/transformation/classes/template-place";
+import {PetriNetParser} from "../../parser/petri-net/petri-net-parser";
+import {RstMiner} from "./rst-miner";
+import {expect} from "@angular/flex-layout/_private-utils/testing";
 
 describe('rST-Miner-Performance', () => {
 
 
+    it('simple mining test', () => {
+        const eventlog = parseXesFile('src/assets/log-files/xes/repairExample.xes');
+        const repairExamplePetriNetString = getKnowPetriNetString(StandardProcessModelNetType.REPAIR_EXAMPLE);
+        const repairExampleNet = new PetriNetParser().parse(repairExamplePetriNetString)!;
+        const toBeReachedTemplatePlaces = repairExampleNet
+            .getPlaces()
+            .map(place => TemplatePlace.of(place));
 
-    it('other simple mining test', () => {
+        const minersettings = new RstMinerSettings();
+        minersettings.terminationCondition = new PetriNetStateReachedTerminationConfig(repairExamplePetriNetString);
+        const result = new RstMiner(minersettings).mine(eventlog)!;
+
+        expect(isSameState(result.petriNet, repairExampleNet, toBeReachedTemplatePlaces)).toBeTrue()
+    });
+
+    function parseXesFile(path: string): Eventlog {
         const request = new XMLHttpRequest();
-        request.open('GET', 'base/' + 'test/assets/repairExample.xes', false);
+        request.open('GET', 'base/' + path, false);
         request.send(null)
 
-        const eventlogString = request.response.toString()
-        console.log(eventlogString)
-    });
-
-
-    it('simple mining test', (done) => {
-        const filePath = 'test/assets/repairExample.xes';
-        const request: XMLHttpRequest = createRequest(filePath);
-
-        request.onload = r => {
-            const xes = new XesParser().parse(request.response.toString());
-            console.log(xes.traces.length)
-            done();
-        };
-
-        // trigger
-        request.send(null);
-    });
-
-    function createRequest(filePath: string): XMLHttpRequest {
-        const request = new XMLHttpRequest();
-        request.open('GET', 'base/' + filePath, true);
-        request.responseType = 'text';
-        return request;
-    };
+        const xesString = request.response.toString()
+        return new XesParser().parse(xesString);
+    }
 });

@@ -50,7 +50,7 @@ module.exports = function (config) {
       files: [
           // JSON fixture
           {
-              pattern: 'test/assets/*.xes',
+              pattern: 'src/assets/log-files/xes/*.xes',
               watched: true,
               served: true,
               included: false

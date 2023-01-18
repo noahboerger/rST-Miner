@@ -329,30 +329,34 @@ export class PetriNetStateReachedTerminationConfig extends TerminationConditionC
             .map(place => TemplatePlace.of(place));
 
         return function (actState: PetriNet, numPlacesEvaluated: number) {
-            if (
-                actState.getArcCount() < toBeReachedNet.getArcCount() ||
-                actState.getPlaceCount() < toBeReachedNet.getPlaceCount()
-            ) {
-                return false;
-            }
-
-            const existingTemplatePlaces = actState
-                .getPlaces()
-                .map(place => TemplatePlace.of(place));
-
-            nextToBeReachedPlace: for (const toBeReachedTemplatePlace of toBeReachedTemplatePlaces) {
-                for (const existingTemplatePlace of existingTemplatePlaces) {
-                    if (
-                        toBeReachedTemplatePlace.equalsRegardingMarkingAndSameArcTransitionLabels(
-                            existingTemplatePlace
-                        )
-                    ) {
-                        continue nextToBeReachedPlace;
-                    }
-                }
-                return false;
-            }
-            return true;
+            return isSameState(actState, toBeReachedNet, toBeReachedTemplatePlaces);
         };
     }
+}
+
+export function isSameState(actState: PetriNet, toBeReachedNet: PetriNet, toBeReachedTemplatePlaces: TemplatePlace[]) {
+    if (
+        actState.getArcCount() < toBeReachedNet.getArcCount() ||
+        actState.getPlaceCount() < toBeReachedNet.getPlaceCount()
+    ) {
+        return false;
+    }
+
+    const existingTemplatePlaces = actState
+        .getPlaces()
+        .map(place => TemplatePlace.of(place));
+
+    nextToBeReachedPlace: for (const toBeReachedTemplatePlace of toBeReachedTemplatePlaces) {
+        for (const existingTemplatePlace of existingTemplatePlaces) {
+            if (
+                toBeReachedTemplatePlace.equalsRegardingMarkingAndSameArcTransitionLabels(
+                    existingTemplatePlace
+                )
+            ) {
+                continue nextToBeReachedPlace;
+            }
+        }
+        return false;
+    }
+    return true;
 }
