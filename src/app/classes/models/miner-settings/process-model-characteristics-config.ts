@@ -9,7 +9,7 @@ export class ProcessModelCharacteristicsConfig {
     public placesEmptyAtEnd: boolean;
 
     constructor(
-        placesEmptyAtEnd: boolean = ProcessModelCharacteristicsConfig.DEFAULT_PLACES_EMPTY_AT_END,
+        placesEmptyAtEnd: boolean = ProcessModelCharacteristicsConfig.DEFAULT_PLACES_EMPTY_AT_END
     ) {
         this.placesEmptyAtEnd = placesEmptyAtEnd;
     }
