@@ -329,12 +329,20 @@ export class PetriNetStateReachedTerminationConfig extends TerminationConditionC
             .map(place => TemplatePlace.of(place));
 
         return function (actState: PetriNet, numPlacesEvaluated: number) {
-            return isSameState(actState, toBeReachedNet, toBeReachedTemplatePlaces);
+            return isSameState(
+                actState,
+                toBeReachedNet,
+                toBeReachedTemplatePlaces
+            );
         };
     }
 }
 
-export function isSameState(actState: PetriNet, toBeReachedNet: PetriNet, toBeReachedTemplatePlaces: TemplatePlace[]) {
+export function isSameState(
+    actState: PetriNet,
+    toBeReachedNet: PetriNet,
+    toBeReachedTemplatePlaces: TemplatePlace[]
+) {
     if (
         actState.getArcCount() < toBeReachedNet.getArcCount() ||
         actState.getPlaceCount() < toBeReachedNet.getPlaceCount()
