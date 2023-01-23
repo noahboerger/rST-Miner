@@ -19,7 +19,7 @@ export abstract class RandomPlaceGeneratorConfig {
 export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
     public static readonly SIMPLE_NAME = 'Primitive';
 
-    public static readonly DEFAULT_MAXIMAL_INITIAL_MARKING = 1;
+    public static readonly DEFAULT_MAXIMAL_INITIAL_MARKING = 0;
 
     public static readonly DEFAULT_INGOING_CONNECTION_PROBABILITY = 0.3;
     public static readonly DEFAULT_OUTGOING_CONNECTION_PROBABILITY = 0.3;
