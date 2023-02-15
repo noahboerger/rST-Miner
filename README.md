@@ -8,7 +8,7 @@
 
 Das vorliegende Process-Discovery Projekt mit dem Namen rST-Miner (random state-space traversal) ist im Rahmen meiner **Abschlussarbeit** an der [Fernuniversität Hagen](https://www.fernuni-hagen.de/) entstanden. Die Betreuung der Masterarbeit erfolgt durch Robin Bergenthum und Jakub Kovar.
 
-Die Funktionalität der Anwendung ist das Generieren eines Prozess-Modells in Form eines Petri Netzes aus Ereignisdaten. Hierzu bietet die Anwendung einen .xes und .log Import sowie einen Export des genierten Petri-Netzes. Der Algorithmus generiert hierzu randomisiert Plätze, um das resultierende Prozess-Modell zu erstellen. Nähere Informationen zum Algorithmus finden sich in der Abschlussarbeit.
+Die Funktionalität der Anwendung ist das Generieren eines Prozess-Modells in Form eines Petri Netzes aus Ereignisdaten. Hierzu bietet die Anwendung einen .xes und .log Import sowie einen Export des generierten Petri-Netzes. Der Algorithmus generiert hierzu randomisiert Plätze, um das resultierende Prozess-Modell zu erstellen. Nähere Informationen zum Algorithmus finden sich in der Abschlussarbeit.
 
 ## Aufsetzen des Projekts
 
