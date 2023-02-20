@@ -43,7 +43,6 @@ const REPAIR_EXAMPLE_NET_STRING =
 const REVIEWING_EXAMPLE_NET_STRING =
     '.type.pn\n' +
     '.places\n' +
-    'p0 0\n' +
     'p1 0\n' +
     'p2 0\n' +
     'p3 0\n' +
@@ -52,51 +51,52 @@ const REVIEWING_EXAMPLE_NET_STRING =
     'p6 0\n' +
     'p7 0\n' +
     'p8 0\n' +
+    'p9 0\n' +
     '.transitions\n' +
     'inviteReviewers inviteReviewers\n' +
-    'getReview3 getReview3\n' +
     'getReview1 getReview1\n' +
     'getReview2 getReview2\n' +
+    'getReview3 getReview3\n' +
+    'timeOut1 timeOut1\n' +
+    'timeOut2 timeOut2\n' +
+    'timeOut3 timeOut3\n' +
     'collectReviews collectReviews\n' +
     'decide decide\n' +
     'inviteAdditionalReviewer inviteAdditionalReviewer\n' +
     'timeOutX timeOutX\n' +
     'getReviewX getReviewX\n' +
     'accept accept\n' +
-    'timeOut2 timeOut2\n' +
     'reject reject\n' +
-    'timeOut1 timeOut1\n' +
-    'timeOut3 timeOut3\n' +
     '.arcs\n' +
-    'timeOut1 p0\n' +
-    'getReview1 p0\n' +
-    'p0 collectReviews\n' +
     'inviteReviewers p1\n' +
     'p1 getReview1\n' +
     'p1 timeOut1\n' +
-    'decide p2\n' +
-    'p2 accept\n' +
-    'p2 inviteAdditionalReviewer\n' +
-    'p2 reject\n' +
-    'inviteAdditionalReviewer p3\n' +
-    'p3 getReviewX\n' +
-    'p3 timeOutX\n' +
-    'collectReviews p4\n' +
-    'getReviewX p4\n' +
-    'timeOutX p4\n' +
-    'p4 decide\n' +
-    'inviteReviewers p5\n' +
-    'p5 getReview3\n' +
-    'p5 timeOut3\n' +
-    'inviteReviewers p6\n' +
-    'p6 timeOut2\n' +
-    'p6 getReview2\n' +
-    'timeOut3 p7\n' +
-    'getReview3 p7\n' +
-    'p7 collectReviews\n' +
-    'getReview2 p8\n' +
-    'timeOut2 p8\n' +
-    'p8 collectReviews';
+    'inviteReviewers p2\n' +
+    'p2 timeOut2\n' +
+    'p2 getReview2\n' +
+    'inviteReviewers p3\n' +
+    'p3 getReview3\n' +
+    'p3 timeOut3\n' +
+    'timeOut1 p4\n' +
+    'getReview1 p4\n' +
+    'p4 collectReviews\n' +
+    'getReview2 p5\n' +
+    'timeOut2 p5\n' +
+    'p5 collectReviews\n' +
+    'timeOut3 p6\n' +
+    'getReview3 p6\n' +
+    'p6 collectReviews\n' +
+    'collectReviews p7\n' +
+    'getReviewX p7\n' +
+    'timeOutX p7\n' +
+    'p7 decide\n' +
+    'inviteAdditionalReviewer p8\n' +
+    'p8 getReviewX\n' +
+    'p8 timeOutX\n' +
+    'decide p9\n' +
+    'p9 accept\n' +
+    'p9 inviteAdditionalReviewer\n' +
+    'p9 reject';
 
 const EMPTY_USER_DEFINED_NET =
     '.type pn\n' + '.transitions\n' + '.places\n' + '.arcs';
