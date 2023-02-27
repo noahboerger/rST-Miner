@@ -21,8 +21,8 @@ export class PrimitiveGeneratorConfig extends RandomPlaceGeneratorConfig {
 
     public static readonly DEFAULT_MAXIMAL_INITIAL_MARKING = 0;
 
-    public static readonly DEFAULT_INGOING_CONNECTION_PROBABILITY = 0.3;
-    public static readonly DEFAULT_OUTGOING_CONNECTION_PROBABILITY = 0.3;
+    public static readonly DEFAULT_INGOING_CONNECTION_PROBABILITY = 0.25;
+    public static readonly DEFAULT_OUTGOING_CONNECTION_PROBABILITY = 0.25;
 
     public static readonly DEFAULT_MAXIMAL_INGOING_ARC_WEIGHTS = 1;
     public static readonly DEFAULT_MAXIMAL_OUTGOING_ARC_WEIGHTS = 1;
@@ -143,7 +143,7 @@ export class GeometricDistributionGeneratorConfig extends RandomPlaceGeneratorCo
 
     public static readonly DEFAULT_MAXIMAL_INITIAL_MARKING = 0;
     public static readonly DEFAULT_GEOMETRIC_INCREASE_INITIAL_MARKING_PROBABILITY = 0.5;
-    public static readonly DEFAULT_GEOMETRIC_INCREASE_ARCS_PROBABILITY = 0.5;
+    public static readonly DEFAULT_GEOMETRIC_INCREASE_ARCS_PROBABILITY = 0.65;
     public static readonly DEFAULT_MAXIMAL_INGOING_ARC_WEIGHTS = 1;
     public static readonly DEFAULT_MAXIMAL_OUTGOING_ARC_WEIGHTS = 1;
 
