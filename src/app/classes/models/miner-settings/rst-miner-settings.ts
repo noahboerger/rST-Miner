@@ -109,7 +109,7 @@ export class RstMinerSettings {
         noiseReduction: NoiseReductionConfig = new PreprocessingNoiseReductionConfig(),
         concurrencyOracle: ConcurrencyOracleConfig = new TimestampOracleConfig(),
         partialOrderTransformationConfig: PartialOrderTransformationConfig = new PartialOrderTransformationConfig(),
-        randomPlaceGenerator: RandomPlaceGeneratorConfig = new GeometricDistributionGeneratorConfig(),
+        randomPlaceGenerator: RandomPlaceGeneratorConfig = new PrimitiveGeneratorConfig(),
         terminationCondition: TerminationConditionConfig = new TimeBasedTerminationConfig(),
         implicitPlaceIdentification: ImplicitPlaceIdentificationConfig = new ImplicitPlaceIdentificationConfig(),
         isDebugModusEnabled: boolean = RstMinerSettings.DEFAULT_DEBUG_MODUS_ENABLED,
